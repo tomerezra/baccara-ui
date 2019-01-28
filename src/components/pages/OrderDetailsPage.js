@@ -4,9 +4,9 @@ import {withRouter} from 'react-router-dom'
 class OrderDetailsPage extends Component {
   render() {
     return (
-      <div>
+      
         <OrderDetailsForm/>
-      </div>
+      
     )
   }
 }

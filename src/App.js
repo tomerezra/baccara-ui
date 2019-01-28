@@ -1,31 +1,50 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Link ,withRouter} from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch ,withRouter} from "react-router-dom";
 import HomePage from "./components/pages/HomePage";
 import LoginPage from "./components/pages/LoginPage";
 import SignUpPage from "./components/pages/SignUpPage";
 import AcountPage from "./components/pages/AcountPage";
-import OrderPage from "./components/pages/OrderPage";
-import OrderHistoryPage from "./components/pages/OrderHistoryPage";
+import OrderPage from "./components/pages/BuildItemPage";
+
 import OrderDetailsPage from "./components/pages/OrderDetailsPage";
-import PropTypes from 'prop-types'
+import MakeOrderPage from './components/pages/CreateOrderPage';
+import NewShippingPage from './components/pages/NewShippingPage';
+import Footer from './components/forms/Footer';
+import MobileCotainer from './components/forms/MobileCotainer';
+import Navbar from './components/forms/Navbar';
+import Footer2 from './components/forms/Footer2';
+import PrimarySearchAppBar from "./components/forms/Navbar2"
+import ItemsPage from './components/pages/ItemsPage';
+import ShippingPage from './components/pages/ShippingPage';
+import OrdersPage from './components/pages/OrdersPage';
 
 class App extends Component{
   
   render(){
     return (
-      
-      
-      <div> 
-        <Route path='/' exact component={HomePage}/>
-        <Route path='/login' exact component={LoginPage}/> 
-        <Route path='/signup' exact component={SignUpPage}/>
-        <Route path='/acount' exact component={AcountPage}/>
-        <Route path='/order' exact component={OrderPage}/>
-        <Route path='/history' exact component={OrderHistoryPage}/>
-        <Route path='/orderdetails' exact component={OrderDetailsPage}/> 
-         
-      </div>
-    
+      <>
+        {/* <Navbar/> */}
+        <PrimarySearchAppBar/>
+        <div style={{paddingBottom:'15%',paddingTop:'20%'}}>
+          
+          
+          {/* <Route path='/' exact component={HomePage}/> */}
+          <Switch>
+            <Route path='/' exact component={LoginPage}/> 
+            <Route path='/signup' exact component={SignUpPage}/>
+            <Route path='/acount' exact component={AcountPage}/>
+            <Route path='/builditem' exact component={OrderPage}/>
+            <Route path='/orders' exact component={OrdersPage}/>
+            <Route path='/items' exact component={ItemsPage}/>
+            <Route path='/shipping' exact component={ShippingPage}/>
+            <Route path='/orderdetails/:id' exact component={OrderDetailsPage}/> 
+            <Route path='/createorder/:id' exact component={MakeOrderPage}/>
+            <Route path='/newshipping' exact component={NewShippingPage}/>  
+          </Switch>
+        </div>
+        {/* <Footer/> */}
+        <Footer2/>
+      </>
 );
   }
     

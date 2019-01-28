@@ -6,10 +6,10 @@ import HomePageForm from '../forms/HomePageForm';
   
   render() {
     return (
-      <div>
+      
         <HomePageForm/>
         
-      </div>
+      
     )
   }
 }

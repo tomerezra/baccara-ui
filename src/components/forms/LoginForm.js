@@ -7,6 +7,8 @@ import InlineError from '../messages/InlineError'
 import logo from '../images/baccara.jpg'
 import swal from 'sweetalert';
 import MobileCotainer from './MobileCotainer';
+import PageHeading from './PageHeading';
+import { connect } from 'react-redux'
 
 class LoginForm extends Component {
     state={
@@ -15,9 +17,9 @@ class LoginForm extends Component {
             password:"",
             guest:false
         },
-        loading:false,
-        page:'Log In To Your Account',
-        errors:{}
+        loading:true,
+        pagename:'Log In To Your Account',
+        error:false
     }
     
     HandleChange=(e)=>{
@@ -27,24 +29,22 @@ class LoginForm extends Component {
         console.log(this.state.data)
     }
     HandleSubmit=()=>{
-        const errors=this.Validate(this.state.data)
-        this.setState({errors})
-        if (Object.keys(errors).length===0) {
-          this.props.submit(this.state.data)
-        }
-        
+      if (this.state.data.guest) {
+        this.props.history.push('/builditem')
+      } 
+      else if (this.Validate(this.state.data)) {
+        this.props.clicklogIn()
+        this.props.history.push('/acount')
+      } 
+         
     }
     Validate=(data)=>{
       
-      const errors={}
-      
-      if (!Validator.isEmail(data.email)) {
-          errors.email="invalid Email"
-      }
-     if (!data.password) {
-      errors.password="Can't Be Blank"
-      }
-      return errors
+      // if (!Validator.isEmail(data.email)||!data.password) {
+      //     this.setState({error:true})
+      //     return false
+      // }
+      return true
     }
   
     
@@ -52,38 +52,46 @@ class LoginForm extends Component {
   render() {
     const {data,errors}=this.state
     return (
-      <div>
-        <MobileCotainer name={this.state.page}/>
+      <div style={{maxWidth: 450}}>
+        {/* <MobileCotainer pagename={this.state.pagename}/> */}
+        <Header textAlign='center'>{this.state.pagename}</Header>
+        <Segment >
+        <Grid textAlign='center' >
+          <Grid.Column >
         
-        <Grid textAlign='center' style={{marginTop:'0.5em'}}>
-          <Grid.Column style={{ maxWidth: 450 }}>
-        
-             <Form onSubmit={this.HandleSubmit} size='large'>
-               <Segment >
+             <Form onSubmit={this.HandleSubmit} error={this.state.error}>
+               
           
-                  <Form.Input error={!!errors.email}
-                    type="email"
+                  <Form.Input 
+                    disabled={this.state.data.guest}
+                    type="text"
                     id="email"
                     name="email"
-                    
+                    // pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                     fluid icon='user' 
                     iconPosition='left' 
                     placeholder='E-mail address'
                     value={data.email}
-                    onChange={this.HandleChange}>
+                    onChange={this.HandleChange}
+                    >
                   </Form.Input>
-                  {errors.email && <InlineError text={errors.email}/>}
-                  <Form.Input error={errors.password}
+                  
+                  <Form.Input 
+                    disabled={this.state.data.guest}
                     type='password'
                     id="password"
                     name="password"
                     fluid icon='lock'
                     iconPosition='left'
                     placeholder='Password'
+                    // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                     value={data.password}
                     onChange={this.HandleChange}>
             </Form.Input>
-            {errors.password && <InlineError text={errors.password }/>}
+            <Message
+                error
+                content='Your Email or Password not match'
+                ></Message>
             <Form.Checkbox
                 id="guest"
                 name="guest"
@@ -92,26 +100,26 @@ class LoginForm extends Component {
                 onChange={this.HandleChange}>>
             </Form.Checkbox>
             
-            <Button color='teal' fluid size='large'>
+            <Button color='linkedin' fluid size='large'>
               Login
             </Button>
             
             <br/>
-            <a onClick={()=>{
+            <a style={{cursor: 'pointer'}} onClick={()=>{
                 swal("Enter Your Email Address", {
                     content: "input",
                 })
                 .then((value) => {
                   swal(`The Password Send To ${value}`);
                   });}}>Forget Your Password</a>
-          </Segment>
+          
         </Form>
         <Message>
-          New to us? <a href='/signup'>Sign Up</a>
+          New to us? <a style={{cursor: 'pointer'}} onClick={()=>{this.props.history.push('/signup')}}>Sign Up</a>
         </Message>
       </Grid.Column>
     </Grid>
-    
+    </Segment>
   </div>
      
     )
@@ -120,4 +128,14 @@ class LoginForm extends Component {
 LoginForm.propTypes={
     submit:PropTypes.func.isRequired
 }
-export default withRouter(LoginForm)
+
+const mapStateToProps = (state) => ({
+  logedin:state.logedin
+})
+
+const mapDispatchToProps = (dispatch)=> ({
+  clicklogIn:()=>dispatch({type:'Log In', login:true})
+})
+
+
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(LoginForm))

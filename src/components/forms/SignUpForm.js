@@ -6,6 +6,7 @@ import InlineError from '../messages/InlineError'
 import logo from '../images/baccara.jpg'
 import {withRouter} from 'react-router-dom'
 import MobileCotainer from './MobileCotainer';
+import {connect} from 'react-redux'
 class SignUpForm extends Component {
     state={
         data:{
@@ -22,41 +23,49 @@ class SignUpForm extends Component {
             company:"",
             password:""
         },
-        isloading:false,
-        
         apidata:{},
-        errors:{}
+        errors:{},
+        pagename:''
     }
+    componentDidMount = () => {
+      this.setState({pagename:this.props.auth? 'Update' : 'Sign Up'})
+    }
+    
     HandleChange=(e)=>{
         const {value,name,checked,id}=e.target
         name==="agree" ? this.setState({data:{...this.state.data,[name]:checked}}) :
         this.setState({data:{...this.state.data,[name]:value}})
-        console.log(this.state.data)
-    }
-    HandleSubmit=()=>{
-        const errors=this.Validate(this.state.data)
-        this.setState({errors})
-        if (Object.keys(errors).length===0) {
-          this.props.submit(this.state.data)
-        }
         
     }
-    
-  
-    
+    HandleSubmit=()=>{
+      if (this.Validate(this.state.data)) {
+       this.props.history.push('/acount')
+      } 
+        
+   }
+   Validate=(data)=>{
+     
+     if (!Validator.isEmail(data.email)||!data.password) {
+         this.setState({error:true})
+         return false
+     }
+     return true
+   }
   
   render() {
     const {data}=this.state
-    console.log(this.props)
+    
     
     return (
-      <div>
-        <MobileCotainer name={this.props.logedin ? 'Update Profile':'Sign Up'}/>
-    <Grid textAlign='center' style={{marginTop:'0.5em'}}>
-      <Grid.Column style={{ maxWidth: 450 }}>
+      <div style={{maxWidth: 450}}>
+        {/* <MobileCotainer pagename={this.props.logedin? 'Update Profile':'Sign Up'}/> */}
+        <Header textAlign='center'>{this.state.pagename}</Header>
+        <Segment>
+    <Grid textAlign='center' >
+      <Grid.Column>
        
-        <Form onSubmit={this.HandleSubmit} size='large'>
-          <Segment stacked>
+        <Form onSubmit={this.HandleSubmit}>
+          
           <Form.Input 
                 type="text"
                 id="firstname"
@@ -157,7 +166,7 @@ class SignUpForm extends Component {
             </Form.Input>
             
             <Form.Checkbox
-                
+                style={{display:this.props.auth?'none':'inline-block'}}
                 id="agree"
                 name="agree"
                 label="I agree to the Terms and Conditions"
@@ -165,22 +174,35 @@ class SignUpForm extends Component {
                 onChange={this.HandleChange}>>
             </Form.Checkbox>
             
-            <Button color='teal' >
-            {this.state.logedin ? 'Update' : 'Sign Up'}
+            <Button color='linkedin' >
+                {this.props.auth? 'Update' : 'Sign Up'}
             </Button>
             
-            <Button color='grey' >
+            <Button color='grey' onClick={()=>{this.props.history.goBack()}}>
               Cancel
             </Button>
-          </Segment>
+          
         </Form>
         
       </Grid.Column>
     </Grid>
+    </Segment>
   </div>
       
     )
   }
 }
-export default withRouter(SignUpForm)
+const mapStateToProps = (state) => {
+    return{
+        auth:state.auth.logedin,
+        nav:state.nav.nav
+    }
+    
+  }
+
+const mapDispatchToProps = {
+  
+}
+
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(SignUpForm))
 

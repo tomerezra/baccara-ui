@@ -1,87 +1,95 @@
-import React, { Component } from 'react'
+import React, { Component,Fragment } from 'react'
 import PropTypes from 'prop-types'
-import {BrowserRouter,Route,Link,Switch,withRouter} from 'react-router-dom'
-
+import {Link,withRouter} from 'react-router-dom'
+import { connect } from 'react-redux'
+import logo from '../images/logo.png'
 import PageHeading from './PageHeading'
 import {Responsive, Sidebar,Button,Progress,Menu,Card,Icon,Label, Table,Form,Input, Grid, Header, Image, Message, Segment, Checkbox, GridColumn, Container,Pagination } from 'semantic-ui-react'
 
 
 class MobileCotainer extends Component {
-    state = {
-      logedin:true
+    state={
+      visible:false
     }
-    
-    
-    handleSidebarHide = () => this.setState({ sidebarOpened: false })
-  
-    handleToggle = () => this.setState({ sidebarOpened: true })
-    
-    logOut=()=>{
-      if (this.state.logedin) {
-        this.setState({logedin:!this.state.logedin})
-        this.handleSidebarHide()
-      } else {
-        this.props.history.push('/login')
-        
-      }
-    
+    handleSidebarHide = () => {
+      this.setState({ visible:!this.state.visible})
       
     }
     
+    logOut=()=>{
+      this.props.clicklogOut()
+      this.props.history.push('/')
+    }
+    menubar=()=>{
+      if (this.props.logedin) {
+        return(
+          <Menu.Item 
+          
+          onClick={this.handleSidebarHide}>
+            <Icon name='sidebar' />Menu
+          </Menu.Item>
+        )
+      } 
+    }
+    handleClick=(e,{name})=>{
+      this.props.history.push(name)
+      
+      
+    }
+    
+    
     render() {
-        const { children } = this.props
-        const { sidebarOpened } = this.state
+        
+        
     return (
         
-                <Responsive as={Sidebar.Pushable}>
+                <Responsive as={Sidebar.Pushable} style={{maxWidth: 450,position:'fixed',zIndex:10,maxHeight:164}} >
+                  
                   <Sidebar
                     as={Menu}
                     animation='push'
                     inverted
-                    onHide={this.handleSidebarHide}
                     vertical
-                    visible={sidebarOpened}
+                    
+                    visible={this.state.visible}
+                    onClick={this.handleSidebarHide}
                   >
-                    <Link to='/'>
-                    <Menu.Item  as='a' >Home</Menu.Item>
-                    </Link>
-                    <Link to='/acount'>
-                    <Menu.Item  as='a' >Acount </Menu.Item>
-                    </Link>
-                    <Link to='/order'>
-                    <Menu.Item as='a' >Order</Menu.Item>
-                    </Link>
-                    <Menu.Item as='a' onClick={this.logOut}>{this.state.logedin? 'Log Out':'Log In'}</Menu.Item>
+                    <Menu.Item  name='/acount'  as='a' onClick={this.handleClick}>Acount</Menu.Item>
+                    <Menu.Item  name='/createorder/0' as='a' onClick={this.handleClick}>Create New Order </Menu.Item>
+                    <Menu.Item  name='/builditem' as='a' onClick={this.handleClick}>Build New Item</Menu.Item>
+                    <Menu.Item  as='a' onClick={this.logOut}>Log Out</Menu.Item>
                   </Sidebar>
-          
-                  <Sidebar.Pusher dimmed={sidebarOpened}>
-                    <Segment
-                      
-                      inverted
-                      textAlign='center'
-                      style={{ minHeight: 100, padding: '0em 0em' }}
-                      vertical
-                    >
-                      <Container>
-                        <Menu inverted pointing secondary size='large'>
-                          <Menu.Item onClick={this.handleToggle}>
-                            <Icon name='sidebar' />
-                          </Menu.Item>
-                          
+                  <Sidebar.Pusher dimmed={this.state.visible} >
+                        <Menu style={{position:'fixed',
+                                    zIndex:10,
+                                    top:'auto',
+                                    borderWidth:0                                    
+                                    }} 
+                              inverted pointing secondary size='large'>
+                           {this.menubar()}
                         </Menu>
-                      </Container>
-                      <PageHeading name={this.props.name} />
-                    </Segment>
-          
-                    {children}
+                        <Image src={logo}  sistyle={{height:100}}></Image>
                   </Sidebar.Pusher>
+                
                 </Responsive>
+                
+                
               )
             }
             
           }
           
- export default withRouter(MobileCotainer)         
+          const mapStateToProps = (state) => ({
+            logedin:state.logedin
+          })
+          
+          const mapDispatchToProps =(dispatch) =>({
+            
+            clicklogOut:()=>dispatch({type:'Log Out', logout:false})
+            
+          })
+          
+ export default withRouter(connect(mapStateToProps,mapDispatchToProps)(MobileCotainer))         
           
     
   

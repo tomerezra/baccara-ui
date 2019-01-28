@@ -4,9 +4,9 @@ import {withRouter} from 'react-router-dom'
 class AcountPage extends Component {
   render() {
     return (
-      <div>
+      
         <AcountForm/>
-      </div>
+      
     )
   }
 }

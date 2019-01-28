@@ -16,6 +16,7 @@ import {
   Segment,
   Sidebar,
   Visibility,
+  Label,
 } from 'semantic-ui-react'
 import MobileCotainer from './MobileCotainer';
 
@@ -30,15 +31,23 @@ class HomePageForm extends Component{
               <MobileCotainer name={this.state.page}/>
 <Segment style={{ padding: '4em 0em' }} vertical>
       <Grid container stackable verticalAlign='middle'>
-        <Grid.Row>
+        <Grid.Row textAlign='center'>
           <Grid.Column width={8}>
             <Header as='h3' style={{ fontSize: '2em' }}>
-              We Help Companies and Companions
+              Want To Build a New Order?
             </Header>
-            <p style={{ fontSize: '1.33em' }}>
-              We can give your company superpowers to do things that they never thought possible.
-              Let us delight your customers and empower your needs... through pure data analytics.
-            </p>
+            <Button 
+            size='large'
+            onClick={()=>{this.props.history.push('/login')}}
+            color='linkedin'
+            >Log In</Button>
+            <span>Or </span>
+            <Button 
+            size='large'
+            onClick={()=>{this.props.history.push('/signup/false')}}
+            color='linkedin'
+            >Sign Up</Button>
+            
             <Header as='h3' style={{ fontSize: '2em' }}>
               We Make Bananas That Can Dance
             </Header>
@@ -46,15 +55,14 @@ class HomePageForm extends Component{
               Yes that's right, you thought it was the stuff of dreams, but even bananas can be
               bioengineered.
             </p>
-          </Grid.Column>
-          <Grid.Column floated='right' width={6}>
+            <Button 
+            size='large'
+            href='https://www.baccara.co.il/product_cat/סולונואידים/'
             
+            color='linkedin'
+            >Our Products</Button>
           </Grid.Column>
-        </Grid.Row>
-        <Grid.Row>
-          <Grid.Column textAlign='center'>
-            <Button size='huge'>Check Them Out</Button>
-          </Grid.Column>
+          
         </Grid.Row>
       </Grid>
     </Segment>
