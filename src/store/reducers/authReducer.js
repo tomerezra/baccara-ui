@@ -1,5 +1,5 @@
 const initState = {
-    logedin:true,
+    logedin:false,
     
   }
   
