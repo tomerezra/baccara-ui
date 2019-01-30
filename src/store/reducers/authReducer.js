@@ -6,16 +6,16 @@ const initState = {
   
   const authReducer = (state=initState , action) => {
     
-    if (action.type==='Log Out') {
-      console.log('aa')
-      return {logedin:action.logout}
+    switch (action.type) {
+      case 'Log Out':
+        return {logedin:action.logout}
+        
+      case 'Log In':
+        return {logedin:action.login}
+      
+        
     }
-    if (action.type==='Log In') {
-      console.log('bb')
-      return {logedin:action.login}
-    }
-    
-    
+
     return state
   }
   

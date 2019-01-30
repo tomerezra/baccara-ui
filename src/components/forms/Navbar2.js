@@ -121,7 +121,7 @@ handleSearchChange = (e, { value }) => {
               <Icon 
                 name='arrow circle left' 
                 onClick={()=>{
-                    console.log(this.props.location.pathname)
+                    
                     if (this.props.location.pathname==='/acount') {
                         
                     }
@@ -164,7 +164,7 @@ PrimarySearchAppBar.propTypes = {
 const mapStateToProps = (state) => {
     return{
         auth:state.auth.logedin,
-        nav:state.nav.footer
+        
     }
     
   }

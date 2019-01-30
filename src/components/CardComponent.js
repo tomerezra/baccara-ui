@@ -31,7 +31,7 @@ export class CardComponent extends Component {
                 <Card.Header>{this.props.item.name}</Card.Header>
                 <Card.Meta>{this.props.item.serial}
                 <Button
-                    onClick={()=>{}}
+                    onClick={()=>{this.props.delete(this.props.item)}}
                     floated='right'
                     content='Delete'
                     color='youtube'
@@ -55,7 +55,7 @@ export class CardComponent extends Component {
                 <Card.Header>{this.props.address.country}</Card.Header>
                 <Card.Meta>{this.props.address.city}
                 <Button
-                    
+                    onClick={()=>{this.props.delete(this.props.address)}}
                     floated='right'
                     content='Delete'
                     color='youtube'

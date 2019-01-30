@@ -1,7 +1,6 @@
-import PropTypes from 'prop-types'
+
 import React, { Component } from 'react'
 import {withRouter} from 'react-router-dom'
-import { BrowserRouter as Router, Route, Link, RouterContext } from "react-router-dom";
 
 import {
   Button,
@@ -20,7 +19,7 @@ import {
   Card,
 } from 'semantic-ui-react'
 import { connect } from 'react-redux'
-import {navActions} from '../../store/actions/navActions'
+
 import MobileCotainer from './MobileCotainer';
 
 class HomePageForm extends Component{
@@ -116,12 +115,12 @@ class HomePageForm extends Component{
 const mapStateToProps = (state) => {
   return{
       auth:state.auth.logedin,
-      nav:state.nav.nav
+      
   }
   
 }
 
 const mapDispatchToProps =(dispatch)=> ({
-  navActions:(nav)=>dispatch(navActions(nav))
+  
 })
 export default withRouter(connect(mapStateToProps,mapDispatchToProps)(HomePageForm))

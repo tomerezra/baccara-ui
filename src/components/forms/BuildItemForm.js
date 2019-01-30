@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 import {Responsive, Sidebar,Button,Progress,Menu,Card,Icon,Label, Table,Form,Input, Grid, Header, Image, Message, Segment, Checkbox, GridColumn, Container,Pagination, GridRow, Ref } from 'semantic-ui-react'
-import PropTypes from 'prop-types'
-import Validator from 'validator'
-import InlineError from '../messages/InlineError'
-import logo from '../images/baccara.jpg'
+import { connect } from 'react-redux'
+import {createItem} from '../../store/actions/dataActions'
 import swal from '@sweetalert/with-react'
 import MobileContainer from './MobileCotainer'
 import {withRouter} from 'react-router-dom'
@@ -22,12 +20,13 @@ class BuildItemForm extends Component {
         override:"-",
         voltage:"-",
         power:"-",
-        connector:"-"
+        connector:"-",
+        partname:''
       },
       progress:0,
       pagename:"Build New Order",
-      part:"",
-      partname:"",
+      part:'',
+      
       cancel:false,
       datatmp:{}
   }
@@ -42,7 +41,10 @@ handleSubmit=()=>{
         content:'input'
     })
     .then((value)=>{
-        this.setState({partname:value})
+        
+        this.setState({data:{...this.state.data,partname:value}})
+        this.props.createItem(this.state.data)
+
         
     })
 
@@ -85,7 +87,7 @@ handleClick=(e)=>{
 isStandart=(id,value)=>{
     const tmp=standart.filter(part=>part.id===id)
     const part=tmp[0]
-    console.log(part.regex.exec(value))
+    
     if (part.regex.test(value)) {
         return 'green'
     }
@@ -313,4 +315,10 @@ buttonChange=()=>{
     )
   }
 }
-export default withRouter(BuildItemForm)
+const mapDispatchToProps = (dispatch) =>{
+    return{
+        createItem:(item)=>dispatch(createItem(item)),
+        
+    }
+  }
+export default withRouter(connect(null,mapDispatchToProps)(BuildItemForm))

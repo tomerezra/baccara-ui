@@ -6,21 +6,25 @@ import {withRouter} from 'react-router-dom'
 import data from '../../data/data'
 export class CreateOrderForm extends Component {
   state={
-      pagename:'Create New Order',
-      data:{
-
-        firstName:"",
-        lastName:"",
-        age:"",
-        agree:false,
-        country:"",
-        city:"",
-        address:"",
-        email:"",
-        phone:"",
-        company:""
-        
+        pagename:'Create New Order',
+        billing:{
+            firstName:"",
+            lastName:"",
+            age:"",
+            agree:false,
+            country:"",
+            city:"",
+            address:"",
+            email:"",
+            phone:"",
+            company:""
         },
+        items:{
+
+        },
+        
+        
+        
       items:[],
       orderitems:[],
       chose:"",
@@ -34,10 +38,14 @@ export class CreateOrderForm extends Component {
       
   }
   nextstep=(e)=>{
-    console.log(e.target)
+    
     const {name}=e.target  
+    if (this.step===1) {
+        
+    }
     if (name==='next') {
         this.setState({step:this.state.step+1})
+
     }
     if (name==='back')  {
         this.setState({step:this.state.step-1})
@@ -162,6 +170,7 @@ export class CreateOrderForm extends Component {
                         id={item.id}
                         name={item.serial}
                         label={item.name}
+                        // onChange={()=>{this.setState({items:{...this.state.items,[item.id]:item.serial}})}}
     
                         >
                     </Form.Checkbox>
@@ -173,6 +182,8 @@ export class CreateOrderForm extends Component {
                         type='number'
                         min='1'
                         id={item.id}
+                        // value={this.state.items.id.quantity}
+                        // onChange={(value)=>{this.setState({items:{...this.state.items,[item.id]:value}})}}
                         >
                      
                     </Form.Input>  

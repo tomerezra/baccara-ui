@@ -1,11 +1,13 @@
-import navReducer from './navReducer'
+import navReducer from './dataReducer'
 import {combineReducers} from 'redux'
-import authReducer from './authReducer';
-
+import dataReducer from './dataReducer';
+import usersReducer from './usersReducer'
+import authReducer from './authReducer'
 
 const rootReducer = combineReducers({
   auth:authReducer,
-  nav:navReducer 
+  data:dataReducer,
+  users:usersReducer 
 }) 
 
 

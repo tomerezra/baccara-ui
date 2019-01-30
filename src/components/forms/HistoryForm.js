@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types'
+
 import React, { Component } from 'react'
 import {withRouter} from 'react-router-dom'
-import { BrowserRouter as Router, Route, Link, RouterContext } from "react-router-dom";
+
 import {
   Button,
   Container,
@@ -21,6 +21,8 @@ import {
   Input
 } from 'semantic-ui-react'
 import MobileCotainer from './MobileCotainer';
+import {createAddress,createItem,createOrder,deleteAddress,deleteItem,deleteOrder} from '../../store/actions/dataActions'
+import { connect } from 'react-redux'
 
 import CardComponent from '../CardComponent';
 
@@ -33,20 +35,20 @@ class HistoryForm extends Component{
    }
    componentDidMount(){
         const name= this.props.pagename
-        console.log(name)
+        
         if (name==='orders') {
             this.setState({pagename:'My Orders'})
-            const orders= data.orders.results.map(order => <CardComponent order={order} type={name}/>)
+            const orders= data.orders.results.map(order => <CardComponent order={order}/>)
             this.setState({data:orders})  
         }
         else if (name==='items') {
             this.setState({pagename:'My Items'})
-            const items= data.items.results.map(item => <CardComponent item={item} type={name}/>)
+            const items= data.items.results.map(item => <CardComponent item={item} delete={this.props.deleteItem}/>)
             this.setState({data:items})
         }
         else if (name==='shipping') {
             this.setState({pagename:'My Addresses'})
-            const addresses= data.shipping.results.map(address => <CardComponent address={address} type={name}/>)
+            const addresses= data.shipping.results.map(address => <CardComponent address={address} delete={this.props.deleteAddress}/>)
             this.setState({data:addresses})
         }
     }
@@ -107,7 +109,20 @@ class HistoryForm extends Component{
       )
   }
     
-    
-
 }
-export default withRouter(HistoryForm) 
+const mapStateToProps = (state) => ({
+  
+})
+
+const mapDispatchToProps = (dispatch) =>{
+    return{
+        createItem:(item)=>dispatch(createItem(item)),
+        createOrder:(order)=>dispatch(createOrder(order)),
+        createAddress:(address)=>dispatch(createAddress(address)),
+        deleteItem:(item)=>dispatch(deleteItem(item)),
+        deleteOrder:(order)=>dispatch(deleteOrder(order)),
+        deleteAddress:(address)=>dispatch(deleteAddress(address)),
+    }
+  }
+
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(HistoryForm)) 

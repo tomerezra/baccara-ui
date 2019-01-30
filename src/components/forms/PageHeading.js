@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import logo from '../images/logo.png'
+import logo from '../../images/logo.png'
 import {withRouter} from 'react-router-dom'
 import {Responsive, Sidebar,Button,Progress,Menu,Card,Icon,Label, Table,Form,Input, Grid, Header, Image, Message, Segment, Checkbox, GridColumn, Container,Pagination } from 'semantic-ui-react'
 class PageHeading extends Component {

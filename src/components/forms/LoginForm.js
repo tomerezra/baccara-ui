@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { BrowserRouter as Router, Route, Link, RouterContext ,withRouter} from "react-router-dom";
 import Validator from 'validator'
 import InlineError from '../messages/InlineError'
-import logo from '../images/baccara.jpg'
+
 import swal from 'sweetalert';
 import MobileCotainer from './MobileCotainer';
 import PageHeading from './PageHeading';
@@ -26,7 +26,7 @@ class LoginForm extends Component {
         const {value,name,checked,id}=e.target
         name==="guest" ? this.setState({data:{...this.state.data,[name]:checked}}) :
         this.setState({data:{...this.state.data,[name]:value}})
-        console.log(this.state.data)
+        
     }
     HandleSubmit=()=>{
       if (this.state.data.guest) {

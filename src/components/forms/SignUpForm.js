@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { Button, Form, Grid, Header, Image, Message, Segment, Checkbox } from 'semantic-ui-react'
-import PropTypes from 'prop-types'
+
 import Validator from 'validator'
 import InlineError from '../messages/InlineError'
-import logo from '../images/baccara.jpg'
+import {createUser} from '../../store/actions/usersAction'
 import {withRouter} from 'react-router-dom'
 import MobileCotainer from './MobileCotainer';
 import {connect} from 'react-redux'
@@ -11,8 +11,8 @@ class SignUpForm extends Component {
     state={
         data:{
 
-            firstName:"",
-            lastName:"",
+            firstname:"",
+            lastname:"",
             age:"",
             agree:false,
             country:"",
@@ -39,7 +39,9 @@ class SignUpForm extends Component {
     }
     HandleSubmit=()=>{
       if (this.Validate(this.state.data)) {
-       this.props.history.push('/acount')
+       this.props.createUser(this.state.data)
+
+        this.props.history.push('/acount')
       } 
         
    }
@@ -194,14 +196,16 @@ class SignUpForm extends Component {
 }
 const mapStateToProps = (state) => {
     return{
-        auth:state.auth.logedin,
-        nav:state.nav.nav
+        auth:state.auth.logedin
     }
     
   }
 
-const mapDispatchToProps = {
-  
+const mapDispatchToProps = (dispatch) =>{
+  return{
+      createUser:(user)=>dispatch(createUser(user))
+
+  }
 }
 
 export default withRouter(connect(mapStateToProps,mapDispatchToProps)(SignUpForm))

@@ -19,12 +19,13 @@ import {
     Input
   } from 'semantic-ui-react'
 import MobileCotainer from './MobileCotainer';
-
+import { connect } from 'react-redux'
+import {createAddress} from '../../store/actions/dataActions'
 class NewShippingForm extends Component {
     state={
         pagename:'New Shipping Address',
         data:{
-            firsname:'',
+            firstname:'',
             lastname:'',
             country:'',
             city:'',
@@ -32,8 +33,14 @@ class NewShippingForm extends Component {
             phone:''
         }
     }
-    
+  handleChange =(e)=>{
       
+      const {name,value}=e.target
+      this.setState({data:{...this.state.data,[name]:value}})
+  } 
+  handleSubmit=()=>{
+      this.props.createAddress(this.state.data)
+  }    
    render(){
     const {data}=this.state
        return(
@@ -43,7 +50,7 @@ class NewShippingForm extends Component {
     <Grid textAlign='center' >
       <Grid.Column>
        
-        <Form onSubmit={this.HandleSubmit}>
+        <Form onSubmit={this.handleSubmit}>
         <Header textAlign='center'>{this.state.pagename}</Header>
           <Form.Input 
                 type="text"
@@ -54,7 +61,7 @@ class NewShippingForm extends Component {
                 iconPosition='left' 
                 placeholder='First Name'
                 value={data.firstname}
-                onChange={this.HandleChange}>
+                onChange={this.handleChange}>
             </Form.Input>
           <Form.Input 
                 type="text"
@@ -65,7 +72,7 @@ class NewShippingForm extends Component {
                 iconPosition='left' 
                 placeholder='Last Name'
                 value={data.lastname}
-                onChange={this.HandleChange}>
+                onChange={this.handleChange}>
             </Form.Input>
           <Form.Input 
                 type="text"
@@ -76,7 +83,7 @@ class NewShippingForm extends Component {
                 iconPosition='left' 
                 placeholder='Country'
                 value={data.country}
-                onChange={this.HandleChange}>
+                onChange={this.handleChange}>
             </Form.Input>
           <Form.Input 
                 type="text"
@@ -87,7 +94,7 @@ class NewShippingForm extends Component {
                 iconPosition='left' 
                 placeholder='City'
                 value={data.city}
-                onChange={this.HandleChange}>
+                onChange={this.handleChange}>
             </Form.Input>
           <Form.Input 
                 type="text"
@@ -98,7 +105,7 @@ class NewShippingForm extends Component {
                 iconPosition='left' 
                 placeholder='Address'
                 value={data.address}
-                onChange={this.HandleChange}>
+                onChange={this.handleChange}>
             </Form.Input>
           <Form.Input 
                 type="text"
@@ -109,11 +116,12 @@ class NewShippingForm extends Component {
                 iconPosition='left' 
                 placeholder='Phone Number'
                 value={data.phone}
-                onChange={this.HandleChange}>
+                onChange={this.handleChange}>
             </Form.Input>
             <Button 
                 color='linkedin'
-                content='Add'>
+                content='Add'
+                >
             </Button>
             <Button 
                 color='grey' 
@@ -126,6 +134,12 @@ class NewShippingForm extends Component {
     </Segment>
            </div>
        )
+    }
 }
-}
-export default withRouter(NewShippingForm)
+const mapDispatchToProps = (dispatch) =>{
+    return{
+        createAddress:(address)=>dispatch(createAddress(address)),
+        
+    }
+  }
+export default withRouter(connect(null,mapDispatchToProps)(NewShippingForm))

@@ -1,8 +1,8 @@
 import React, { Component,Fragment } from 'react'
-import PropTypes from 'prop-types'
-import {Link,withRouter} from 'react-router-dom'
+
+import {withRouter} from 'react-router-dom'
 import { connect } from 'react-redux'
-import logo from '../images/logo.png'
+import logo from '../../images/logo.png'
 import PageHeading from './PageHeading'
 import {Responsive, Sidebar,Button,Progress,Menu,Card,Icon,Label, Table,Form,Input, Grid, Header, Image, Message, Segment, Checkbox, GridColumn, Container,Pagination } from 'semantic-ui-react'
 

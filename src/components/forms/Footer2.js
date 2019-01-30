@@ -7,7 +7,7 @@ import {Icon,Button} from 'semantic-ui-react';
 
 import {withRouter} from 'react-router-dom'
 import { connect } from 'react-redux'
-import {navActions} from '../../store/actions/navActions'
+
 const styles = {
   root: {
     width:'100%',
@@ -87,13 +87,13 @@ LabelBottomNavigation.propTypes = {
 const mapStateToProps = (state) => {
     return{
         auth:state.auth.logedin,
-        nav:state.nav.nav
+        
     }
     
   }
  
   const mapDispatchToProps =(dispatch)=> ({
-    navActions:(nav)=>dispatch(navActions(nav))
+    
   })
   
 export default withRouter(withStyles(styles)(connect(mapStateToProps,mapDispatchToProps)(LabelBottomNavigation)))
