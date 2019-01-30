@@ -21,11 +21,10 @@ import {
   Input
 } from 'semantic-ui-react'
 import MobileCotainer from './MobileCotainer';
-import OrdersData from  '/Users/tomerezra/React/ui/src/data/ordersdata'
-import ItemsData from  '/Users/tomerezra/React/ui/src/data/itemsdata'
-import CardComponent from '../CardComponent';
-import ShippingData from '/Users/tomerezra/React/ui/src/data/shippingdata'
 
+import CardComponent from '../CardComponent';
+
+import data from '../../data/data'
 class HistoryForm extends Component{
    state={
        pagename:'',
@@ -37,17 +36,17 @@ class HistoryForm extends Component{
         console.log(name)
         if (name==='orders') {
             this.setState({pagename:'My Orders'})
-            const orders= OrdersData.map(order => <CardComponent order={order} type={name}/>)
+            const orders= data.orders.results.map(order => <CardComponent order={order} type={name}/>)
             this.setState({data:orders})  
         }
         else if (name==='items') {
             this.setState({pagename:'My Items'})
-            const items= ItemsData.map(item => <CardComponent item={item} type={name}/>)
+            const items= data.items.results.map(item => <CardComponent item={item} type={name}/>)
             this.setState({data:items})
         }
         else if (name==='shipping') {
             this.setState({pagename:'My Addresses'})
-            const addresses= ShippingData.map(address => <CardComponent address={address} type={name}/>)
+            const addresses= data.shipping.results.map(address => <CardComponent address={address} type={name}/>)
             this.setState({data:addresses})
         }
     }

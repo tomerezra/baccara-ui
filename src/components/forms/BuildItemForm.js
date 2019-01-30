@@ -9,6 +9,7 @@ import MobileContainer from './MobileCotainer'
 import {withRouter} from 'react-router-dom'
 import Question from '../Question';
 import Parts from '/Users/tomerezra/React/ui/src/data/parts'
+import standart from '../../data/standartdata'
 class BuildItemForm extends Component {
   state={
       data:{
@@ -81,7 +82,15 @@ handleClick=(e)=>{
     } 
     else {this.makeQuestions()}          
 }
-
+isStandart=(id,value)=>{
+    const tmp=standart.filter(part=>part.id===id)
+    const part=tmp[0]
+    console.log(part.regex.exec(value))
+    if (part.regex.test(value)) {
+        return 'green'
+    }
+    else return 'yellow'
+}
 makeQuestions=()=>{
     this.setState({cancel:false})
     const tmp = Parts.filter(part=>part.id===this.state.progress+1)
@@ -93,7 +102,7 @@ makeQuestions=()=>{
                                         size='mini'
                                         content={opt.name}
                                         value={opt.value} 
-                                        color='green'
+                                        color={this.isStandart(part.id,opt.value)}
                                         onClick={()=>{
                                             this.setState({data:{...this.state.data,[part.value]:opt.value}})
                                             this.setState(prev=>{return{part:prev.part+opt.value}})

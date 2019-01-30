@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import MobileCotainer from './MobileCotainer';
 import {withRouter} from 'react-router-dom'
 import {Responsive, Sidebar,Button,Progress,Menu,Card,Icon,Label, Table,Form,Input, Grid, Header, Image, Message, Segment, Checkbox, GridColumn, Container,Pagination, GridRow, Item } from 'semantic-ui-react'
-import OrdersData from  '/Users/tomerezra/React/ui/src/data/ordersdata'
+
+import Data from '../../data/data'
 import swal from '@sweetalert/with-react';
 class OrderDetailsForm extends Component {
     state={
@@ -15,7 +16,7 @@ class OrderDetailsForm extends Component {
         
         const id = this.props.match.params.id
         this.setState({id})
-        const data=OrdersData[id-1]
+        const data=Data.orders.results[id-1]
         this.setState({data})
         this.setState({pagename:"Order Number-" +data.ordernumber})
         const view = data.items.map(item=><Item content={item}/>)

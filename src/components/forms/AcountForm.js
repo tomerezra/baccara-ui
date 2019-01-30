@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import {withRouter} from 'react-router-dom'
 import { BrowserRouter as Router, Route, Link, RouterContext } from "react-router-dom";
-import disableScroll from 'disable-scroll'
+
 import {
   Button,
   Container,

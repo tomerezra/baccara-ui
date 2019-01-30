@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { Button,Step,Icon, Form, Grid, Header, Image, Message, Segment, Checkbox, TextArea, Item, Divider, Input, Container } from 'semantic-ui-react'
 import MobileCotainer from './MobileCotainer';
-import ItemsData from  '/Users/tomerezra/React/ui/src/data/itemsdata'
+
 import {withRouter} from 'react-router-dom'
+import data from '../../data/data'
 export class CreateOrderForm extends Component {
   state={
       pagename:'Create New Order',
@@ -28,7 +29,7 @@ export class CreateOrderForm extends Component {
   }
   componentDidMount(){
     const id = this.props.match.params.id
-    this.setState({items:ItemsData})
+    this.setState({items:data.items.results})
     this.setState({chose:id})
       
   }

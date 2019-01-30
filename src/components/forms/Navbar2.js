@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import { fade } from '@material-ui/core/styles/colorManipulator';
+
 import { withStyles } from '@material-ui/core/styles';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import { Icon, Search ,Button} from 'semantic-ui-react';
+
+import { Icon, Search ,Button, List} from 'semantic-ui-react';
 import {withRouter} from 'react-router-dom';
 import { connect } from 'react-redux'
-
+import data from '../../data/data'
+import swal from '@sweetalert/with-react'
 const styles = {
   root: {
     width: '100%',
@@ -23,13 +24,91 @@ const styles = {
 
 }
 
+
+  
 class PrimarySearchAppBar extends React.Component {
   state = {
-    
+    isLoading: false,
+    results: [],
+    value: ""
   };
   logOut=()=>{
     this.props.clicklogOut()
     this.props.history.push('/')
+}
+componentWillMount() {
+  this.resetComponent()
+}
+getResults = result=>{
+  const tmp = result.map(obj=>{return {obj,title:obj.name}})
+  return tmp
+}
+
+resetComponent = () => this.setState({ isLoading: false, results: [], value: '' })
+
+handleResultSelect = (e, { result}) => {
+  const tmp = []
+  
+  for (const key in result.obj) {
+        tmp.push(<List.Item>{key} - {(key,result.obj[key])}</List.Item>)}
+  swal(<List celled>{tmp}</List>)
+
+  this.setState({value:result.title})}
+
+handleSearchChange = (e, { value }) => {
+  
+  this.setState({ isLoading: true, value })
+
+  setTimeout(() => {
+    if (this.state.value.length < 1) return this.resetComponent()
+
+    const re = new RegExp(this.state.value,'i')
+    
+    const tmp=[]
+    
+    for (let i = 1; i < 4; i++) {
+      if (i===1) {
+        const result = data.items.results.filter(item=>(re.test(item.name)))
+        if (result.length>0) {
+          tmp.push(
+            {
+            name:data.items.name,
+            results:this.getResults(result)
+            }
+          )
+        }
+      }
+      else if (i===2) {
+        const result = data.orders.results.filter(order=>(re.test(order.name)))
+        if (result.length>0) {
+          tmp.push(
+            {
+            name:data.orders.name,
+            results:this.getResults(result)
+            }
+          )
+        }
+      }
+      else{
+        const result = data.shipping.results.filter(address=>(re.test(address.name)))
+        if (result.length>0) {
+          tmp.push(
+            {
+            name:data.shipping.name,
+            results:this.getResults(result)
+            }
+          )
+        }
+        
+      }
+      }
+
+      
+    this.setState({
+      isLoading: false,
+      results: tmp,
+    })
+  }, 300)
 }
   render() {
     
@@ -51,7 +130,17 @@ class PrimarySearchAppBar extends React.Component {
             </IconButton>
             
             <div>
-              <Search placeholder='Search...' style={{display:this.props.auth?'':'none'}}></Search>
+              <Search 
+                placeholder='Search...' 
+                style={{display:this.props.auth?'':'none'}}
+                category
+                loading={this.state.isLoading}
+                onResultSelect={this.handleResultSelect}
+                onSearchChange={this.handleSearchChange}
+                results={this.state.results}
+                value={this.state.value}
+                {...this.props}
+                ></Search>
             </div>
             
             <div className={classes.grow} />
