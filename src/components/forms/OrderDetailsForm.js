@@ -5,6 +5,7 @@ import {Responsive, Sidebar,Button,Progress,Menu,Card,Icon,Label, Table,Form,Inp
 
 import Data from '../../data/data'
 import swal from '@sweetalert/with-react';
+import {Redirect} from 'react-router-dom'
 class OrderDetailsForm extends Component {
     state={
         pagename:'',
@@ -23,7 +24,8 @@ class OrderDetailsForm extends Component {
         this.setState({view})
     }
     render() {
-        
+    const {auth}=this.props
+    if (!auth.uid) {return <Redirect to='/'/>}
     return (
       <div style={{maxWidth: 450}}>
         {/* <MobileCotainer pagename={this.state.pagename}/> */}

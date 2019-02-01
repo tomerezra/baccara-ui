@@ -4,12 +4,13 @@ import PropTypes from 'prop-types'
 import { BrowserRouter as Router, Route, Link, RouterContext ,withRouter} from "react-router-dom";
 import Validator from 'validator'
 import InlineError from '../messages/InlineError'
-
+import logo from '../../images/logo.png'
 import swal from 'sweetalert';
 import MobileCotainer from './MobileCotainer';
 import PageHeading from './PageHeading';
 import { connect } from 'react-redux'
-
+import {signIn} from '../../store/actions/authAction'
+import {Redirect} from 'react-router-dom'
 class LoginForm extends Component {
     state={
         data:{
@@ -28,13 +29,15 @@ class LoginForm extends Component {
         this.setState({data:{...this.state.data,[name]:value}})
         
     }
-    HandleSubmit=()=>{
+    HandleSubmit=(e)=>{
+      e.preventDefault()
       if (this.state.data.guest) {
         this.props.history.push('/builditem')
       } 
       else if (this.Validate(this.state.data)) {
         this.props.clicklogIn()
-        this.props.history.push('/acount')
+        this.props.signIn(this.state.data)
+        // this.props.history.push('/acount')
       } 
          
     }
@@ -51,9 +54,13 @@ class LoginForm extends Component {
   
   render() {
     const {data,errors}=this.state
+    const {auth} = this.props
+    if (auth.uid) {return <Redirect to='/acount'/>}
     return (
-      <div style={{maxWidth: 450}}>
+      <div style={{maxWidth: 450,marginTop:'-20%'}}>
         {/* <MobileCotainer pagename={this.state.pagename}/> */}
+        <Image src={logo} size='large' rounded>
+        </Image>
         <Header textAlign='center'>{this.state.pagename}</Header>
         <Segment >
         <Grid textAlign='center' >
@@ -129,13 +136,22 @@ LoginForm.propTypes={
     submit:PropTypes.func.isRequired
 }
 
-const mapStateToProps = (state) => ({
-  logedin:state.logedin
-})
+const mapStateToProps = (state) => {
+  return{
+    
+    authError:state.auth.authError,
+    auth:state.firebase.auth
+  }
+  
+}
 
-const mapDispatchToProps = (dispatch)=> ({
-  clicklogIn:()=>dispatch({type:'Log In', login:true})
-})
+const mapDispatchToProps = (dispatch)=> {
+  return{
+    clicklogIn:()=>dispatch({type:'Log In', login:true}),
+    signIn:(creds)=>dispatch(signIn(creds))
+  }
+  
+}
 
 
 export default withRouter(connect(mapStateToProps,mapDispatchToProps)(LoginForm))

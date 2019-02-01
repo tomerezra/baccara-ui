@@ -20,7 +20,9 @@ import {
   } from 'semantic-ui-react'
 import MobileCotainer from './MobileCotainer';
 import { connect } from 'react-redux'
+import {Redirect} from 'react-router-dom'
 import {createAddress} from '../../store/actions/dataActions'
+
 class NewShippingForm extends Component {
     state={
         pagename:'New Shipping Address',
@@ -38,11 +40,14 @@ class NewShippingForm extends Component {
       const {name,value}=e.target
       this.setState({data:{...this.state.data,[name]:value}})
   } 
-  handleSubmit=()=>{
+  handleSubmit=(e)=>{
+    e.preventDefault()
       this.props.createAddress(this.state.data)
   }    
    render(){
     const {data}=this.state
+    const {auth}=this.props
+    if (!auth.uid) {return <Redirect to='/'/>}
        return(
            <div style={{maxWidth: 450}}>
                {/* <MobileCotainer pagename={this.state.pagename}/> */}

@@ -52,11 +52,11 @@ export class Navbar extends Component {
   }
 }
 const mapStateToProps = (state) => ({
-    logedin:state.logedin
+    
   })
   
   const mapDispatchToProps =(dispatch)=> ({
-    clicklogOut:()=>dispatch({type:'Log Out', logout:false})
+    
   })
   
 export default withRouter(connect(mapStateToProps,mapDispatchToProps)(Navbar))

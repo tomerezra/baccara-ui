@@ -5,14 +5,14 @@ const Data={
             {
                 id:'1',
                 name: "For Water",
-                serial: 'GEA-134a5793',
+                serial: 'GEA-134a5791',
                 standart:'Yes',
                 checked:false
             },
             {
                 id:'2',
                 name: "For Oil",
-                serial: 'GEA-134a5793',
+                serial: 'GEA-134a5792',
                 standart:'No',
                 checked:false
             },
@@ -26,7 +26,7 @@ const Data={
             {
                 id:'4',
                 name: "For High Voltage",
-                serial: 'GEA-134a5793',
+                serial: 'GEA-134a5794',
                 standart:'Yes',
                 checked:false
             
@@ -34,7 +34,7 @@ const Data={
             {
                 id:'5',
                 name: "For High Voltage",
-                serial: 'GEA-134a5793',
+                serial: 'GEA-134a5795',
                 standart:'No',
                 checked:false
             }

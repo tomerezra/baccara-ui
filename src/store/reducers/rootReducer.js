@@ -1,13 +1,16 @@
 import navReducer from './dataReducer'
 import {combineReducers} from 'redux'
 import dataReducer from './dataReducer';
-import usersReducer from './usersReducer'
-import authReducer from './authReducer'
 
+import authReducer from './authReducer'
+import {firestoreReducer} from 'redux-firestore'
+import {firebaseReducer} from 'react-redux-firebase'
 const rootReducer = combineReducers({
   auth:authReducer,
   data:dataReducer,
-  users:usersReducer 
+  
+  firestore:firestoreReducer,
+  firebase:firebaseReducer 
 }) 
 
 

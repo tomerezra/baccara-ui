@@ -19,7 +19,7 @@ import {
   Card,
 } from 'semantic-ui-react'
 import { connect } from 'react-redux'
-
+import {Redirect} from 'react-router-dom'
 import MobileCotainer from './MobileCotainer';
 
 class HomePageForm extends Component{
@@ -32,6 +32,8 @@ class HomePageForm extends Component{
   
    }
     render(){
+      const {auth}=this.props
+      if (!auth.uid) {return <Redirect to='/'/>}
        return(
            <div style={{maxWidth: 450}}>
             {/* <MobileCotainer pagename={this.state.pagename}/> */}
@@ -113,8 +115,9 @@ class HomePageForm extends Component{
   
 }
 const mapStateToProps = (state) => {
+  
   return{
-      auth:state.auth.logedin,
+      auth:state.firebase.auth
       
   }
   

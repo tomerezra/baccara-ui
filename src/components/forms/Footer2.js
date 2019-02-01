@@ -63,7 +63,7 @@ handleClickAdd=()=>{
     const { nav } = this.props;
     
     return (
-      <BottomNavigation value={this.props.location.pathname} onChange={this.handleChange} className={classes.root} style={{display:this.props.auth?'':'none'}}>
+      <BottomNavigation value={this.props.location.pathname} onChange={this.handleChange} className={classes.root} style={{display:this.props.auth.uid?'':'none'}}>
         <BottomNavigationAction label="Items" value="/items" icon={<Icon name='barcode' size='large' />} />
         <BottomNavigationAction label="Orders" value="/orders" icon={<Icon name='clipboard list' size='large'/>} />
         <BottomNavigationAction label="Acount" value="/acount" icon={<Icon name='user' size='large'/>} />
@@ -86,8 +86,8 @@ LabelBottomNavigation.propTypes = {
 };
 const mapStateToProps = (state) => {
     return{
-        auth:state.auth.logedin,
         
+        auth:state.firebase.auth
     }
     
   }

@@ -21,11 +21,16 @@ class BuildItemForm extends Component {
         voltage:"-",
         power:"-",
         connector:"-",
-        partname:''
+        
+      },
+      add:{
+        serial:'',
+        partname:'',
+        standart:true
       },
       progress:0,
       pagename:"Build New Order",
-      part:'',
+      
       
       cancel:false,
       datatmp:{}
@@ -34,16 +39,17 @@ componentDidMount(){
     this.setState({datatmp:this.state.data})
     
 }
-handleSubmit=()=>{
+handleSubmit=(e)=>{
+    e.preventDefault()
     swal({
-        title:this.state.part,
+        title:this.state.add.serial,
         text:'Give name to the item',    
         content:'input'
     })
     .then((value)=>{
         
-        this.setState({data:{...this.state.data,partname:value}})
-        this.props.createItem(this.state.data)
+        this.setState({add:{...this.state.add,partname:value}})
+        this.props.createItem(this.state.add)
 
         
     })
@@ -107,7 +113,8 @@ makeQuestions=()=>{
                                         color={this.isStandart(part.id,opt.value)}
                                         onClick={()=>{
                                             this.setState({data:{...this.state.data,[part.value]:opt.value}})
-                                            this.setState(prev=>{return{part:prev.part+opt.value}})
+                                            this.setState(prev=>{return{add:{...this.state.add,serial:prev.add.serial+opt.value}}})
+                                            
                                             swal.close()
                                     }}/>)
     

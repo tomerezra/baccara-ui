@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react'
 import {withRouter} from 'react-router-dom'
-
+import {Redirect} from 'react-router-dom'
 import {
   Button,
   Container,
@@ -66,6 +66,8 @@ class HistoryForm extends Component{
     }
   }
   render(){
+    const {auth}=this.props
+    // if (!auth.uid) {return <Redirect to='/'/>}
       return(
           <div style={{maxWidth: 450}}>
               {/* <MobileCotainer pagename={this.state.pagename}/> */}
@@ -111,7 +113,7 @@ class HistoryForm extends Component{
     
 }
 const mapStateToProps = (state) => ({
-  
+  auth:state.firebase
 })
 
 const mapDispatchToProps = (dispatch) =>{

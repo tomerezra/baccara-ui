@@ -1,49 +1,94 @@
 import React, { Component } from 'react'
 import { Button,Step,Icon, Form, Grid, Header, Image, Message, Segment, Checkbox, TextArea, Item, Divider, Input, Container } from 'semantic-ui-react'
 import MobileCotainer from './MobileCotainer';
-
+import Validator from 'validator'
 import {withRouter} from 'react-router-dom'
-import data from '../../data/data'
+import Data from '../../data/data'
+import { connect } from 'react-redux'
+import {createOrder} from '../../store/actions/dataActions'
 export class CreateOrderForm extends Component {
   state={
         pagename:'Create New Order',
-        billing:{
+        data:{
+        
             firstName:"",
             lastName:"",
-            age:"",
             agree:false,
             country:"",
             city:"",
             address:"",
             email:"",
             phone:"",
-            company:""
-        },
-        items:{
-
-        },
+            company:"",
+            orderitems:[],
         
-        
-        
-      items:[],
-      orderitems:[],
-      chose:"",
-      step:1
+        }, 
+        tmp:[],
+        items:[],
+        chose:"",
+        step:1
 
   }
-  componentDidMount(){
+componentDidMount(){
     const id = this.props.match.params.id
-    this.setState({items:data.items.results})
+    this.setState({items:Data.items.results})
     this.setState({chose:id})
+    Data.items.results.map(item=>{
+        this.state.tmp.push({id:item.id,name:item.name,serial:item.serial,quantity:0})
+        
+    })
       
   }
-  nextstep=(e)=>{
+handleChange=(e)=>{
+    const {value,name,id,type}=e.target
     
-    const {name}=e.target  
-    if (this.step===1) {
+    if (type==='checkbox') {
+        const itemtopush={serial:name,quantity:value}
+        if (e.target.checked) {
+            this.state.data.orderitems.push(itemtopush)
+            const tmp= this.state.items.filter(item=>(item.id===id))
+            tmp[0].checked=true
+            
+        }
+        else {
+            const tmp=this.state.data.orderitems.filter(item=>!(item.serial===name))
+            
+            this.setState({data:{...this.state.data,orderitems:tmp}})
+            
+        }
         
     }
+    else if (name==='quantity') {
+        
+    }
+    else {
+        this.setState({data:{...this.state.data,[name]:value}})   
+    }
+    
+    
+    
+}
+handleSubmit=(e)=>{
+    e.preventDefault()
+    if (this.Validate(this.state.data)) {
+        this.props.createOrder(this.state.data)
+} 
+    
+}
+Validate=(data)=>{
+     
+    if (!Validator.isEmail(data.email)||!data.password) {
+        this.setState({error:true})
+        return false
+    }
+    return true
+  }
+nextstep=(e)=>{
+    
+    const {name}=e.target  
+    
     if (name==='next') {
+        //add validation
         this.setState({step:this.state.step+1})
 
     }
@@ -51,12 +96,12 @@ export class CreateOrderForm extends Component {
         this.setState({step:this.state.step-1})
     }
   }
-  billing=()=>{
+billing=()=>{
     return(
     <Grid textAlign='center'>
                 <Grid.Column>
                 
-                    <Form onSubmit={this.HandleSubmit} size='large'>
+                    <Form onSubmit={this.handleSubmit} size='large'>
                     
                     <Form.Input 
                             type="text"
@@ -67,7 +112,7 @@ export class CreateOrderForm extends Component {
                             iconPosition='left' 
                             placeholder='First Name'
                             value={this.state.data.firstname}
-                            onChange={this.HandleChange}>
+                            onChange={this.handleChange}>
                         </Form.Input>
                     <Form.Input 
                             type="text"
@@ -78,7 +123,7 @@ export class CreateOrderForm extends Component {
                             iconPosition='left' 
                             placeholder='Last Name'
                             value={this.state.data.lastname}
-                            onChange={this.HandleChange}>
+                            onChange={this.handleChange}>
                         </Form.Input>
                     <Form.Input 
                             type="text"
@@ -89,7 +134,7 @@ export class CreateOrderForm extends Component {
                             iconPosition='left' 
                             placeholder='Country'
                             value={this.state.data.country}
-                            onChange={this.HandleChange}>
+                            onChange={this.handleChange}>
                         </Form.Input>
                     <Form.Input 
                             type="text"
@@ -100,7 +145,7 @@ export class CreateOrderForm extends Component {
                             iconPosition='left' 
                             placeholder='City'
                             value={this.state.data.city}
-                            onChange={this.HandleChange}>
+                            onChange={this.handleChange}>
                         </Form.Input>
                     <Form.Input 
                             type="text"
@@ -111,7 +156,7 @@ export class CreateOrderForm extends Component {
                             iconPosition='left' 
                             placeholder='Address'
                             value={this.state.data.address}
-                            onChange={this.HandleChange}>
+                            onChange={this.handleChange}>
                         </Form.Input>
                     <Form.Input 
                             type="text"
@@ -122,7 +167,7 @@ export class CreateOrderForm extends Component {
                             iconPosition='left' 
                             placeholder='Phone Number'
                             value={this.state.data.phone}
-                            onChange={this.HandleChange}>
+                            onChange={this.handleChange}>
                         </Form.Input>
                         <Form.Input 
                             type="text"
@@ -133,7 +178,7 @@ export class CreateOrderForm extends Component {
                             iconPosition='left' 
                             placeholder='Company'
                             value={this.state.data.company}
-                            onChange={this.HandleChange}>
+                            onChange={this.handleChange}>
                         </Form.Input>
                         <Form.Input 
                             type="email"
@@ -144,16 +189,15 @@ export class CreateOrderForm extends Component {
                             iconPosition='left' 
                             placeholder='Email'
                             value={this.state.data.email}
-                            onChange={this.HandleChange}>
+                            onChange={this.handleChange}>
                         </Form.Input>
-                       
                         
                     </Form>
                 </Grid.Column>
             </Grid>
     )
     }
-  itemlist=()=>{
+itemlist=()=>{
         return(
             <Grid columns='2' verticalAlign='middle'>
             {this.state.items.map(item=>{
@@ -163,27 +207,32 @@ export class CreateOrderForm extends Component {
                     
                 }
                 return(
+                   
                    <Grid.Row>
+                       
                     <Grid.Column>
                     <Form.Checkbox
-                        // checked={item.checked}
+                        
                         id={item.id}
                         name={item.serial}
                         label={item.name}
-                        // onChange={()=>{this.setState({items:{...this.state.items,[item.id]:item.serial}})}}
+                        onChange={this.handleChange}
     
                         >
                     </Form.Checkbox>
                     </Grid.Column>
                     <Grid.Column>
                     <Form.Input
+                        
                         placeholder='Quantity'
                         size='mini'
                         type='number'
                         min='1'
                         id={item.id}
-                        // value={this.state.items.id.quantity}
-                        // onChange={(value)=>{this.setState({items:{...this.state.items,[item.id]:value}})}}
+                        name='quantity'
+                        value={this.state.tmp[item.id-1].quantity}
+                        onChange={this.handleChange}
+                        
                         >
                      
                     </Form.Input>  
@@ -195,7 +244,7 @@ export class CreateOrderForm extends Component {
         )
         
     }
-    confirm=()=>{
+confirm=()=>{
         return(
            <Container textAlign='center'>
             <Form.Checkbox
@@ -203,10 +252,10 @@ export class CreateOrderForm extends Component {
                 name="agree"
                 label="I agree to the Terms and Conditions"
                 value={this.state.data.agree}
-                onChange={this.HandleChange}>>
+                onChange={()=>{this.setState({data:{...this.state.data,agree:!this.state.data.agree}})}}>>
             </Form.Checkbox>
             <br/>
-            <Button color='linkedin' >
+            <Button color='linkedin' onClick={this.handleSubmit}>
             Submit
             </Button>
             <Button color='grey' onClick={()=>{this.props.history.goBack()}}>
@@ -271,5 +320,10 @@ export class CreateOrderForm extends Component {
     )
   }
 }
-
-export default withRouter(CreateOrderForm)
+const mapDispatchToProps = (dispatch) =>{
+    return{
+        createOrder:(order)=>dispatch(createOrder(order)),
+        
+    }
+  }
+export default withRouter(connect(null,mapDispatchToProps)(CreateOrderForm))

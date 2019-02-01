@@ -11,6 +11,8 @@ import {withRouter} from 'react-router-dom';
 import { connect } from 'react-redux'
 import data from '../../data/data'
 import swal from '@sweetalert/with-react'
+import {signOut} from '../../store/actions/authAction'
+import {Redirect} from 'react-router-dom'
 const styles = {
   root: {
     width: '100%',
@@ -33,9 +35,12 @@ class PrimarySearchAppBar extends React.Component {
     value: ""
   };
   logOut=()=>{
-    this.props.clicklogOut()
-    this.props.history.push('/')
-}
+    
+    this.props.signOut();
+        
+    }
+    
+
 componentWillMount() {
   this.resetComponent()
 }
@@ -111,8 +116,10 @@ handleSearchChange = (e, { value }) => {
   }, 300)
 }
   render() {
+    const {auth}=this.props
     
     const { classes } = this.props;
+    if (!auth.uid) {return <Redirect to='/'/>}
         return (
       <div className={classes.root}>
         <AppBar position="static" style={{backgroundColor:'grey'}}>
@@ -126,13 +133,13 @@ handleSearchChange = (e, { value }) => {
                         
                     }
                     else this.props.history.goBack()}}
-                style={{display:this.props.auth?'':'none'}}/>
+                style={{display:auth.uid?'':'none'}}/>
             </IconButton>
             
             <div>
               <Search 
                 placeholder='Search...' 
-                style={{display:this.props.auth?'':'none'}}
+                style={{display:auth.uid?'':'none'}}
                 category
                 loading={this.state.isLoading}
                 onResultSelect={this.handleResultSelect}
@@ -146,7 +153,7 @@ handleSearchChange = (e, { value }) => {
             <div className={classes.grow} />
             
             <div className={classes.sectionMobile}>
-            <Button content='Log Out' circular size='mini' onClick={this.logOut} style={{display:this.props.auth?'':'none'}}></Button>
+            <Button content='Log Out' circular size='mini' onClick={this.logOut} style={{display:auth.uid?'':'none'}}></Button>
             
             </div>
           </Toolbar>
@@ -163,13 +170,17 @@ PrimarySearchAppBar.propTypes = {
 };
 const mapStateToProps = (state) => {
     return{
-        auth:state.auth.logedin,
         
+        auth:state.firebase.auth
     }
     
   }
-  const mapDispatchToProps =(dispatch)=> ({
-    clicklogOut:()=>dispatch({type:'Log Out', logout:false})
-  })
+  const mapDispatchToProps =(dispatch)=> {
+    return{
+      
+      signOut:()=>dispatch(signOut())
+    }
+    
+  }
   
 export default withRouter(withStyles(styles)(connect(mapStateToProps,mapDispatchToProps)(PrimarySearchAppBar)));

@@ -3,17 +3,17 @@ import { Button, Form, Grid, Header, Image, Message, Segment, Checkbox } from 's
 
 import Validator from 'validator'
 import InlineError from '../messages/InlineError'
-import {createUser} from '../../store/actions/usersAction'
+import {createUser} from '../../store/actions/authAction'
 import {withRouter} from 'react-router-dom'
 import MobileCotainer from './MobileCotainer';
 import {connect} from 'react-redux'
+import {Redirect} from 'react-router-dom'
 class SignUpForm extends Component {
     state={
         data:{
 
             firstname:"",
             lastname:"",
-            age:"",
             agree:false,
             country:"",
             city:"",
@@ -28,35 +28,47 @@ class SignUpForm extends Component {
         pagename:''
     }
     componentDidMount = () => {
-      this.setState({pagename:this.props.auth? 'Update' : 'Sign Up'})
-    }
+      const {profile,auth}=this.props
+        this.setState({pagename:this.props.auth.uid? 'Update' : 'Sign Up'})
+      if (profile) {
+        this.setState({data:{...this.state.data,
+            firstname:profile.firstName,
+            lastname:profile.lastName,
+            country:profile.country,
+            city:profile.city,
+            address:profile.address,
+            phone:profile.phone,
+            email:auth.email,
+            company:profile.company
+          }})
+      }
+          
+                
     
-    HandleChange=(e)=>{
+}
+
+    
+    handleChange=(e)=>{
         const {value,name,checked,id}=e.target
-        name==="agree" ? this.setState({data:{...this.state.data,[name]:checked}}) :
+        name==="agree" ? this.setState({data:{...this.state.data,[name]:!this.state.data.agree}}) :
         this.setState({data:{...this.state.data,[name]:value}})
         
     }
-    HandleSubmit=()=>{
-      if (this.Validate(this.state.data)) {
-       this.props.createUser(this.state.data)
-
-        this.props.history.push('/acount')
-      } 
+    handleSubmit=(e)=>{
+        e.preventDefault()
+        if (this.props.auth.uid) {
+            
+        }
+        else this.props.createUser(this.state.data)
+        
         
    }
-   Validate=(data)=>{
-     
-     if (!Validator.isEmail(data.email)||!data.password) {
-         this.setState({error:true})
-         return false
-     }
-     return true
-   }
+   
   
   render() {
     const {data}=this.state
-    
+    const {auth,authError}=this.props
+    // if (auth.uid) {return <Redirect to='/acount'/>}
     
     return (
       <div style={{maxWidth: 450}}>
@@ -66,7 +78,7 @@ class SignUpForm extends Component {
     <Grid textAlign='center' >
       <Grid.Column>
        
-        <Form onSubmit={this.HandleSubmit}>
+        <Form >
           
           <Form.Input 
                 type="text"
@@ -77,7 +89,7 @@ class SignUpForm extends Component {
                 iconPosition='left' 
                 placeholder='First Name'
                 value={data.firstname}
-                onChange={this.HandleChange}>
+                onChange={this.handleChange}>
             </Form.Input>
           <Form.Input 
                 type="text"
@@ -88,7 +100,7 @@ class SignUpForm extends Component {
                 iconPosition='left' 
                 placeholder='Last Name'
                 value={data.lastname}
-                onChange={this.HandleChange}>
+                onChange={this.handleChange}>
             </Form.Input>
           <Form.Input 
                 type="text"
@@ -99,7 +111,7 @@ class SignUpForm extends Component {
                 iconPosition='left' 
                 placeholder='Country'
                 value={data.country}
-                onChange={this.HandleChange}>
+                onChange={this.handleChange}>
             </Form.Input>
           <Form.Input 
                 type="text"
@@ -110,7 +122,7 @@ class SignUpForm extends Component {
                 iconPosition='left' 
                 placeholder='City'
                 value={data.city}
-                onChange={this.HandleChange}>
+                onChange={this.handleChange}>
             </Form.Input>
           <Form.Input 
                 type="text"
@@ -121,7 +133,7 @@ class SignUpForm extends Component {
                 iconPosition='left' 
                 placeholder='Address'
                 value={data.address}
-                onChange={this.HandleChange}>
+                onChange={this.handleChange}>
             </Form.Input>
           <Form.Input 
                 type="text"
@@ -132,7 +144,7 @@ class SignUpForm extends Component {
                 iconPosition='left' 
                 placeholder='Phone Number'
                 value={data.phone}
-                onChange={this.HandleChange}>
+                onChange={this.handleChange}>
             </Form.Input>
             <Form.Input 
                 type="text"
@@ -143,7 +155,7 @@ class SignUpForm extends Component {
                 iconPosition='left' 
                 placeholder='Company'
                 value={data.company}
-                onChange={this.HandleChange}>
+                onChange={this.handleChange}>
             </Form.Input>
             <Form.Input 
                 type="email"
@@ -154,7 +166,7 @@ class SignUpForm extends Component {
                 iconPosition='left' 
                 placeholder='Email'
                 value={data.email}
-                onChange={this.HandleChange}>
+                onChange={this.handleChange}>
             </Form.Input>
             <Form.Input 
                 type='password'
@@ -164,20 +176,20 @@ class SignUpForm extends Component {
                 iconPosition='left'
                 placeholder='Password'
                 value={data.password}
-                onChange={this.HandleChange}>
+                onChange={this.handleChange}>
             </Form.Input>
             
             <Form.Checkbox
-                style={{display:this.props.auth?'none':'inline-block'}}
+                style={{display:auth.uid?'none':'inline-block'}}
                 id="agree"
                 name="agree"
                 label="I agree to the Terms and Conditions"
                 value={data.agree}
-                onChange={this.HandleChange}>>
+                onChange={this.handleChange}>>
             </Form.Checkbox>
             
-            <Button color='linkedin' >
-                {this.props.auth? 'Update' : 'Sign Up'}
+            <Button color='linkedin' onClick={this.handleSubmit}>
+                {auth.uid? 'Update' : 'Sign Up'}
             </Button>
             
             <Button color='grey' onClick={()=>{this.props.history.goBack()}}>
@@ -188,6 +200,9 @@ class SignUpForm extends Component {
         
       </Grid.Column>
     </Grid>
+    
+    {authError?<p style={{color:'red',textAlign:'center'}}>{authError}</p>:null} 
+    
     </Segment>
   </div>
       
@@ -196,7 +211,9 @@ class SignUpForm extends Component {
 }
 const mapStateToProps = (state) => {
     return{
-        auth:state.auth.logedin
+        authError:state.auth.authError,
+        auth:state.firebase.auth,
+        profile:state.firebase.profile
     }
     
   }
