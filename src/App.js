@@ -4,7 +4,7 @@ import HomePage from "./components/pages/HomePage";
 import LoginPage from "./components/pages/LoginPage";
 import SignUpPage from "./components/pages/SignUpPage";
 import AcountPage from "./components/pages/AcountPage";
-import OrderPage from "./components/pages/BuildItemPage";
+import BuildItemPage from "./components/pages/BuildItemPage";
 
 import OrderDetailsPage from "./components/pages/OrderDetailsPage";
 import MakeOrderPage from './components/pages/CreateOrderPage';
@@ -17,8 +17,10 @@ import PrimarySearchAppBar from "./components/forms/Navbar2"
 import ItemsPage from './components/pages/ItemsPage';
 import ShippingPage from './components/pages/ShippingPage';
 import OrdersPage from './components/pages/OrdersPage';
+import dataTree from 'data-tree'
 
 class App extends Component{
+ 
   
   render(){
     return (
@@ -26,14 +28,14 @@ class App extends Component{
         {/* <Navbar/> */}
         <PrimarySearchAppBar/>
         <div style={{paddingBottom:'15%',paddingTop:'20%'}}>
-          
+        
           
           {/* <Route path='/' exact component={HomePage}/> */}
           <Switch>
             <Route path='/' exact component={LoginPage}/> 
             <Route path='/signup' exact component={SignUpPage}/>
             <Route path='/acount' exact component={AcountPage}/>
-            <Route path='/builditem' exact component={OrderPage}/>
+            <Route path='/builditem' exact component={BuildItemPage}/>
             <Route path='/orders' exact component={OrdersPage}/>
             <Route path='/items' exact component={ItemsPage}/>
             <Route path='/shipping' exact component={ShippingPage}/>

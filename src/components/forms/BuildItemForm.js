@@ -6,7 +6,7 @@ import swal from '@sweetalert/with-react'
 import MobileContainer from './MobileCotainer'
 import {withRouter} from 'react-router-dom'
 import Question from '../Question';
-import Parts from '/Users/tomerezra/React/ui/src/data/parts'
+import Parts from '../../data/parts'
 import standart from '../../data/standartdata'
 class BuildItemForm extends Component {
   state={
