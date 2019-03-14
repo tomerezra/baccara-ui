@@ -31,7 +31,7 @@ class BuildItemForm extends Component {
         standart:true
       },
       progress:0,
-      pagename:"Build New Order",
+      pagename:"Build New Item",
       child:null,
       value:'',
       cancel:false,
@@ -67,7 +67,7 @@ handleClick=(e)=>{
         this.props.history.push('/createorder/0')
     }
     else if(name==='Add'){
-        this.handleSubmit()
+        this.handleSubmit(e)
     }
     else if (this.state.progress>0) {
            
@@ -138,8 +138,11 @@ makeQuestions=()=>{
     
     
     const buttons =part.options.map(opt=>
+                                    <Grid.Column
+                                    style={{width:'30%'}}>
                                     <Button 
                                         size='mini'
+                                        fluid
                                         content={opt.name}
                                         value={opt.value} 
                                         color={this.isStandart(part.id,opt.value)}
@@ -151,14 +154,22 @@ makeQuestions=()=>{
                                                 this.setState({add:{...this.state.add,standart:false}})
                                             }
                                             swal.close()
-                                    }}/>)
+                                    }}/>
+                                    
+                                    </Grid.Column>
+                                    
+                                    )
+
     
     swal({
         content:(
         <div>
             <h1>{part.name}</h1>
             <p>{part.question}</p>
-            {buttons}
+            <Grid columns='3' centered>
+                {buttons}
+            </Grid>
+            
             <br/>
             <br/>
             <Button 
@@ -209,11 +220,11 @@ buttonChange=()=>{
     const data=this.state.data
         return (
             
-            <div style={{maxWidth: 450}} >
+            <div style={{width:'100%',maxWidth: 450}} >
             {/* <MobileContainer pagename={this.state.pagename}/> */}
             <Header textAlign='center'>{this.state.pagename}</Header>
             <Segment >
-                <Grid columns={10}  divided style={{fontSize:'9px'}}>
+                <Grid columns={10}  divided style={{fontSize:'8px'}}>
                     <Grid.Row textAlign='center' columns='equal'>
                     <Grid.Column textAlign='center' >
                         {data.module}
