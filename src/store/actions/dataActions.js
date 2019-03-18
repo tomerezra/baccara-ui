@@ -1,7 +1,7 @@
 export const createItem = (item)=>{
-    return (dispatch, getState,{getFirebase,getFirestore})=>{
-        const firestore = getFirestore()
-        const firebase = getFirebase()
+    return (dispatch, getState,{firebase})=>{
+        const firestore = firebase.firestore()
+        
         const userid = getState().firebase.auth.uid
         firestore.collection('items').add({
             ...item,
@@ -10,35 +10,37 @@ export const createItem = (item)=>{
         })
         .then(()=>{
             dispatch({type: 'CREATE_ITEM',item})
+            
         })
         .catch((err)=>{
             dispatch({type: 'CREATE_ITEM_ERROR',err})
+            
         })
         
     }
 }
 export const deleteItem = (item)=>{
-    return (dispatch, getState,{getFirebase,getFirestore})=>{
-        // const firestore=getFirestore()
-        // firestore.collection('items').add({
-           
-        // })
-        // .then(()=>{
-        //     dispatch({type: 'DELETE_ITEM',item})
-        // })
-        // .catch((err)=>{
-        //     dispatch({type: 'DELETE_ITEM_ERROR',err})
-        // })
+    return (dispatch, getState,{firebase})=>{
+        const firestore=firebase.firestore()
+        firestore.collection('items').doc(item.id).delete()
+        
+        .then(()=>{
+            dispatch({type: 'DELETE_ITEM',item})
+        })
+        .catch((err)=>{
+            dispatch({type: 'DELETE_ITEM_ERROR',err})
+        })
         
     }
 }
 
 export const createOrder = (order)=>{
-    return (dispatch, getState,{getFirebase,getFirestore})=>{
-        const firestore=getFirestore()
+    return (dispatch, getState,{firebase})=>{
+        const firestore=firebase.firestore()
+        const userid = getState().firebase.auth.uid
         firestore.collection('orders').add({
             ...order,
-            
+            userid,
             createdAt:new Date()
         })
         .then(()=>{
@@ -50,50 +52,80 @@ export const createOrder = (order)=>{
         
     }
 }
-export const deleteOrder = (order)=>{
-    return (dispatch, getState,{getFirebase,getFirestore})=>{
-        // const firestore=getFirestore()
-        // firestore.collection('orders').add({
-            
-        // })
-        // .then(()=>{
-        //     dispatch({type: 'DELETE_ITEM',order})
-        // })
-        // .catch((err)=>{
-        //     dispatch({type: 'DELETE_ITEM_ERROR',err})
-        // })
-        
-    }
-}
+
 export const createAddress = (address)=>{
-    return (dispatch, getState,{getFirebase,getFirestore})=>{
-        const firestore=getFirestore()
+    return (dispatch, getState,{firebase})=>{
+        const firestore=firebase.firestore()
+        const userid = getState().firebase.auth.uid
         firestore.collection('addresses').add({
             ...address,
-            
+            userid,
             createdAt:new Date()
         })
         .then(()=>{
             dispatch({type: 'CREATE_ADDRESS',address})
+            
         })
         .catch((err)=>{
             dispatch({type: 'CREATE_ADDRESS_ERROR',err})
+           
         })
         
     }
 }
 export const deleteAddress = (address)=>{
-    return (dispatch, getState,{getFirebase,getFirestore})=>{
-        // const firestore=getFirestore()
-        // firestore.collection('addresses').add({
+    return (dispatch, getState,{firebase})=>{
+        const firestore=firebase.firestore()
+        firestore.collection('addresses').doc(address.id).delete()
+        .then(()=>{
+            dispatch({type: 'DELETE_ADDRESS',address})
+        })
+        .catch((err)=>{
+            dispatch({type: 'DELETE_ADDRESS_ERROR',err})
+        })
+        
+    }
+}
+export const standard = (item)=>{
+    return (dispatch, getState,{firebase})=>{
+        const firestore = firebase.firestore()
+        
+        
+        firestore.collection('standard').add({
             
-        // })
-        // .then(()=>{
-        //     dispatch({type: 'DELETE_ITEM',address})
-        // })
-        // .catch((err)=>{
-        //     dispatch({type: 'DELETE_ITEM_ERROR',err})
-        // })
+            id:item.id,
+            value:item.value.toString(),
+            parent:item.parent.toString()
+            
+            
+        })
+        .then(()=>{
+            alert('ok')
+            
+        })
+        .catch((err)=>{
+            alert(err)
+            
+        })
+        
+    }
+    
+}
+export const getstandard = ()=>{
+    return (dispatch, getState,{firebase})=>{
+        const firestore = firebase.firestore()
+        
+        
+        firestore.collection('standard').get()
+        
+        .then(snapshot => {
+            snapshot.forEach(doc => {
+              console.log(new RegExp (doc.data().value));
+            });
+          })
+          .catch(err => {
+            console.log('Error getting documents', err);
+          });
         
     }
 }

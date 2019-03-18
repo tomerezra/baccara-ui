@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import {Responsive, Sidebar,Button,Progress,Menu,Card,Icon,Label, Table,Form,Input, Grid, Header, Image, Message, Segment, Checkbox, GridColumn, Container,Pagination, GridRow, Ref } from 'semantic-ui-react'
 import { connect } from 'react-redux'
-import {createItem} from '../../store/actions/dataActions'
+import {createItem,getstandard} from '../../store/actions/dataActions'
 import swal from '@sweetalert/with-react'
 import MobileContainer from './MobileCotainer'
-import {withRouter} from 'react-router-dom'
-import Question from '../Question';
+import {withRouter,Redirect} from 'react-router-dom'
+
 import Parts from '../../data/parts'
-import standart from '../../data/standartdata'
+
 import tree2 from '../../data/tree2'
 
 class BuildItemForm extends Component {
@@ -28,7 +28,7 @@ class BuildItemForm extends Component {
       add:{
         serial:'',
         partname:'',
-        standart:true
+        standard:true
       },
       progress:0,
       pagename:"Build New Item",
@@ -39,10 +39,7 @@ class BuildItemForm extends Component {
   }
 componentDidMount(){
     this.setState({datatmp:this.state.data})
-   
- 
-
-
+    this.props.getstandard()
 }
 handleSubmit=(e)=>{
     e.preventDefault()
@@ -55,10 +52,15 @@ handleSubmit=(e)=>{
         
         this.setState({add:{...this.state.add,partname:value}})
         this.props.createItem(this.state.add)
-
+        this.startOver()
         
     })
 
+}
+startOver=()=>{
+    this.setState({progress:0});
+    this.setState({data:this.state.datatmp})
+    this.setState({add:{...this.state.add,serial:'',standard:true}})
 }
 handleClick=(e)=>{
     
@@ -77,8 +79,7 @@ handleClick=(e)=>{
                     <h3>Start Over?</h3>
                     <Button size='mini' content='No' onClick={()=>{swal.close()}}></Button>
                     <Button size='mini' content='Yes' onClick={()=>{
-                        this.setState({progress:0});
-                        this.setState({data:this.state.datatmp})
+                        this.startOver()
                         swal.close();}}>
                     </Button>
                 </div>
@@ -95,17 +96,10 @@ handleClick=(e)=>{
     } 
     else {this.makeQuestions()}          
 }
-// treestep=(id)=>{
-// if (id-1==0) {
-//     return ''
-// }
-// return '.childnode'+this.treestep(id-1)
 
-// }
-isStandart=(id,value)=>{
-    // const tmp=standart.filter(part=>part.id===id)
-    // const part=tmp[0]
-   if (this.state.add.standart) {
+isStandard=(id,value)=>{
+    
+   if (this.state.add.standard) {
     if (id==1) {
         return 'green'
     }
@@ -145,15 +139,16 @@ makeQuestions=()=>{
                                         fluid
                                         content={opt.name}
                                         value={opt.value} 
-                                        color={this.isStandart(part.id,opt.value)}
+                                        color={this.isStandard(part.id,opt.value)}
                                         onClick={(event,data)=>{
-                                            this.setState({data:{...this.state.data,[part.value]:opt.value}})
-                                            this.setState(prev=>{return{add:{...this.state.add,serial:prev.add.serial+opt.value}}})
-                                            this.setState({value:opt.value})
-                                            if (data.color=='yellow') {
-                                                this.setState({add:{...this.state.add,standart:false}})
-                                            }
+                                            this.setState({data:{...this.state.data,[part.value]:data.value}})
+                                            this.setState(prev=>{return{add:{...this.state.add,serial:prev.add.serial+data.value,standard:data.color=='yellow'?false:true}}})
+                                            
+                                            this.setState({value:data.value})
+                                                                                        
                                             swal.close()
+                                            
+                                               
                                     }}/>
                                     
                                     </Grid.Column>
@@ -218,6 +213,9 @@ buttonChange=()=>{
 }
     render() {
     const data=this.state.data
+    // const {auth}=this.props
+    
+    // if (!auth.uid) {return <Redirect to='/'/>}
         return (
             
             <div style={{width:'100%',maxWidth: 450}} >
@@ -368,10 +366,17 @@ buttonChange=()=>{
     )
   }
 }
+const mapStateToProps = (state) => {
+  
+    return{
+      auth:state.firebase.auth,
+    }
+     
+  }
 const mapDispatchToProps = (dispatch) =>{
     return{
         createItem:(item)=>dispatch(createItem(item)),
-        
+        getstandard:()=>dispatch(getstandard())
     }
   }
-export default withRouter(connect(null,mapDispatchToProps)(BuildItemForm))
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(BuildItemForm))

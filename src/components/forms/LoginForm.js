@@ -35,11 +35,11 @@ class LoginForm extends Component {
         this.props.history.push('/builditem')
       } 
       else if (this.Validate(this.state.data)) {
-        this.props.clicklogIn()
+        
         this.props.signIn(this.state.data)
-        // this.props.history.push('/acount')
+        
       } 
-         
+      
     }
     Validate=(data)=>{
       
@@ -147,7 +147,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch)=> {
   return{
-    clicklogIn:()=>dispatch({type:'Log In', login:true}),
+    
     signIn:(creds)=>dispatch(signIn(creds))
   }
   

@@ -28,7 +28,7 @@ export class CardComponent extends Component {
               centered 
               fluid>
               <Card.Content>
-                <Card.Header>{this.props.item.name}</Card.Header>
+                <Card.Header>{this.props.item.partname}</Card.Header>
                 <Card.Meta>{this.props.item.serial}
                 <Button
                     onClick={()=>{this.props.delete(this.props.item)}}
@@ -40,7 +40,7 @@ export class CardComponent extends Component {
                   
                   
                     </Card.Meta>
-                <Card.Description>{this.props.item.standart}</Card.Description>
+                <Card.Description>Standard : {this.props.item.standard?'Yes':'No'}</Card.Description>
               </Card.Content>
           </Card>
       )

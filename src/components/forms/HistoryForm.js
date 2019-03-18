@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react'
-import {withRouter} from 'react-router-dom'
-import {Redirect} from 'react-router-dom'
+import {withRouter,Redirect} from 'react-router-dom'
+
 import {
   Button,
   Container,
@@ -10,6 +10,7 @@ import {
   Header,
   Icon,
   Image,
+  Loader,
   List,
   Menu,
   Responsive,
@@ -21,37 +22,35 @@ import {
   Input
 } from 'semantic-ui-react'
 import MobileCotainer from './MobileCotainer';
-import {createAddress,createItem,createOrder,deleteAddress,deleteItem,deleteOrder} from '../../store/actions/dataActions'
+import {createAddress,createItem,createOrder,deleteAddress,deleteItem,standard} from '../../store/actions/dataActions'
 import { connect } from 'react-redux'
 
 import CardComponent from '../CardComponent';
 
-import data from '../../data/data'
+import tree from '../../data/tree2'
+import { firestoreConnect } from 'react-redux-firebase';
+import {compose} from 'redux'
+
 class HistoryForm extends Component{
    state={
-       pagename:'',
-       data:[],
+       pagename:''
+       
        
    }
    componentDidMount(){
         const name= this.props.pagename
-        
+        // tree.map((item)=>{this.props.standard(item)})
         if (name==='orders') {
             this.setState({pagename:'My Orders'})
-            const orders= data.orders.results.map(order => <CardComponent order={order}/>)
-            this.setState({data:orders})  
         }
         else if (name==='items') {
             this.setState({pagename:'My Items'})
-            const items= data.items.results.map(item => <CardComponent item={item} delete={this.props.deleteItem}/>)
-            this.setState({data:items})
         }
         else if (name==='shipping') {
-            this.setState({pagename:'My Addresses'})
-            const addresses= data.shipping.results.map(address => <CardComponent address={address} delete={this.props.deleteAddress}/>)
-            this.setState({data:addresses})
+          this.setState({pagename:'My Addresses'})
         }
     }
+    
     
   
   handleClick=()=>{
@@ -65,56 +64,85 @@ class HistoryForm extends Component{
         this.props.history.push('/newshipping')
     }
   }
+
+  tmp =()=>{
+    const {auth,data} = this.props
+    
+      if (this.props.pagename==='orders') {
+        var tmp = data.orders.filter(order=>auth.uid===order.userid)
+        if (tmp.length>0) {
+          return(
+            tmp.map(order => <CardComponent order={order}/>)
+          )  
+        } else {
+          return(<div style={{textAlign:'center'}}>You don't have orders</div>)
+        }
+        
+      }
+      else if (this.props.pagename==='items') {
+        var tmp = data.items.filter(item=>auth.uid===item.userid)
+        if (tmp.length>0) {
+          return(
+            tmp.map(item => <CardComponent item={item} delete={this.props.deleteItem}/>)
+          )  
+        } else {
+          return(<div style={{textAlign:'center'}}>You don't have items</div>)
+        }
+       
+      }
+      else if (this.props.pagename==='shipping') {
+        var tmp = data.addresses.filter(address=>auth.uid===address.userid)
+        if (tmp.length>0) {
+          return(
+            tmp.map(address => <CardComponent address={address} delete={this.props.deleteAddress}/>)
+          )  
+        } else {
+          return(<div style={{textAlign:'center'}}>You don't have addresses</div>)
+        }
+
+      }
+    } 
+    
+    isEmptyObject=(obj)=>{
+      return (Object.getOwnPropertyNames(obj).length === 3);
+    }
   render(){
     const {auth}=this.props
-    // if (!auth.uid) {return <Redirect to='/'/>}
-      return(
-          <div style={{maxWidth: 450}}>
-              {/* <MobileCotainer pagename={this.state.pagename}/> */}
-              <Header textAlign='center'>{this.state.pagename}</Header>
-                <Segment textAlign='center' >
-                
-                    <Grid verticalAlign='top' columns={1} centered>
-                    {/* <Grid.Row>
-                        <Grid.Column>
-                            <Input 
-                                icon='search' 
-                                fluid 
-                                placeholder='Search...' 
-                                onChange={()=>{}}/>
-                        </Grid.Column>
-                        
-                    </Grid.Row> */}
-                    <Grid.Row>
-                        <Grid.Column>
-                            {this.state.data}
-                        
-                        </Grid.Column>
-                    </Grid.Row>
-                    
-                </Grid>
-                {/* <br/>
-                <Button
-                  content='New'
-                  color='linkedin'
-                  
-                  onClick={()=>{this.handleClick()}}>
-                </Button>
-                <Button
-                  
-                  content='Back'
-                  onClick={()=>{this.props.history.goBack()}}>
-                </Button> */}
-                
-            </Segment>
-          </div>
-      )
-  }
     
+    if (!auth.uid) {return <Redirect to='/'/>}
+    if (this.isEmptyObject(this.props.data)) {
+      return(
+        <div style={{maxWidth: 450}}>
+            {/* <MobileCotainer pagename={this.state.pagename}/> */}
+            <Header textAlign='center'>{this.state.pagename}</Header>
+              <Segment textAlign='center' >
+                  <Grid verticalAlign='top' columns={1} centered>
+                  <Grid.Row>
+                      <Grid.Column>
+                        {this.tmp()}
+                      </Grid.Column>
+                  </Grid.Row>
+              </Grid>
+          </Segment>
+        </div>
+    )
+    } else {
+      return(
+        <Loader active inline='centered'></Loader>
+      )
+    }  
+    
+  }
+} 
+
+const mapStateToProps = (state) => {
+  
+  return{
+    auth:state.firebase.auth,
+    data:state.firestore.ordered
+  }
+   
 }
-const mapStateToProps = (state) => ({
-  auth:state.firebase
-})
 
 const mapDispatchToProps = (dispatch) =>{
     return{
@@ -122,9 +150,12 @@ const mapDispatchToProps = (dispatch) =>{
         createOrder:(order)=>dispatch(createOrder(order)),
         createAddress:(address)=>dispatch(createAddress(address)),
         deleteItem:(item)=>dispatch(deleteItem(item)),
-        deleteOrder:(order)=>dispatch(deleteOrder(order)),
+        standard:(item)=>dispatch(standard(item)),
         deleteAddress:(address)=>dispatch(deleteAddress(address)),
     }
   }
 
-export default withRouter(connect(mapStateToProps,mapDispatchToProps)(HistoryForm)) 
+export default withRouter(compose(
+  connect(mapStateToProps,mapDispatchToProps),
+  firestoreConnect([{collection:'addresses'},{collection:'items'},{collection:'orders'}])
+)(HistoryForm)) 

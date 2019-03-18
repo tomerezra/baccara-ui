@@ -119,10 +119,18 @@ handleSearchChange = (e, { value }) => {
     const {auth}=this.props
     
     const { classes } = this.props;
-    if (!auth.uid) {return <Redirect to='/'/>}
+    if (!auth.uid) {
+      if (!this.props.location.pathname=='/')
+      {
+        return <Redirect to='/'/>
+      }
+    }
+     
+    
+    
         return (
       <div className={classes.root}>
-        <AppBar position="static" style={{backgroundColor:'grey'}}>
+        <AppBar position="static" style={{backgroundColor:'grey',display:this.props.location.pathname==='/'?'none':''}}>
           <Toolbar>
             <IconButton className={classes.menuButton} color="inherit" aria-label="Open drawer">
               <Icon 
@@ -169,7 +177,8 @@ PrimarySearchAppBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 const mapStateToProps = (state) => {
-    return{
+  
+  return{
         
         auth:state.firebase.auth
     }

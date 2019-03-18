@@ -1,37 +1,56 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { HashRouter as Router, Route, Link } from "react-router-dom";
-import App from "./App"
+
 import "semantic-ui-css/semantic.min.css"
-import * as serviceWorker from './serviceWorker';
-import { createStore,applyMiddleware ,compose} from "redux";
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import rootReducer from '../src/store/reducers/rootReducer'
+import firebase from 'firebase/app'
+import 'firebase/auth'
+import 'firebase/firestore' // <- needed if using firestore
+// import 'firebase/functions' // <- needed if using httpsCallable
+import { createStore, applyMiddleware, compose } from 'redux'
+import { ReactReduxFirebaseProvider} from 'react-redux-firebase'
+import { createFirestoreInstance} from 'redux-firestore' // <- needed if using firestore
 import thunk from 'redux-thunk'
-import {getFirestore, reduxFirestore} from 'redux-firestore'
-import {getFirebase, reactReduxFirebase} from 'react-redux-firebase'
-import fbConfig from './config/fbConfig'
+import rootReducer from '../src/store/reducers/rootReducer'
+import App from "./App"
+import { HashRouter as Router } from "react-router-dom";
+import fbConfig from '../src/config/fbConfig'
+
+// react-redux-firebase config
+const rrfConfig = {
+  userProfile: 'users',
+  useFirestoreForProfile: true, // Firestore for Profile instead of Realtime DB
+  attachAuthIsReady:true
+}
+
+
+// Initialize firebase instance
+firebase.initializeApp(fbConfig)
+
+// Initialize other services on firebase instance
+firebase.firestore() // <- needed if using firestore
+// firebase.functions() // <- needed if using httpsCallable
 
 
 
-const store = createStore(rootReducer,
+// Create store with reducers and initial state
+
+const store = createStore(rootReducer, 
     compose(
-    applyMiddleware(thunk.withExtraArgument({getFirebase,getFirestore})),
-    reduxFirestore(fbConfig),
-    reactReduxFirebase(fbConfig , {useFirestoreForProfile:true,userProfile:'users', attachAuthIsReady:true})
-    )
-)
-store.firebaseAuthIsReady.then(()=>{
-    ReactDOM.render(<Provider store={store}>
-        <Router>
-            <App />
-        </Router>
-    </Provider>,document.getElementById('root'));
-})
+        applyMiddleware(thunk.withExtraArgument({firebase}))))
+
+const rrfProps = {
+  firebase,
+  config: rrfConfig,
+  dispatch: store.dispatch,
+  createFirestoreInstance // <- needed if using firestore
+}
 
 
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
-serviceWorker.unregister();
+ReactDOM.render(<Provider store={store}>
+            <ReactReduxFirebaseProvider {...rrfProps}>
+                <Router>
+                    <App />
+                </Router>
+            </ReactReduxFirebaseProvider>
+        </Provider>, document.getElementById('root'));

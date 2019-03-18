@@ -6,6 +6,9 @@ import {withRouter} from 'react-router-dom'
 import Data from '../../data/data'
 import { connect } from 'react-redux'
 import {createOrder} from '../../store/actions/dataActions'
+import jsPDF from 'jspdf'
+import 'jspdf-autotable'
+
 export class CreateOrderForm extends Component {
   state={
         pagename:'Create New Order',
@@ -26,7 +29,8 @@ export class CreateOrderForm extends Component {
         tmp:[],
         items:[],
         chose:"",
-        step:1
+        step:1,
+        doc:{}
 
   }
 componentDidMount(){
@@ -37,7 +41,20 @@ componentDidMount(){
         this.state.tmp.push({id:item.id,name:item.name,serial:item.serial,quantity:0})
         
     })
-      
+    const {profile,auth}=this.props
+        
+        if (!profile.isEmpty) {
+          this.setState({data:{...this.state.data,
+              firstname:profile.firstname,
+              lastname:profile.lastname,
+              country:profile.country,
+              city:profile.city,
+              address:profile.address,
+              phone:profile.phone,
+              email:auth.email,
+              company:profile.company
+            }})
+        }
   }
 handleChange=(e)=>{
     const {value,name,id,type}=e.target
@@ -97,6 +114,7 @@ nextstep=(e)=>{
     }
   }
 billing=()=>{
+    
     return(
     <Grid textAlign='center'>
                 <Grid.Column>
@@ -245,8 +263,13 @@ itemlist=()=>{
         
     }
 confirm=()=>{
-        return(
+    var pdf =this.pdf()
+    
+    return(
            <Container textAlign='center'>
+           
+           <Button onClick={()=>{pdf.output('datauri')}}>Order</Button>
+           
             <Form.Checkbox
                 id="agree"
                 name="agree"
@@ -264,6 +287,32 @@ confirm=()=>{
         </Container> 
         )
     }
+    pdf=()=>{
+     
+        var doc=new jsPDF()
+        
+        doc.text('Order',105,10,null,null,'center')
+       try {
+        doc.autoTable({
+         head: [
+           ['ID', 'Item Name', 'Serial', 'Quantity'],
+       ],
+         body: [
+           ['1', 'Donna', 'dmoore0@furl.net', 'China', '211.56.242.221'],
+           ['2', 'Janice', 'jhenry1@theatlantic.com', 'Ukraine', '38.36.7.199'],
+           ['3', 'Ruth', 'rwells2@constantcontact.com', 'Trinidad and Tobago', '19.162.133.184'],
+           ['4', 'Jason', 'jray3@psu.edu', 'Brazil', '10.68.11.42'],
+           ['5', 'Jane', 'jstephens4@go.com', 'United States', '47.32.129.71'],
+           ['6', 'Adam', 'anichols5@com.com', 'Canada', '18.186.38.37']
+       ],
+        })
+         
+       } catch (error) {
+         console.log(error)
+       }
+         return doc
+        
+      }
     render() {
 
     return (
@@ -271,13 +320,13 @@ confirm=()=>{
         {/* <MobileCotainer pagename={this.state.pagename}/> */}
         <Header textAlign='center'>{this.state.pagename}</Header>
         <Step.Group size='mini' unstackable fluid>
-            <Step active={this.state.step===1?true:false}>
+            <Step active={this.state.step===1?true:false} onClick={()=>{this.setState({step:1})}}>
             <Icon name='truck' />
             <Step.Content>
                 <Step.Title>Items</Step.Title>
             </Step.Content>
             </Step>
-            <Step active={this.state.step===2?true:false}>
+            <Step active={this.state.step===2?true:false} onClick={()=>{this.setState({step:2})}}>
             <Icon name='payment' />
             <Step.Content>
                 <Step.Title>Billing</Step.Title>
@@ -320,10 +369,19 @@ confirm=()=>{
     )
   }
 }
+const mapStateToProps = (state) => {
+  
+    return{
+          authError:state.auth.authError,
+          auth:state.firebase.auth,
+          profile:state.firebase.profile
+      }
+      
+    }
 const mapDispatchToProps = (dispatch) =>{
     return{
         createOrder:(order)=>dispatch(createOrder(order)),
         
     }
   }
-export default withRouter(connect(null,mapDispatchToProps)(CreateOrderForm))
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(CreateOrderForm))

@@ -40,10 +40,10 @@ class NewShippingForm extends Component {
       const {name,value}=e.target
       this.setState({data:{...this.state.data,[name]:value}})
   } 
-  handleSubmit=(e)=>{
-    e.preventDefault()
-      this.props.createAddress(this.state.data)
-  }    
+  handleSubmit=()=>{
+    this.props.createAddress(this.state.data)
+    
+  }   
    render(){
     const {data}=this.state
     const {auth}=this.props
@@ -55,7 +55,7 @@ class NewShippingForm extends Component {
     <Grid textAlign='center' >
       <Grid.Column>
        
-        <Form onSubmit={this.handleSubmit}>
+        <Form>
         <Header textAlign='center'>{this.state.pagename}</Header>
           <Form.Input 
                 type="text"
@@ -126,6 +126,7 @@ class NewShippingForm extends Component {
             <Button 
                 color='linkedin'
                 content='Add'
+                onClick={()=>{this.handleSubmit()}}
                 >
             </Button>
             <Button 
@@ -141,10 +142,20 @@ class NewShippingForm extends Component {
        )
     }
 }
+const mapStateToProps = (state) => {
+  
+  return{
+        authError:state.auth.authError,
+        auth:state.firebase.auth,
+        profile:state.firebase.profile
+    }
+    
+  }
+
 const mapDispatchToProps = (dispatch) =>{
     return{
         createAddress:(address)=>dispatch(createAddress(address)),
         
     }
   }
-export default withRouter(connect(null,mapDispatchToProps)(NewShippingForm))
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(NewShippingForm))

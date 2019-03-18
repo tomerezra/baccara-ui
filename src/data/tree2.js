@@ -2,7 +2,7 @@ const tree2=[
     {
         id:'1',
         value:/gem-a/i,
-        parent:null,
+        parent:'',
         invalid:null
         
     },

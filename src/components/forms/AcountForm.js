@@ -31,12 +31,14 @@ class HomePageForm extends Component{
       this.props.history.push(value)
   
    }
+   
     render(){
       const {auth}=this.props
       if (!auth.uid) {return <Redirect to='/'/>}
        return(
            <div style={{maxWidth: 450}}>
             {/* <MobileCotainer pagename={this.state.pagename}/> */}
+            
             <Header textAlign='center'>{this.state.pagename}</Header>
             <Segment textAlign='center'>
                 <Grid verticalAlign='top' columns={2} centered columns='equal'>

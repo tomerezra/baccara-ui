@@ -1,4 +1,4 @@
-import navReducer from './dataReducer'
+
 import {combineReducers} from 'redux'
 import dataReducer from './dataReducer';
 

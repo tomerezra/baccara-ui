@@ -28,26 +28,25 @@ class SignUpForm extends Component {
         pagename:''
     }
     componentDidMount = () => {
-      const {profile,auth}=this.props
+      
+      
         this.setState({pagename:this.props.auth.uid? 'Update' : 'Sign Up'})
-      if (profile) {
-        this.setState({data:{...this.state.data,
-            firstname:profile.firstName,
-            lastname:profile.lastName,
-            country:profile.country,
-            city:profile.city,
-            address:profile.address,
-            phone:profile.phone,
-            email:auth.email,
-            company:profile.company
-          }})
-      }
-          
-                
-    
-}
-
-    
+        const {profile,auth}=this.props
+        
+        if (!profile.isEmpty) {
+          this.setState({data:{...this.state.data,
+              firstname:profile.firstname,
+              lastname:profile.lastname,
+              country:profile.country,
+              city:profile.city,
+              address:profile.address,
+              phone:profile.phone,
+              email:auth.email,
+              company:profile.company
+            }})
+        }
+    }
+  
     handleChange=(e)=>{
         const {value,name,checked,id}=e.target
         name==="agree" ? this.setState({data:{...this.state.data,[name]:!this.state.data.agree}}) :
@@ -57,17 +56,23 @@ class SignUpForm extends Component {
     handleSubmit=(e)=>{
         e.preventDefault()
         if (this.props.auth.uid) {
-            
+            //update user function
         }
-        else this.props.createUser(this.state.data)
+        else if(this.validate())
+        {
+          this.props.createUser(this.state.data)
+          // this.props.history.push('/acount')   
+        }
         
         
    }
-   
+   validate=()=>{
+     return true
+   }
   
   render() {
     const {data}=this.state
-    const {auth,authError}=this.props
+    const {auth,authError,profile}=this.props
     // if (auth.uid) {return <Redirect to='/acount'/>}
     
     return (
@@ -183,8 +188,9 @@ class SignUpForm extends Component {
                 style={{display:auth.uid?'none':'inline-block'}}
                 id="agree"
                 name="agree"
+                required
                 label="I agree to the Terms and Conditions"
-                value={data.agree}
+                checked={data.agree}
                 onChange={this.handleChange}>>
             </Form.Checkbox>
             
@@ -210,7 +216,8 @@ class SignUpForm extends Component {
   }
 }
 const mapStateToProps = (state) => {
-    return{
+  
+  return{
         authError:state.auth.authError,
         auth:state.firebase.auth,
         profile:state.firebase.profile
