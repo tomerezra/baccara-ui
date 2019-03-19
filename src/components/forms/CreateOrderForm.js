@@ -8,6 +8,8 @@ import { connect } from 'react-redux'
 import {createOrder} from '../../store/actions/dataActions'
 import jsPDF from 'jspdf'
 import 'jspdf-autotable'
+import { firestoreConnect } from 'react-redux-firebase';
+import {compose} from 'redux'
 
 export class CreateOrderForm extends Component {
   state={
@@ -30,19 +32,21 @@ export class CreateOrderForm extends Component {
         items:[],
         chose:"",
         step:1,
-        doc:{}
+        
 
   }
 componentDidMount(){
-    const id = this.props.match.params.id
-    this.setState({items:Data.items.results})
-    this.setState({chose:id})
-    Data.items.results.map(item=>{
-        this.state.tmp.push({id:item.id,name:item.name,serial:item.serial,quantity:0})
+    // const id = this.props.match.params.id
+    // this.setState({items:Data.items.results})
+    // this.setState({chose:id})
+    // Data.items.results.map(item=>{
+    //     this.state.tmp.push({id:item.id,name:item.name,serial:item.serial,quantity:0})
         
-    })
-    const {profile,auth}=this.props
-        
+    // })
+    const {profile,auth,data}=this.props
+    var tmp = data.items.filter(item=>auth.uid===item.userid)
+    this.setState({items:tmp})
+    
         if (!profile.isEmpty) {
           this.setState({data:{...this.state.data,
               firstname:profile.firstname,
@@ -60,28 +64,30 @@ handleChange=(e)=>{
     const {value,name,id,type}=e.target
     
     if (type==='checkbox') {
-        const itemtopush={serial:name,quantity:value}
+        var itemtopush={id:id,serial:name,quantity:value}
         if (e.target.checked) {
             this.state.data.orderitems.push(itemtopush)
-            const tmp= this.state.items.filter(item=>(item.id===id))
-            tmp[0].checked=true
+            // const tmp= this.state.items.filter(item=>(item.id===id))
+            // tmp[0].checked=true
             
         }
         else {
-            const tmp=this.state.data.orderitems.filter(item=>!(item.serial===name))
+            var tmp=this.state.data.orderitems.filter(item=>!(item.id===id))
             
             this.setState({data:{...this.state.data,orderitems:tmp}})
             
         }
         
     }
-    else if (name==='quantity') {
-        
+    else if (name==='quantity' && this.state.data.orderitems.length>0) {
+        var tmp=this.state.data.orderitems.filter(item=>(item.id===id))
+        console.log(tmp)
+        tmp[0].quantity=value
     }
     else {
         this.setState({data:{...this.state.data,[name]:value}})   
     }
-    
+    console.log(this.state.data.orderitems)
     
     
 }
@@ -233,7 +239,7 @@ itemlist=()=>{
                         
                         id={item.id}
                         name={item.serial}
-                        label={item.name}
+                        label={item.partname}
                         onChange={this.handleChange}
     
                         >
@@ -248,7 +254,7 @@ itemlist=()=>{
                         min='1'
                         id={item.id}
                         name='quantity'
-                        value={this.state.tmp[item.id-1].quantity}
+                        // value={this.state.tmp[item.id-1].quantity}
                         onChange={this.handleChange}
                         
                         >
@@ -262,14 +268,15 @@ itemlist=()=>{
         )
         
     }
+
 confirm=()=>{
     var pdf =this.pdf()
     
     return(
            <Container textAlign='center'>
            
-           <Button onClick={()=>{pdf.output('datauri')}}>Order</Button>
-           
+           <Button onClick={()=>{pdf.output('dataurlnewwindow')}}>Order</Button>
+          
             <Form.Checkbox
                 id="agree"
                 name="agree"
@@ -290,9 +297,25 @@ confirm=()=>{
     pdf=()=>{
      
         var doc=new jsPDF()
+        console.log(doc.getLineHeightFactor()+10)
         
-        doc.text('Order',105,10,null,null,'center')
+        doc.text('Order Details',105,10,null,null,'center')
+        doc.text('Billing to:',105,doc.getLineHeightFactor()+10)
        try {
+        doc.autoTable({
+            head: [
+              ['ID', 'Item Name', 'Serial', 'Quantity'],
+          ],
+            body: [
+              ['1', 'Donna', 'dmoore0@furl.net', 'China', '211.56.242.221'],
+              ['2', 'Janice', 'jhenry1@theatlantic.com', 'Ukraine', '38.36.7.199'],
+              ['3', 'Ruth', 'rwells2@constantcontact.com', 'Trinidad and Tobago', '19.162.133.184'],
+              ['4', 'Jason', 'jray3@psu.edu', 'Brazil', '10.68.11.42'],
+              ['5', 'Jane', 'jstephens4@go.com', 'United States', '47.32.129.71'],
+              ['6', 'Adam', 'anichols5@com.com', 'Canada', '18.186.38.37']
+          ],
+           })
+        doc.text('Items:',105,doc.getLineHeightFactor()+10) 
         doc.autoTable({
          head: [
            ['ID', 'Item Name', 'Serial', 'Quantity'],
@@ -306,7 +329,7 @@ confirm=()=>{
            ['6', 'Adam', 'anichols5@com.com', 'Canada', '18.186.38.37']
        ],
         })
-         
+        console.log(doc.getLineHeightFactor()+10)
        } catch (error) {
          console.log(error)
        }
@@ -374,7 +397,8 @@ const mapStateToProps = (state) => {
     return{
           authError:state.auth.authError,
           auth:state.firebase.auth,
-          profile:state.firebase.profile
+          profile:state.firebase.profile,
+          data:state.firestore.ordered
       }
       
     }
@@ -384,4 +408,7 @@ const mapDispatchToProps = (dispatch) =>{
         
     }
   }
-export default withRouter(connect(mapStateToProps,mapDispatchToProps)(CreateOrderForm))
+export default withRouter(compose(
+    connect(mapStateToProps,mapDispatchToProps),
+    firestoreConnect([{collection:'items'}])
+  )(CreateOrderForm))
