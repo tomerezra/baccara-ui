@@ -1,21 +1,9 @@
 import swal from "sweetalert";
 
 const initState={
-    // Data:{
-    //     items:{
-    //         name:'items',
-    //         results:[]
-    //     },
-    //     orders:{
-    //         name:'orders',
-    //         results:[]
-    //     },
-    //     shipping:{
-    //         name:'shipping',
-    //         results:[]
-    //     }
-    // }
-    
+
+        items:[],
+        orders:[]
 }
 
 const dataReducer=(state=initState,action)=>{

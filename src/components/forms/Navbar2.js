@@ -5,7 +5,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 
 import { withStyles } from '@material-ui/core/styles';
-
+import { firestoreConnect } from 'react-redux-firebase';
+import {compose} from 'redux'
 import { Icon, Search ,Button, List} from 'semantic-ui-react';
 import {withRouter} from 'react-router-dom';
 import { connect } from 'react-redux'
@@ -45,17 +46,28 @@ componentWillMount() {
   this.resetComponent()
 }
 getResults = result=>{
-  const tmp = result.map(obj=>{return {obj,title:obj.name}})
+  const tmp = result.map(obj=>{return {obj,title:obj.id}})
   return tmp
 }
 
 resetComponent = () => this.setState({ isLoading: false, results: [], value: '' })
 
-handleResultSelect = (e, { result}) => {
+handleResultSelect = (e, {result}) => {
   const tmp = []
   
   for (const key in result.obj) {
-        tmp.push(<List.Item>{key} - {(key,result.obj[key])}</List.Item>)}
+        if (key=='createdAt'||key=='orderitems'||key=='agree') {
+          
+        }
+        else{
+          if (key=='standard') {
+            tmp.push(<List.Item>{key} - {(key,result.obj[key])?'Yes':'No'}</List.Item>)
+          }
+          else tmp.push(<List.Item>{key} - {(key,result.obj[key])}</List.Item>)
+        }
+          
+      }
+        
   swal(<List celled>{tmp}</List>)
 
   this.setState({value:result.title})}
@@ -66,40 +78,40 @@ handleSearchChange = (e, { value }) => {
 
   setTimeout(() => {
     if (this.state.value.length < 1) return this.resetComponent()
-
+    const {data} =this.props
     const re = new RegExp(this.state.value,'i')
     
     const tmp=[]
     
     for (let i = 1; i < 4; i++) {
       if (i===1) {
-        const result = data.items.results.filter(item=>(re.test(item.name)))
+        const result = data.items.filter(item=>(re.test(item.partname)))
         if (result.length>0) {
           tmp.push(
             {
-            name:data.items.name,
+            name:'Items',
             results:this.getResults(result)
             }
           )
         }
       }
       else if (i===2) {
-        const result = data.orders.results.filter(order=>(re.test(order.name)))
+        const result = data.orders.filter(order=>(re.test(order.id)))
         if (result.length>0) {
           tmp.push(
             {
-            name:data.orders.name,
+            name:'Orders',
             results:this.getResults(result)
             }
           )
         }
       }
       else{
-        const result = data.shipping.results.filter(address=>(re.test(address.name)))
+        const result = data.addresses.filter(address=>(re.test(address.address)))
         if (result.length>0) {
           tmp.push(
             {
-            name:data.shipping.name,
+            name:'Addresses',
             results:this.getResults(result)
             }
           )
@@ -180,7 +192,8 @@ const mapStateToProps = (state) => {
   
   return{
         
-        auth:state.firebase.auth
+        auth:state.firebase.auth,
+        data:state.firestore.ordered
     }
     
   }
@@ -192,4 +205,7 @@ const mapStateToProps = (state) => {
     
   }
   
-export default withRouter(withStyles(styles)(connect(mapStateToProps,mapDispatchToProps)(PrimarySearchAppBar)));
+export default withRouter(withStyles(styles)(compose(
+  connect(mapStateToProps,mapDispatchToProps),
+  firestoreConnect([{collection:'addresses'},{collection:'items'},{collection:'orders'}])
+)(PrimarySearchAppBar)));

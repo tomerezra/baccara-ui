@@ -9,7 +9,7 @@ import swal from 'sweetalert';
 import MobileCotainer from './MobileCotainer';
 import PageHeading from './PageHeading';
 import { connect } from 'react-redux'
-import {signIn} from '../../store/actions/authAction'
+import {signIn,logasguest} from '../../store/actions/authAction'
 import {Redirect} from 'react-router-dom'
 class LoginForm extends Component {
     state={
@@ -32,6 +32,7 @@ class LoginForm extends Component {
     HandleSubmit=(e)=>{
       e.preventDefault()
       if (this.state.data.guest) {
+        this.props.logasguest()
         this.props.history.push('/builditem')
       } 
       else if (this.Validate(this.state.data)) {
@@ -137,8 +138,9 @@ LoginForm.propTypes={
 }
 
 const mapStateToProps = (state) => {
+  
   return{
-    
+    guest:state.auth.guest,
     authError:state.auth.authError,
     auth:state.firebase.auth
   }
@@ -147,7 +149,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch)=> {
   return{
-    
+    logasguest:()=>dispatch(logasguest()),
     signIn:(creds)=>dispatch(signIn(creds))
   }
   

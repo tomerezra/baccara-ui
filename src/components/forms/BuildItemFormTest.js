@@ -35,11 +35,21 @@ class BuildItemForm extends Component {
       child:null,
       value:'',
       cancel:false,
-      datatmp:{}
+      datatmp:{},
+      change:[null,null,null,null,null,null,null,null,null,null],
+      first:false
   }
 componentDidMount(){
     this.setState({datatmp:this.state.data})
     this.props.getstandard()
+    // swal({
+    //     content:(
+    //     <div>
+    //         <h1>How to build a item</h1>
+    //         <p>green is good the else is bad, good luck</p>
+    //         <p>lets go!!</p>
+    //     </div>)
+    // })
 }
 handleSubmit=(e)=>{
     e.preventDefault()
@@ -61,6 +71,9 @@ startOver=()=>{
     this.setState({progress:0});
     this.setState({data:this.state.datatmp})
     this.setState({add:{...this.state.add,serial:'',standard:true}})
+    var tmp =this.state.change.map((i)=>i=null)
+    this.setState({change:tmp,first:false})
+    
 }
 handleClick=(e)=>{
     
@@ -72,7 +85,7 @@ handleClick=(e)=>{
         this.handleSubmit(e)
     }
     else if (this.state.progress>0) {
-           
+          
         swal({
             content:(
                 <div>
@@ -121,7 +134,16 @@ isStandard=(id,value)=>{
    }
    
     }
-    else return 'yellow'
+    else {
+        if (!this.state.first) {
+            this.state.change[id-2]=true
+            this.setState({first:true})
+        }
+        
+        return 'yellow'
+    }
+    
+    
 
     
 }
@@ -213,16 +235,20 @@ buttonChange=()=>{
 }
     render() {
     const data=this.state.data
-    // const {auth}=this.props
+    const {auth,guest}=this.props
     
-    // if (!auth.uid) {return <Redirect to='/'/>}
+    if (!auth.uid) {
+        if (!guest) {
+            return <Redirect to='/'/>
+        } 
+    }
         return (
             
             <div style={{width:'100%',maxWidth: 450}} >
             {/* <MobileContainer pagename={this.state.pagename}/> */}
             <Header textAlign='center'>{this.state.pagename}</Header>
-            <Segment >
-                <Grid columns={10}  divided style={{fontSize:'8px'}}>
+            <Segment style={{display:this.state.progress>0?'block':'none'}} compact>
+                {/* <Grid columns={10}  divided style={{fontSize:'8px'}}>
                     <Grid.Row textAlign='center' columns='equal'>
                     <Grid.Column textAlign='center' >
                         {data.module}
@@ -257,17 +283,20 @@ buttonChange=()=>{
                     
                     </Grid.Row>
                   
-              </Grid>
+              </Grid> */}
               <Progress
-                        style={{display:this.state.progress>0?'block':'none'}}
-                        attached='top'
+                        style={{marginTop:'5%'}}
+                        // attached='top'
                         value={this.state.progress} 
                         total='10' 
-                        
+                        progress='ratio'
                         active
-                        color='green'>
+                        success={this.state.progress==10?true:false}
+                        warning={this.state.add.standard?false:true}
+                        // color='green'
+                        >
                     </Progress>
-              <Progress
+              {/* <Progress
                         style={{display:this.state.progress>0?'block':'none'}}
                         attached='bottom'
                         value={this.state.progress}
@@ -275,7 +304,7 @@ buttonChange=()=>{
                         
                         active
                         color='green'>
-                    </Progress>
+                    </Progress> */}
               </Segment>
               <Segment 
               textAlign='center'
@@ -308,52 +337,52 @@ buttonChange=()=>{
               </Segment>
               <Segment size='mini' style={{paddingTop:0, paddingBottom:0}}>
                   <Grid columns={3} celled>
-                    <Grid.Row >
+                    <Grid.Row color={this.state.change[0]?'yellow':''}>
                         <Grid.Column textAlign='center' mobile='2'>1</Grid.Column>
                         <Grid.Column textAlign='center' mobile='7'>Module</Grid.Column>  
                         <Grid.Column textAlign='center' mobile='7'>{data.module}</Grid.Column> 
                     </Grid.Row>
-                    <Grid.Row >
+                    <Grid.Row color={this.state.change[1]?'yellow':''}>
                         <Grid.Column textAlign='center' mobile='2'>2</Grid.Column>
                         <Grid.Column textAlign='center' mobile='7'>Body</Grid.Column>  
                         <Grid.Column textAlign='center' mobile='7'>{data.body}</Grid.Column> 
                     </Grid.Row>
-                    <Grid.Row >
+                    <Grid.Row color={this.state.change[2]?'yellow':''}>
                         <Grid.Column textAlign='center' mobile='2'>3</Grid.Column>
                         <Grid.Column textAlign='center' mobile='7'>Port</Grid.Column>  
                         <Grid.Column textAlign='center' mobile='7'>{data.port}</Grid.Column> 
                     </Grid.Row>
-                    <Grid.Row >
+                    <Grid.Row color={this.state.change[3]?'yellow':''}>
                         <Grid.Column textAlign='center' mobile='2'>4</Grid.Column>
                         <Grid.Column textAlign='center' mobile='7'>Function</Grid.Column>  
                         <Grid.Column textAlign='center' mobile='7'>{data.function}</Grid.Column> 
                     </Grid.Row>
-                    <Grid.Row >
+                    <Grid.Row color={this.state.change[4]?'yellow':''}>
                         <Grid.Column textAlign='center' mobile='2'>5</Grid.Column>
                         <Grid.Column textAlign='center' mobile='7'>Orifice</Grid.Column>  
                         <Grid.Column textAlign='center' mobile='7'>{data.orifice}</Grid.Column> 
                     </Grid.Row>
-                    <Grid.Row >
+                    <Grid.Row color={this.state.change[5]?'yellow':''}>
                         <Grid.Column textAlign='center' mobile='2'>6</Grid.Column>
                         <Grid.Column textAlign='center' mobile='7'>Seals</Grid.Column>  
                         <Grid.Column textAlign='center' mobile='7'>{data.seals}</Grid.Column> 
                     </Grid.Row>
-                    <Grid.Row >
+                    <Grid.Row color={this.state.change[6]?'yellow':''}>
                         <Grid.Column textAlign='center' mobile='2'>7</Grid.Column>
                         <Grid.Column textAlign='center' mobile='7'>Override</Grid.Column>  
                         <Grid.Column textAlign='center' mobile='7'>{data.override}</Grid.Column> 
                     </Grid.Row>
-                    <Grid.Row >
+                    <Grid.Row color={this.state.change[7]?'yellow':''}>
                         <Grid.Column textAlign='center' mobile='2'>8</Grid.Column>
                         <Grid.Column textAlign='center' mobile='7'>Voltage</Grid.Column>  
                         <Grid.Column textAlign='center' mobile='7'>{data.voltage}</Grid.Column> 
                     </Grid.Row>
-                    <Grid.Row >
+                    <Grid.Row color={this.state.change[8]?'yellow':''}>
                         <Grid.Column textAlign='center' mobile='2'>9</Grid.Column>
                         <Grid.Column textAlign='center' mobile='7'>Power</Grid.Column>  
                         <Grid.Column textAlign='center' mobile='7'>{data.power}</Grid.Column> 
                     </Grid.Row>
-                    <Grid.Row >
+                    <Grid.Row color={this.state.change[9]?'yellow':''}>
                         <Grid.Column textAlign='center' mobile='2'>10</Grid.Column>
                         <Grid.Column textAlign='center' mobile='7'>Connector</Grid.Column>  
                         <Grid.Column textAlign='center' mobile='7'>{data.connector}</Grid.Column> 
@@ -370,6 +399,7 @@ const mapStateToProps = (state) => {
   
     return{
       auth:state.firebase.auth,
+      guest:state.auth.guest,
     }
      
   }

@@ -1,23 +1,23 @@
 import React, { Component } from 'react'
-import { Button,Step,Icon, Form, Grid, Header, Image, Message, Segment, Checkbox, TextArea, Item, Divider, Input, Container } from 'semantic-ui-react'
+import { Table,Select,Loader,Button,Step,Icon, Form, Grid, Header, Image, Message, Segment, Checkbox, TextArea, Item, Divider, Input, Container } from 'semantic-ui-react'
 import MobileCotainer from './MobileCotainer';
 import Validator from 'validator'
-import {withRouter} from 'react-router-dom'
+import {withRouter,Redirect} from 'react-router-dom'
 import Data from '../../data/data'
 import { connect } from 'react-redux'
 import {createOrder} from '../../store/actions/dataActions'
-import jsPDF from 'jspdf'
-import 'jspdf-autotable'
+
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
+import swal from '@sweetalert/with-react'
 
 export class CreateOrderForm extends Component {
   state={
         pagename:'Create New Order',
         data:{
         
-            firstName:"",
-            lastName:"",
+            firstname:"",
+            lastname:"",
             agree:false,
             country:"",
             city:"",
@@ -28,48 +28,31 @@ export class CreateOrderForm extends Component {
             orderitems:[],
         
         }, 
-        tmp:[],
-        items:[],
-        chose:"",
+        
         step:1,
         
 
   }
 componentDidMount(){
-    // const id = this.props.match.params.id
-    // this.setState({items:Data.items.results})
-    // this.setState({chose:id})
-    // Data.items.results.map(item=>{
-    //     this.state.tmp.push({id:item.id,name:item.name,serial:item.serial,quantity:0})
-        
-    // })
-    const {profile,auth,data}=this.props
-    var tmp = data.items.filter(item=>auth.uid===item.userid)
-    this.setState({items:tmp})
+    
+    const {profile,auth}=this.props
+    
     
         if (!profile.isEmpty) {
           this.setState({data:{...this.state.data,
-              firstname:profile.firstname,
-              lastname:profile.lastname,
-              country:profile.country,
-              city:profile.city,
-              address:profile.address,
-              phone:profile.phone,
               email:auth.email,
               company:profile.company
             }})
         }
   }
-handleChange=(e)=>{
+handleChange=(e,data)=>{
     const {value,name,id,type}=e.target
     
     if (type==='checkbox') {
         var itemtopush={id:id,serial:name,quantity:value}
         if (e.target.checked) {
             this.state.data.orderitems.push(itemtopush)
-            // const tmp= this.state.items.filter(item=>(item.id===id))
-            // tmp[0].checked=true
-            
+                        
         }
         else {
             var tmp=this.state.data.orderitems.filter(item=>!(item.id===id))
@@ -84,12 +67,97 @@ handleChange=(e)=>{
         console.log(tmp)
         tmp[0].quantity=value
     }
+    else if (data.name==='select') {
+        var tmp = this.props.data.addresses.filter(adr=>adr.id===data.value)
+        
+        this.setState({data:{...this.state.data,
+            firstname:tmp[0].firstname,
+            lastname:tmp[0].lastname,
+            country:tmp[0].country,
+            city:tmp[0].city,
+            address:tmp[0].address,
+            phone:tmp[0].phone,
+            
+          }})
+    }
     else {
         this.setState({data:{...this.state.data,[name]:value}})   
     }
-    console.log(this.state.data.orderitems)
     
     
+    
+}
+orderdetails=()=>{
+    const {data} =this.state
+    var items = data.orderitems.map(item=>{
+        return(
+            <Table.Row>
+            <Table.Cell>{item.serial}</Table.Cell>
+            <Table.Cell>{item.quantity}</Table.Cell>
+            </Table.Row>
+        )
+    })
+    swal({
+        content:(
+        <div>
+            <h2>Order Details</h2>
+            
+            <Table celled unstackable compact fixed size='small'>
+                
+                <Table.Body >
+                    <Table.Row>
+                        <Table.Cell>First Name</Table.Cell>
+                        <Table.Cell>{data.firstname}</Table.Cell>
+                    </Table.Row>
+                    <Table.Row>
+                        <Table.Cell>Last Name</Table.Cell>
+                        <Table.Cell>{data.lastname}</Table.Cell>
+                    </Table.Row>
+                    <Table.Row>
+                        <Table.Cell>Address</Table.Cell>
+                        <Table.Cell>{data.address}</Table.Cell>
+                    </Table.Row>
+                    <Table.Row>
+                        <Table.Cell>City</Table.Cell>
+                        <Table.Cell>{data.city}</Table.Cell>
+                    </Table.Row>
+                    <Table.Row>
+                        <Table.Cell>Country</Table.Cell>
+                        <Table.Cell>{data.country}</Table.Cell>
+                    </Table.Row>
+                    <Table.Row>
+                        <Table.Cell>Company</Table.Cell>
+                        <Table.Cell>{data.company}</Table.Cell>
+                    </Table.Row>   
+                    <Table.Row>
+                        <Table.Cell>Phone Number</Table.Cell>
+                        <Table.Cell>{data.phone}</Table.Cell>
+                    </Table.Row> 
+                    <Table.Row>
+                        <Table.Cell>Email</Table.Cell>
+                        <Table.Cell>{data.email}</Table.Cell>
+                    </Table.Row> 
+                 
+                </Table.Body>
+            </Table>
+            <h2>Items</h2>
+            <Table celled unstackable compact fixed size='small'>
+            <Table.Header>
+                <Table.HeaderCell>Serial</Table.HeaderCell>
+                <Table.HeaderCell>Quantity</Table.HeaderCell>
+            </Table.Header>
+            <Table.Body>
+                {items}
+            </Table.Body>
+            </Table>
+        </div>
+        ),
+        button:{visible:true},
+        closeOnClickOutside: false,
+        
+        
+      
+    })
 }
 handleSubmit=(e)=>{
     e.preventDefault()
@@ -100,10 +168,10 @@ handleSubmit=(e)=>{
 }
 Validate=(data)=>{
      
-    if (!Validator.isEmail(data.email)||!data.password) {
-        this.setState({error:true})
-        return false
-    }
+    // if (!Validator.isEmail(data.email)||!data.password) {
+    //     this.setState({error:true})
+    //     return false
+    // }
     return true
   }
 nextstep=(e)=>{
@@ -120,8 +188,19 @@ nextstep=(e)=>{
     }
   }
 billing=()=>{
+    var tmp = this.props.data.addresses.filter(adr=>adr.userid===this.props.auth.uid)
+    var tmp2 = tmp.map(adr=>{return{text:adr.firstname+' '+ adr.lastname,value:adr.id}})
     
     return(
+    <>
+    <Select 
+        
+        name='select'
+        placeholder='Select your address' 
+        options={tmp2} 
+        onChange={this.handleChange}
+        />
+    
     <Grid textAlign='center'>
                 <Grid.Column>
                 
@@ -219,12 +298,15 @@ billing=()=>{
                     </Form>
                 </Grid.Column>
             </Grid>
+            </>
     )
     }
 itemlist=()=>{
-        return(
+    const {auth,data}=this.props
+    var items = data.items.filter(item=>auth.uid===item.userid)    
+    return(
             <Grid columns='2' verticalAlign='middle'>
-            {this.state.items.map(item=>{
+            {items.map(item=>{
                 
                 if (item.id===this.state.chose) {
                     item.checked=true
@@ -270,12 +352,12 @@ itemlist=()=>{
     }
 
 confirm=()=>{
-    var pdf =this.pdf()
+    const {data} =this.state
     
     return(
            <Container textAlign='center'>
            
-           <Button onClick={()=>{pdf.output('dataurlnewwindow')}}>Order</Button>
+           <Button onClick={this.orderdetails}>Order</Button>
           
             <Form.Checkbox
                 id="agree"
@@ -294,111 +376,131 @@ confirm=()=>{
         </Container> 
         )
     }
-    pdf=()=>{
+    // pdf=()=>{
      
-        var doc=new jsPDF()
-        console.log(doc.getLineHeightFactor()+10)
+    //     var doc=new jsPDF()
+    //     console.log(doc.getLineHeightFactor()+10)
         
-        doc.text('Order Details',105,10,null,null,'center')
-        doc.text('Billing to:',105,doc.getLineHeightFactor()+10)
-       try {
-        doc.autoTable({
-            head: [
-              ['ID', 'Item Name', 'Serial', 'Quantity'],
-          ],
-            body: [
-              ['1', 'Donna', 'dmoore0@furl.net', 'China', '211.56.242.221'],
-              ['2', 'Janice', 'jhenry1@theatlantic.com', 'Ukraine', '38.36.7.199'],
-              ['3', 'Ruth', 'rwells2@constantcontact.com', 'Trinidad and Tobago', '19.162.133.184'],
-              ['4', 'Jason', 'jray3@psu.edu', 'Brazil', '10.68.11.42'],
-              ['5', 'Jane', 'jstephens4@go.com', 'United States', '47.32.129.71'],
-              ['6', 'Adam', 'anichols5@com.com', 'Canada', '18.186.38.37']
-          ],
-           })
-        doc.text('Items:',105,doc.getLineHeightFactor()+10) 
-        doc.autoTable({
-         head: [
-           ['ID', 'Item Name', 'Serial', 'Quantity'],
-       ],
-         body: [
-           ['1', 'Donna', 'dmoore0@furl.net', 'China', '211.56.242.221'],
-           ['2', 'Janice', 'jhenry1@theatlantic.com', 'Ukraine', '38.36.7.199'],
-           ['3', 'Ruth', 'rwells2@constantcontact.com', 'Trinidad and Tobago', '19.162.133.184'],
-           ['4', 'Jason', 'jray3@psu.edu', 'Brazil', '10.68.11.42'],
-           ['5', 'Jane', 'jstephens4@go.com', 'United States', '47.32.129.71'],
-           ['6', 'Adam', 'anichols5@com.com', 'Canada', '18.186.38.37']
-       ],
-        })
-        console.log(doc.getLineHeightFactor()+10)
-       } catch (error) {
-         console.log(error)
-       }
-         return doc
+    //     doc.text('Order Details',105,10,null,null,'center')
+    //     doc.text('Billing to:',105,doc.getLineHeightFactor()+10)
+    //    try {
+    //     doc.autoTable({
+    //         head: [
+    //           ['ID', 'Item Name', 'Serial', 'Quantity'],
+    //       ],
+    //         body: [
+    //           ['1', 'Donna', 'dmoore0@furl.net', 'China', '211.56.242.221'],
+    //           ['2', 'Janice', 'jhenry1@theatlantic.com', 'Ukraine', '38.36.7.199'],
+    //           ['3', 'Ruth', 'rwells2@constantcontact.com', 'Trinidad and Tobago', '19.162.133.184'],
+    //           ['4', 'Jason', 'jray3@psu.edu', 'Brazil', '10.68.11.42'],
+    //           ['5', 'Jane', 'jstephens4@go.com', 'United States', '47.32.129.71'],
+    //           ['6', 'Adam', 'anichols5@com.com', 'Canada', '18.186.38.37']
+    //       ],
+    //        })
+    //     doc.text('Items:',105,doc.getLineHeightFactor()+10) 
+    //     doc.autoTable({
+    //      head: [
+    //        ['ID', 'Item Name', 'Serial', 'Quantity'],
+    //    ],
+    //      body: [
+    //        ['1', 'Donna', 'dmoore0@furl.net', 'China', '211.56.242.221'],
+    //        ['2', 'Janice', 'jhenry1@theatlantic.com', 'Ukraine', '38.36.7.199'],
+    //        ['3', 'Ruth', 'rwells2@constantcontact.com', 'Trinidad and Tobago', '19.162.133.184'],
+    //        ['4', 'Jason', 'jray3@psu.edu', 'Brazil', '10.68.11.42'],
+    //        ['5', 'Jane', 'jstephens4@go.com', 'United States', '47.32.129.71'],
+    //        ['6', 'Adam', 'anichols5@com.com', 'Canada', '18.186.38.37']
+    //    ],
+    //     })
+    //     console.log(doc.getLineHeightFactor()+10)
+    //    } catch (error) {
+    //      console.log(error)
+    //    }
+    //      return doc
         
+    //   }
+      isEmptyObject=(obj)=>{
+        return (Object.getOwnPropertyNames(obj).length === 0);
       }
     render() {
+        const {auth,guest}=this.props
+    
+        if (!auth.uid) {
+            if (!guest) {
+                return <Redirect to='/'/>
+            } 
+        }
 
-    return (
-      <div style={{ maxWidth: 450 }}>
-        {/* <MobileCotainer pagename={this.state.pagename}/> */}
-        <Header textAlign='center'>{this.state.pagename}</Header>
-        <Step.Group size='mini' unstackable fluid>
-            <Step active={this.state.step===1?true:false} onClick={()=>{this.setState({step:1})}}>
-            <Icon name='truck' />
-            <Step.Content>
-                <Step.Title>Items</Step.Title>
-            </Step.Content>
-            </Step>
-            <Step active={this.state.step===2?true:false} onClick={()=>{this.setState({step:2})}}>
-            <Icon name='payment' />
-            <Step.Content>
-                <Step.Title>Billing</Step.Title>
-            </Step.Content>
-            </Step>
-            <Step 
-                active={this.state.step===3?true:false}
-                disabled={this.state.step===3?false:true}
-            >
-            <Icon name='info' />
-            <Step.Content>
-                <Step.Title>Confirm</Step.Title>
-            </Step.Content>
-            </Step>
-        </Step.Group>
-        <Segment >
-        
-        {this.state.step===1?this.itemlist():null}
-        {this.state.step===2?this.billing():null}
-        {this.state.step===3?this.confirm():null}
-        
-        <br/>
-        <Button
-            disabled={this.state.step===1}
-            onClick={this.nextstep}
-            name='back'
-            color='linkedin'
-            content='Back'>
-        </Button>
-        <Button
-            disabled={this.state.step===3}
-            onClick={this.nextstep}
-            name='next'
-            floated='right'
-            color='linkedin'
-            content='Next'>
-        </Button>
-        </Segment>
-    </div>
-    )
+        if (!this.isEmptyObject(this.props.data)) {
+            return (
+                <div style={{ maxWidth: 450 }}>
+                  {/* <MobileCotainer pagename={this.state.pagename}/> */}
+                  <Header textAlign='center'>{this.state.pagename}</Header>
+                  <Step.Group size='mini' unstackable fluid>
+                      <Step active={this.state.step===1?true:false} onClick={()=>{this.setState({step:1})}}>
+                      <Icon name='truck' />
+                      <Step.Content>
+                          <Step.Title>Items</Step.Title>
+                      </Step.Content>
+                      </Step>
+                      <Step active={this.state.step===2?true:false} onClick={()=>{this.setState({step:2})}}>
+                      <Icon name='payment' />
+                      <Step.Content>
+                          <Step.Title>Billing</Step.Title>
+                      </Step.Content>
+                      </Step>
+                      <Step 
+                          active={this.state.step===3?true:false}
+                          disabled={this.state.step===3?false:true}
+                      >
+                      <Icon name='info' />
+                      <Step.Content>
+                          <Step.Title>Confirm</Step.Title>
+                      </Step.Content>
+                      </Step>
+                  </Step.Group>
+                  <Segment >
+                  
+                  {this.state.step===1?this.itemlist():null}
+                  {this.state.step===2?this.billing():null}
+                  {this.state.step===3?this.confirm():null}
+                  
+                  <br/>
+                  <Button
+                      disabled={this.state.step===1}
+                      onClick={this.nextstep}
+                      name='back'
+                      color='linkedin'
+                      content='Back'>
+                  </Button>
+                  <Button
+                      disabled={this.state.step===3}
+                      onClick={this.nextstep}
+                      name='next'
+                      floated='right'
+                      color='linkedin'
+                      content='Next'>
+                  </Button>
+                  </Segment>
+              </div>
+              )
+        } else {
+            return (
+                <Loader active inline='centered'></Loader>
+            )
+            
+            
+        }
+    
   }
 }
 const mapStateToProps = (state) => {
   
     return{
-          authError:state.auth.authError,
+         
           auth:state.firebase.auth,
           profile:state.firebase.profile,
-          data:state.firestore.ordered
+          data:state.firestore.ordered,
+          guest:state.auth.guest
       }
       
     }
@@ -410,5 +512,5 @@ const mapDispatchToProps = (dispatch) =>{
   }
 export default withRouter(compose(
     connect(mapStateToProps,mapDispatchToProps),
-    firestoreConnect([{collection:'items'}])
+    firestoreConnect([{collection:'items'},{collection:'addresses'}])
   )(CreateOrderForm))

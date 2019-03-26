@@ -74,7 +74,7 @@ class HomePageForm extends Component{
                   </Grid.Column>
                   
                 </Grid.Row>
-                <Grid.Row>
+                {/* <Grid.Row>
                 
                   <Grid.Column>
                   <Card>
@@ -89,7 +89,7 @@ class HomePageForm extends Component{
                     </Card>
                   </Grid.Column>
                   
-                </Grid.Row>
+                </Grid.Row> */}
               </Grid>
               <br/>
               <Button.Group>

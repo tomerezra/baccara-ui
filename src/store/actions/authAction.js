@@ -1,4 +1,8 @@
-
+export const logasguest =()=>{
+    return(dispatch, getState)=>{
+        dispatch({type:'GUEST'})
+    }
+}
 
 export const signIn = (credentials)=>{
     return (dispatch, getState,{firebase})=>{

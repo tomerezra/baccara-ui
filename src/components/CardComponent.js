@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import {Card, Button} from 'semantic-ui-react'
 import {withRouter} from 'react-router-dom'
-
+import moment from 'moment'
 export class CardComponent extends Component {
   state={
     data:this.props.order
   }
   itemorcard=()=>{
+    
     if (this.props.location.pathname==='/orders') {
       return(
         <Card
@@ -14,8 +15,8 @@ export class CardComponent extends Component {
               centered 
               fluid>
               <Card.Content>
-                <Card.Header>{this.props.order.ordernumber}</Card.Header>
-                <Card.Meta>{this.props.order.date}</Card.Meta>
+                <Card.Header>{this.props.order.id}</Card.Header>
+                <Card.Meta>{moment(this.props.order.createdAt.toDate()).calendar()}</Card.Meta>
                 <Card.Description>{this.props.order.status}</Card.Description>
                 
               </Card.Content>

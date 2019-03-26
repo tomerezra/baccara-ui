@@ -17,12 +17,15 @@ import PrimarySearchAppBar from "./components/forms/Navbar2"
 import ItemsPage from './components/pages/ItemsPage';
 import ShippingPage from './components/pages/ShippingPage';
 import OrdersPage from './components/pages/OrdersPage';
-
+import disableScroll from 'disable-scroll';
 
 class App extends Component{
  
   
   render(){
+    
+    disableScroll.options.disableWheel=false;
+    disableScroll.on()
     return (
       <>
         {/* <Navbar/> */}

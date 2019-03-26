@@ -41,7 +41,8 @@ export const createOrder = (order)=>{
         firestore.collection('orders').add({
             ...order,
             userid,
-            createdAt:new Date()
+            createdAt:new Date(),
+            status:'Send to sales man'
         })
         .then(()=>{
             dispatch({type: 'CREATE_ORDER',order})

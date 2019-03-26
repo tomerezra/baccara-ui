@@ -1,5 +1,5 @@
 const initState = {
-    
+    guest:false,
     authError:null,
     
   }
@@ -8,7 +8,12 @@ const initState = {
   const authReducer = (state=initState , action) => {
     
     switch (action.type) {
-      
+      case 'GUEST':
+        console.log('log in guest')  
+        return {
+            ...state,
+            guest:true
+    }
       case 'LOGIN_SUCCESS':
         console.log('log in success')  
         return {
