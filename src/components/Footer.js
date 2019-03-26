@@ -4,7 +4,6 @@ import { withStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import {Icon,Button} from 'semantic-ui-react';
-
 import {withRouter} from 'react-router-dom'
 import { connect } from 'react-redux'
 
@@ -23,7 +22,7 @@ const styles = {
   },
 };
 
-class LabelBottomNavigation extends React.Component {
+class Footer extends React.Component {
   state = {
     
   };
@@ -60,7 +59,7 @@ handleClickAdd=()=>{
 
   render() {
     const { classes } = this.props;
-    const { nav } = this.props;
+    
     
     return (
       <BottomNavigation value={this.props.location.pathname} onChange={this.handleChange} className={classes.root} style={{display:this.props.auth.uid?'':'none'}}>
@@ -81,7 +80,7 @@ handleClickAdd=()=>{
   }
 }
 
-LabelBottomNavigation.propTypes = {
+Footer.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 const mapStateToProps = (state) => {
@@ -96,4 +95,4 @@ const mapStateToProps = (state) => {
     
   })
   
-export default withRouter(withStyles(styles)(connect(mapStateToProps,mapDispatchToProps)(LabelBottomNavigation)))
+export default withRouter(withStyles(styles)(connect(mapStateToProps,mapDispatchToProps)(Footer)))

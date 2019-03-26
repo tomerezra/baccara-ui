@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
-import { Button, Form, Grid, Header, Image, Message, Segment, Checkbox } from 'semantic-ui-react'
-
+import {Button, Form, Grid, Header,Segment} from 'semantic-ui-react'
 import Validator from 'validator'
-import InlineError from '../messages/InlineError'
+// import InlineError from '../messages/InlineError'
 import {createUser} from '../../store/actions/authAction'
 import {withRouter} from 'react-router-dom'
-import MobileCotainer from './MobileCotainer';
 import {connect} from 'react-redux'
 import {Redirect} from 'react-router-dom'
 class SignUpForm extends Component {
@@ -48,7 +46,7 @@ class SignUpForm extends Component {
     }
   
     handleChange=(e)=>{
-        const {value,name,checked,id}=e.target
+        const {value,name}=e.target
         name==="agree" ? this.setState({data:{...this.state.data,[name]:!this.state.data.agree}}) :
         this.setState({data:{...this.state.data,[name]:value}})
         
@@ -72,7 +70,7 @@ class SignUpForm extends Component {
   
   render() {
     const {data}=this.state
-    const {auth,authError,profile}=this.props
+    const {auth,authError}=this.props
     // if (auth.uid) {return <Redirect to='/acount'/>}
     
     return (

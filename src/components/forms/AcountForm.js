@@ -1,26 +1,10 @@
 
 import React, { Component } from 'react'
 import {withRouter} from 'react-router-dom'
-
-import {
-  Button,
-  Container,
-  Divider,
-  Grid,
-  Header,
-  Icon,
-  Image,
-  List,
-  Menu,
-  Responsive,
-  Segment,
-  Sidebar,
-  Visibility,
-  Card,
-} from 'semantic-ui-react'
+import {Button,Grid,Header,Icon,Segment,Card} from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import {Redirect} from 'react-router-dom'
-import MobileCotainer from './MobileCotainer';
+
 
 class HomePageForm extends Component{
    state={
@@ -37,7 +21,7 @@ class HomePageForm extends Component{
       if (!auth.uid) {return <Redirect to='/'/>}
        return(
            <div style={{maxWidth: 450}}>
-            {/* <MobileCotainer pagename={this.state.pagename}/> */}
+            
             
             <Header textAlign='center'>{this.state.pagename}</Header>
             <Segment textAlign='center'>

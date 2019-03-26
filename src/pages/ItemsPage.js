@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import HistoryForm from '../forms/HistoryForm';
+import HistoryForm from '../components/forms/HistoryForm';
 
 export class ItemsPage extends Component {
   render() {

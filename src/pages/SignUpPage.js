@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {withRouter} from 'react-router-dom'
 
 
-import SignUpForm from '../forms/SignUpForm';
+import SignUpForm from '../components/forms/SignUpForm';
 
 class SignUpPage extends Component {
  

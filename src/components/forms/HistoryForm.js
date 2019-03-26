@@ -1,33 +1,10 @@
 
 import React, { Component } from 'react'
 import {withRouter,Redirect} from 'react-router-dom'
-
-import {
-  Button,
-  Container,
-  Divider,
-  Grid,
-  Header,
-  Icon,
-  Image,
-  Loader,
-  List,
-  Menu,
-  Responsive,
-  Segment,
-  Sidebar,
-  Visibility,
-  Card,
-  Item,
-  Input
-} from 'semantic-ui-react'
-import MobileCotainer from './MobileCotainer';
+import {Grid,Header,Loader,Segment} from 'semantic-ui-react'
 import {createAddress,createItem,createOrder,deleteAddress,deleteItem,standard} from '../../store/actions/dataActions'
 import { connect } from 'react-redux'
-
 import CardComponent from '../CardComponent';
-
-import tree from '../../data/tree2'
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
 

@@ -3,17 +3,16 @@ import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-
 import { withStyles } from '@material-ui/core/styles';
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
-import { Icon, Search ,Button, List} from 'semantic-ui-react';
+import { Icon, Search ,Button, List,Table} from 'semantic-ui-react';
 import {withRouter} from 'react-router-dom';
 import { connect } from 'react-redux'
-import data from '../../data/data'
 import swal from '@sweetalert/with-react'
-import {signOut} from '../../store/actions/authAction'
+import {signOut} from '../store/actions/authAction'
 import {Redirect} from 'react-router-dom'
+import moment from 'moment'
 const styles = {
   root: {
     width: '100%',
@@ -29,7 +28,7 @@ const styles = {
 
 
   
-class PrimarySearchAppBar extends React.Component {
+class SearchNavbar extends React.Component {
   state = {
     isLoading: false,
     results: [],
@@ -56,20 +55,48 @@ handleResultSelect = (e, {result}) => {
   const tmp = []
   
   for (const key in result.obj) {
-        if (key=='createdAt'||key=='orderitems'||key=='agree') {
+        if (key==='orderitems'||key==='agree') {
           
         }
         else{
-          if (key=='standard') {
-            tmp.push(<List.Item>{key} - {(key,result.obj[key])?'Yes':'No'}</List.Item>)
+          if (key==='standard') {
+            
+            tmp.push(
+              <Table.Row>
+                <Table.Cell>{key}</Table.Cell>
+                <Table.Cell>{(key,result.obj[key])?'Yes':'No'}</Table.Cell>
+              </Table.Row>
+            )
           }
-          else tmp.push(<List.Item>{key} - {(key,result.obj[key])}</List.Item>)
+          else if (key==='createdAt') {
+            tmp.push(
+              <Table.Row>
+                <Table.Cell>{key}</Table.Cell>
+                <Table.Cell>{(key,moment(result.obj[key].toDate()).calendar())}</Table.Cell>
+              </Table.Row>
+              
+            )
+          }
+          else tmp.push(
+            <Table.Row>
+              <Table.Cell>{key}</Table.Cell>
+              <Table.Cell>{(key,result.obj[key])}</Table.Cell>
+            </Table.Row>
+          )
         }
           
       }
         
-  swal(<List celled>{tmp}</List>)
-
+  
+swal(
+    <div>
+      <Table celled unstackable compact fixed size='small'>
+        <Table.Body>
+          {tmp}
+        </Table.Body>
+      </Table>
+    </div>
+    )
   this.setState({value:result.title})}
 
 handleSearchChange = (e, { value }) => {
@@ -132,7 +159,7 @@ handleSearchChange = (e, { value }) => {
     
     const { classes } = this.props;
     if (!auth.uid) {
-      if (!this.props.location.pathname=='/')
+      if (!this.props.location.pathname==='/')
       {
         return <Redirect to='/'/>
       }
@@ -185,7 +212,7 @@ handleSearchChange = (e, { value }) => {
   }
 }
 
-PrimarySearchAppBar.propTypes = {
+SearchNavbar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 const mapStateToProps = (state) => {
@@ -208,4 +235,4 @@ const mapStateToProps = (state) => {
 export default withRouter(withStyles(styles)(compose(
   connect(mapStateToProps,mapDispatchToProps),
   firestoreConnect([{collection:'addresses'},{collection:'items'},{collection:'orders'}])
-)(PrimarySearchAppBar)));
+)(SearchNavbar)));

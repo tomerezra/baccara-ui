@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import AcountForm from '../forms/AcountForm';
+import AcountForm from '../components/forms/AcountForm';
 import {withRouter} from 'react-router-dom'
 class AcountPage extends Component {
   render() {

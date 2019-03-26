@@ -1,24 +1,6 @@
 import React, { Component } from 'react'
 import {withRouter} from 'react-router-dom'
-import {
-    Button,
-    Container,
-    Divider,
-    Grid,
-    Header,
-    Icon,
-    Image,
-    List,
-    Menu,
-    Responsive,
-    Segment,
-    Sidebar,
-    Visibility,
-    Form,
-    Item,
-    Input
-  } from 'semantic-ui-react'
-import MobileCotainer from './MobileCotainer';
+import {Button,Grid,Header,Segment,Form} from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import {Redirect} from 'react-router-dom'
 import {createAddress} from '../../store/actions/dataActions'

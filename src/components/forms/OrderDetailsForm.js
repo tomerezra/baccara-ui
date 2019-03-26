@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
-import MobileCotainer from './MobileCotainer';
 import {withRouter} from 'react-router-dom'
-import {Responsive, Loader,Sidebar,Button,Progress,Menu,Card,Icon,Label, Table,Form,Input, Grid, Header, Image, Message, Segment, Checkbox, GridColumn, Container,Pagination, GridRow, Item } from 'semantic-ui-react'
+import {Loader,Button,Grid, Header,Segment,Item,Table } from 'semantic-ui-react'
 import moment from 'moment'
-import Data from '../../data/data'
 import swal from '@sweetalert/with-react';
 import {Redirect} from 'react-router-dom'
 import { firestoreConnect } from 'react-redux-firebase';
@@ -16,17 +14,18 @@ class OrderDetailsForm extends Component {
         view:{},
         id:""
     }
-    componentDidMount(){
-        
-        
-    }
-
+    
     reload=()=>{
         const id = this.props.match.params.id
         const tmp=this.props.data.orders.filter(order=>id===order.id)
         const data = tmp[0]
         
-        const view = data.orderitems.map(item=><Item>Serial: {item.serial} Quantity: {item.quantity}</Item>)
+        const view = data.orderitems.map(item=>{return(
+            <Table.Row>
+            <Table.Cell>{item.serial}</Table.Cell>
+            <Table.Cell>{item.quantity}</Table.Cell>
+            </Table.Row>
+        )})
         
         return(
             <Grid columns={3} celled>
@@ -50,8 +49,16 @@ class OrderDetailsForm extends Component {
                                 compact
                                 onClick={()=>swal(
                                                 <div>
-                                                    <h1>Items:</h1>
-                                                    <p>{view}</p>
+                                                        <h2>Items</h2>
+                                                        <Table celled unstackable compact fixed size='small'>
+                                                        <Table.Header>
+                                                            <Table.HeaderCell>Serial</Table.HeaderCell>
+                                                            <Table.HeaderCell>Quantity</Table.HeaderCell>
+                                                        </Table.Header>
+                                                        <Table.Body>
+                                                            {view}
+                                                        </Table.Body>
+                                                        </Table>
                                                 </div>
                                     
                                     
@@ -84,7 +91,7 @@ class OrderDetailsForm extends Component {
     }
     render() {
     const {auth}=this.props
-    const data = this.state.data
+    
     
     if (!auth.uid) {return <Redirect to='/'/>}
     if (this.isEmptyObject(this.props.data)) {

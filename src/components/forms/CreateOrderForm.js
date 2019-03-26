@@ -1,12 +1,9 @@
 import React, { Component } from 'react'
-import { Table,Select,Loader,Button,Step,Icon, Form, Grid, Header, Image, Message, Segment, Checkbox, TextArea, Item, Divider, Input, Container } from 'semantic-ui-react'
-import MobileCotainer from './MobileCotainer';
+import { Table,Select,Loader,Button,Step,Icon, Form, Grid, Header,Segment,Container } from 'semantic-ui-react'
 import Validator from 'validator'
 import {withRouter,Redirect} from 'react-router-dom'
-import Data from '../../data/data'
 import { connect } from 'react-redux'
 import {createOrder} from '../../store/actions/dataActions'
-
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
 import swal from '@sweetalert/with-react'
@@ -357,7 +354,7 @@ itemlist=()=>{
     }
 
 confirm=()=>{
-    const {data} =this.state
+    
     
     return(
            <Container textAlign='center'>
@@ -381,48 +378,7 @@ confirm=()=>{
         </Container> 
         )
     }
-    // pdf=()=>{
-     
-    //     var doc=new jsPDF()
-    //     console.log(doc.getLineHeightFactor()+10)
-        
-    //     doc.text('Order Details',105,10,null,null,'center')
-    //     doc.text('Billing to:',105,doc.getLineHeightFactor()+10)
-    //    try {
-    //     doc.autoTable({
-    //         head: [
-    //           ['ID', 'Item Name', 'Serial', 'Quantity'],
-    //       ],
-    //         body: [
-    //           ['1', 'Donna', 'dmoore0@furl.net', 'China', '211.56.242.221'],
-    //           ['2', 'Janice', 'jhenry1@theatlantic.com', 'Ukraine', '38.36.7.199'],
-    //           ['3', 'Ruth', 'rwells2@constantcontact.com', 'Trinidad and Tobago', '19.162.133.184'],
-    //           ['4', 'Jason', 'jray3@psu.edu', 'Brazil', '10.68.11.42'],
-    //           ['5', 'Jane', 'jstephens4@go.com', 'United States', '47.32.129.71'],
-    //           ['6', 'Adam', 'anichols5@com.com', 'Canada', '18.186.38.37']
-    //       ],
-    //        })
-    //     doc.text('Items:',105,doc.getLineHeightFactor()+10) 
-    //     doc.autoTable({
-    //      head: [
-    //        ['ID', 'Item Name', 'Serial', 'Quantity'],
-    //    ],
-    //      body: [
-    //        ['1', 'Donna', 'dmoore0@furl.net', 'China', '211.56.242.221'],
-    //        ['2', 'Janice', 'jhenry1@theatlantic.com', 'Ukraine', '38.36.7.199'],
-    //        ['3', 'Ruth', 'rwells2@constantcontact.com', 'Trinidad and Tobago', '19.162.133.184'],
-    //        ['4', 'Jason', 'jray3@psu.edu', 'Brazil', '10.68.11.42'],
-    //        ['5', 'Jane', 'jstephens4@go.com', 'United States', '47.32.129.71'],
-    //        ['6', 'Adam', 'anichols5@com.com', 'Canada', '18.186.38.37']
-    //    ],
-    //     })
-    //     console.log(doc.getLineHeightFactor()+10)
-    //    } catch (error) {
-    //      console.log(error)
-    //    }
-    //      return doc
-        
-    //   }
+    
       isEmptyObject=(obj)=>{
         return (Object.getOwnPropertyNames(obj).length === 0);
       }
@@ -438,7 +394,7 @@ confirm=()=>{
         if (!this.isEmptyObject(this.props.data)) {
             return (
                 <div style={{ maxWidth: 450 }}>
-                  {/* <MobileCotainer pagename={this.state.pagename}/> */}
+                 
                   <Header textAlign='center'>{this.state.pagename}</Header>
                   <Step.Group size='mini' unstackable fluid>
                       <Step active={this.state.step===1?true:false} onClick={()=>{this.setState({step:1})}}>
