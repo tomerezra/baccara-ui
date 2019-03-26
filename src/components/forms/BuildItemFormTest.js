@@ -1,14 +1,15 @@
 import React, { Component } from 'react'
 import {Responsive, Sidebar,Button,Progress,Menu,Card,Icon,Label, Table,Form,Input, Grid, Header, Image, Message, Segment, Checkbox, GridColumn, Container,Pagination, GridRow, Ref } from 'semantic-ui-react'
 import { connect } from 'react-redux'
-import {createItem,getstandard} from '../../store/actions/dataActions'
+import {createItem,getstandard,createitemguest} from '../../store/actions/dataActions'
 import swal from '@sweetalert/with-react'
 import MobileContainer from './MobileCotainer'
 import {withRouter,Redirect} from 'react-router-dom'
-
+import { firestoreConnect } from 'react-redux-firebase';
+import {compose} from 'redux'
 import Parts from '../../data/parts'
 
-import tree2 from '../../data/tree2'
+
 
 class BuildItemForm extends Component {
   state={
@@ -37,11 +38,14 @@ class BuildItemForm extends Component {
       cancel:false,
       datatmp:{},
       change:[null,null,null,null,null,null,null,null,null,null],
-      first:false
+      first:false,
+      tree:[],
+      orderbutton:true
   }
 componentDidMount(){
     this.setState({datatmp:this.state.data})
-    this.props.getstandard()
+    
+    // this.props.getstandard()
     // swal({
     //     content:(
     //     <div>
@@ -50,6 +54,13 @@ componentDidMount(){
     //         <p>lets go!!</p>
     //     </div>)
     // })
+}
+getdata=()=>{
+    const {data} =this.props
+    var tree = data.standard.map(x=>{return{id:x.id,parent:new RegExp(x.parent,'i'),value:new RegExp(x.value,'i')}})
+    this.setState({tree})
+            
+          
 }
 handleSubmit=(e)=>{
     e.preventDefault()
@@ -61,8 +72,13 @@ handleSubmit=(e)=>{
     .then((value)=>{
         
         this.setState({add:{...this.state.add,partname:value}})
-        this.props.createItem(this.state.add)
+        if (this.props.guest) {
+           this.props.createitemguest(this.state.add) 
+        }
+        else this.props.createItem(this.state.add)
+        this.setState({orderbutton:false})
         this.startOver()
+        
         
     })
 
@@ -76,7 +92,7 @@ startOver=()=>{
     
 }
 handleClick=(e)=>{
-    
+    this.getdata()
     const {name}=e.target
     if (name==='order') {
         this.props.history.push('/createorder/0')
@@ -117,7 +133,7 @@ isStandard=(id,value)=>{
         return 'green'
     }
     else {
-        var tmp = tree2.filter(p=>p.id==id)
+        var tmp = this.state.tree.filter(p=>p.id==id)
         
 
         var tmp2 = tmp.filter(p=>p.parent.test(this.state.value))
@@ -323,7 +339,7 @@ buttonChange=()=>{
                     size='medium'
                     name='order'
                     onClick={this.handleClick}
-                    disabled={this.state.progress===10?false:true}
+                    disabled={this.state.orderbutton}
                     content='Order'
                     >
                 </Button>
@@ -396,17 +412,23 @@ buttonChange=()=>{
   }
 }
 const mapStateToProps = (state) => {
-  
+  console.log(state)
     return{
       auth:state.firebase.auth,
       guest:state.auth.guest,
+      data:state.firestore.ordered
+
     }
      
   }
 const mapDispatchToProps = (dispatch) =>{
     return{
         createItem:(item)=>dispatch(createItem(item)),
-        getstandard:()=>dispatch(getstandard())
+        getstandard:()=>dispatch(getstandard()),
+        createitemguest:(item)=>dispatch(createitemguest(item))
     }
   }
-export default withRouter(connect(mapStateToProps,mapDispatchToProps)(BuildItemForm))
+export default withRouter(compose(
+    connect(mapStateToProps,mapDispatchToProps),
+    firestoreConnect([{collection:'standard'}])
+  )(BuildItemForm))

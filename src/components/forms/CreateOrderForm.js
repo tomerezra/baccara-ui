@@ -302,8 +302,13 @@ billing=()=>{
     )
     }
 itemlist=()=>{
-    const {auth,data}=this.props
-    var items = data.items.filter(item=>auth.uid===item.userid)    
+    const {auth,data,guestdata,guest}=this.props
+    if (guest) {
+        var items = guestdata.items
+    } else {
+        var items = data.items.filter(item=>auth.uid===item.userid)
+    }
+       
     return(
             <Grid columns='2' verticalAlign='middle'>
             {items.map(item=>{
@@ -500,7 +505,8 @@ const mapStateToProps = (state) => {
           auth:state.firebase.auth,
           profile:state.firebase.profile,
           data:state.firestore.ordered,
-          guest:state.auth.guest
+          guest:state.auth.guest,
+          guestdata:state.data
       }
       
     }

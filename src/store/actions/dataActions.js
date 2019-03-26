@@ -19,6 +19,11 @@ export const createItem = (item)=>{
         
     }
 }
+export const createitemguest=(item)=>{
+    return (dispatch)=>{
+        dispatch({type:'CREATE_ITEM_GUEST',item})
+    }
+}
 export const deleteItem = (item)=>{
     return (dispatch, getState,{firebase})=>{
         const firestore=firebase.firestore()
@@ -121,7 +126,7 @@ export const getstandard = ()=>{
         
         .then(snapshot => {
             snapshot.forEach(doc => {
-              console.log(new RegExp (doc.data().value));
+              console.log(new RegExp (doc.data().value),'i');
             });
           })
           .catch(err => {

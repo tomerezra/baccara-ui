@@ -8,6 +8,13 @@ const initState={
 
 const dataReducer=(state=initState,action)=>{
     switch (action.type) {
+        case 'CREATE_ITEM_GUEST':
+            swal("Success", "The item has been added", "success");
+            console.log(action.item)
+            state.items.push(action.item)
+            return state               
+            
+
         case 'CREATE_ITEM':
             swal("Success", "The item has been added", "success");
             return state ;
