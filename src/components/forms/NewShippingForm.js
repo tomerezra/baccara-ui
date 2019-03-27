@@ -14,7 +14,8 @@ class NewShippingForm extends Component {
             country:'',
             city:'',
             address:'',
-            phone:''
+            phone:'',
+            company:''
         }
     }
   handleChange =(e)=>{
@@ -59,6 +60,17 @@ class NewShippingForm extends Component {
                 iconPosition='left' 
                 placeholder='Last Name'
                 value={data.lastname}
+                onChange={this.handleChange}>
+            </Form.Input>
+            <Form.Input 
+                type="text"
+                id="company"
+                name="company"
+                
+                fluid icon='suitcase' 
+                iconPosition='left' 
+                placeholder='Company'
+                value={data.company}
                 onChange={this.handleChange}>
             </Form.Input>
           <Form.Input 

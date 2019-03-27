@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {Button, Form, Grid, Header,Segment} from 'semantic-ui-react'
 import Validator from 'validator'
 // import InlineError from '../messages/InlineError'
-import {createUser} from '../../store/actions/authAction'
+import {createUser,updateUser} from '../../store/actions/authAction'
 import {withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {Redirect} from 'react-router-dom'
@@ -10,15 +10,15 @@ class SignUpForm extends Component {
     state={
         data:{
 
-            firstname:"",
-            lastname:"",
-            agree:false,
-            country:"",
-            city:"",
-            address:"",
+            // firstname:"",
+            // lastname:"",
+            // agree:false,
+            // country:"",
+            // city:"",
+            // address:"",
             email:"",
-            phone:"",
-            company:"",
+            // phone:"",
+            // company:"",
             password:""
         },
         apidata:{},
@@ -27,22 +27,13 @@ class SignUpForm extends Component {
     }
     componentDidMount = () => {
       
-      
-        this.setState({pagename:this.props.auth.uid? 'Update' : 'Sign Up'})
-        const {profile,auth}=this.props
-        
-        if (!profile.isEmpty) {
-          this.setState({data:{...this.state.data,
-              firstname:profile.firstname,
-              lastname:profile.lastname,
-              country:profile.country,
-              city:profile.city,
-              address:profile.address,
-              phone:profile.phone,
-              email:auth.email,
-              company:profile.company
-            }})
+        const {auth}=this.props
+        if (auth.uid) {
+          this.setState({pagename:'Update'})
+          this.setState({data:{...this.state.data,email:auth.email}})
         }
+        else this.setState({pagename:'Sign Up'})
+        
     }
   
     handleChange=(e)=>{
@@ -54,12 +45,12 @@ class SignUpForm extends Component {
     handleSubmit=(e)=>{
         e.preventDefault()
         if (this.props.auth.uid) {
-            //update user function
+            this.props.updateUser(this.state.data)
         }
         else if(this.validate())
         {
           this.props.createUser(this.state.data)
-          // this.props.history.push('/acount')   
+          this.props.history.push('/acount')   
         }
         
         
@@ -83,7 +74,7 @@ class SignUpForm extends Component {
        
         <Form >
           
-          <Form.Input 
+          {/* <Form.Input 
                 type="text"
                 id="firstname"
                 name="firstname"
@@ -148,8 +139,8 @@ class SignUpForm extends Component {
                 placeholder='Phone Number'
                 value={data.phone}
                 onChange={this.handleChange}>
-            </Form.Input>
-            <Form.Input 
+            </Form.Input> */}
+            {/* <Form.Input 
                 type="text"
                 id="company"
                 name="company"
@@ -159,7 +150,7 @@ class SignUpForm extends Component {
                 placeholder='Company'
                 value={data.company}
                 onChange={this.handleChange}>
-            </Form.Input>
+            </Form.Input> */}
             <Form.Input 
                 type="email"
                 id="email"
@@ -225,8 +216,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) =>{
   return{
-      createUser:(user)=>dispatch(createUser(user))
-
+      createUser:(user)=>dispatch(createUser(user)),
+      updateUser:(data)=>dispatch(updateUser(data))
   }
 }
 

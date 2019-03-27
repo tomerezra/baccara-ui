@@ -33,6 +33,31 @@ export const signOut = ()=>{
         
     }
 }
+export const updateUser = (data)=>{
+    return (dispatch, getState,{firebase})=>{
+        console.log(data)
+        var user = firebase.auth().currentUser
+        user.updateEmail(data.email)
+        
+        .then(()=>{
+            dispatch({type:'UPDATE_EMAIL_SUCCESS'})
+        })
+        .catch((err)=>{
+            dispatch({type:'UPDATE_EMAIL_ERROR',err})
+        })
+        .then(()=>{
+            user.updatePassword(data.password)
+        })
+        .then(()=>{
+            dispatch({type:'UPDATE_PASS_SUCCESS'})
+        })
+        .catch((err)=>{
+            dispatch({type:'UPDATE_PASS_ERROR',err})
+        })
+        
+    }
+}
+
 export const createUser = (user)=>{
     return (dispatch, getState, {firebase})=>{
         
@@ -40,18 +65,20 @@ export const createUser = (user)=>{
         firebase.auth().createUserWithEmailAndPassword(
             user.email,
             user.password
-        ).then((resp)=>{
-            return firestore.collection('users').doc(resp.user.uid).set({
-                firstname:user.firstname,
-                lastname:user.lastname,
-                country:user.country,
-                city:user.city,
-                address:user.address,
-                phone:user.phone,
-                company:user.company
+        )
+        // .then((resp)=>{
+        //     return firestore.collection('users').doc(resp.user.uid).set({
+        //         firstname:user.firstname,
+        //         lastname:user.lastname,
+        //         country:user.country,
+        //         city:user.city,
+        //         address:user.address,
+        //         phone:user.phone,
+        //         company:user.company
 
-            })
-        }).then(()=>{
+        //     })
+        // })
+        .then(()=>{
             dispatch({type: 'CREATE_USER'})
         }).catch((err)=>{
             dispatch({type: 'CREATE_USER_ERROR',err})

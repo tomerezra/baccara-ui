@@ -27,6 +27,32 @@ const initState = {
               ...state,
               authError:'Login faild'
           }
+      case 'UPDATE_EMAIL_SUCCESS':
+        console.log('update email success')  
+        return {
+            ...state,
+            authError:null
+            
+    }
+      case 'UPDATE_EMAIL_ERROR':
+          console.log(action.err.message)  
+          return {
+              ...state,
+              authError:'Update email faild'
+          }
+          case 'UPDATE_PASS_SUCCESS':
+        console.log('update pass success')  
+        return {
+            ...state,
+            authError:null
+            
+    }
+      case 'UPDATE_PASS_ERROR':
+          console.log(action.err.message)  
+          return {
+              ...state,
+              authError:'Update pass faild'
+          }
       case 'SIGNOUT_SUCCESS':
           console.log('signout success')
           return{

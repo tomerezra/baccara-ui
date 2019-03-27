@@ -31,20 +31,15 @@ export class CreateOrderForm extends Component {
 
   }
 componentDidMount(){
+    const {auth}=this.props
     if (this.props.match.params.id!=0) {
         this.setState({step:3})
-        this.clone()
+    }
+    if (!auth.isEmpty) {
+        this.setState({data:{...this.state.data,email:auth.email}})
+        
     }
     
-    const {profile,auth}=this.props
-    
-    
-        if (!profile.isEmpty) {
-          this.setState({data:{...this.state.data,
-              email:auth.email,
-              company:profile.company
-            }})
-        }
   }
 clone=()=>{
     if (this.props.match.params.id!=0) {
@@ -110,6 +105,7 @@ handleChange=(e,data)=>{
             city:tmp[0].city,
             address:tmp[0].address,
             phone:tmp[0].phone,
+            company:tmp[0].company
             
           }})
     }
@@ -225,7 +221,7 @@ nextstep=(e)=>{
 billing=()=>{
     var tmp = this.props.data.addresses.filter(adr=>adr.userid===this.props.auth.uid)
     var tmp2 = tmp.map(adr=>{return{text:adr.firstname+' '+ adr.lastname,value:adr.id}})
-    
+    console.log(this.state.data.email)
     return(
     <>
     <Select 
@@ -495,7 +491,7 @@ const mapStateToProps = (state) => {
     return{
          
           auth:state.firebase.auth,
-          profile:state.firebase.profile,
+        //   profile:state.firebase.profile,
           data:state.firestore.ordered,
           guest:state.auth.guest,
           guestdata:state.data

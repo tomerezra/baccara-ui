@@ -18,7 +18,7 @@ import fbConfig from '../src/config/fbConfig'
 
 // react-redux-firebase config
 const rrfConfig = {
-  userProfile: 'users',
+  // userProfile: 'users',
   useFirestoreForProfile: true, // Firestore for Profile instead of Realtime DB
   attachAuthIsReady:true
 }
