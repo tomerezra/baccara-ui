@@ -90,7 +90,7 @@ class LoginForm extends Component {
                     fluid icon='lock'
                     iconPosition='left'
                     placeholder='Password'
-                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                    // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                     value={data.password}
                     onChange={this.HandleChange}>
             </Form.Input>

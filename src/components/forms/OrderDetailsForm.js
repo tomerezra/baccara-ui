@@ -17,6 +17,7 @@ class OrderDetailsForm extends Component {
     
     reload=()=>{
         const id = this.props.match.params.id
+        
         const tmp=this.props.data.orders.filter(order=>id===order.id)
         const data = tmp[0]
         
@@ -98,12 +99,12 @@ class OrderDetailsForm extends Component {
         
     return (
       <div style={{maxWidth: 450}}>
-        {/* <MobileCotainer pagename={this.state.pagename}/> */}
+        
         <Header textAlign='center'>{this.state.pagename}</Header>
         <Segment size='mini' textAlign='center' >
                   {this.reload()}
                   <Button
-                    onClick={()=>{this.props.history.push('/createorder/'+this.state.orderid)}}
+                    onClick={()=>{this.props.history.push('/createorder/'+this.props.match.params.id)}}
                     
                     content='Clone'
                     color='linkedin'

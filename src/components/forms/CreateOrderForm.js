@@ -31,6 +31,10 @@ export class CreateOrderForm extends Component {
 
   }
 componentDidMount(){
+    if (this.props.match.params.id!=0) {
+        this.setState({step:3})
+        this.clone()
+    }
     
     const {profile,auth}=this.props
     
@@ -42,6 +46,38 @@ componentDidMount(){
             }})
         }
   }
+clone=()=>{
+    if (this.props.match.params.id!=0) {
+                
+        var tmp = this.props.data.orders.filter(order=>order.id===this.props.match.params.id)
+        tmp={
+            firstname:tmp[0].firstname,
+            lastname:tmp[0].lastname,
+            agree:false,
+            country:tmp[0].country,
+            city:tmp[0].city,
+            address:tmp[0].address,
+            email:tmp[0].email,
+            phone:tmp[0].phone,
+            company:tmp[0].company,
+            orderitems:tmp[0].orderitems
+        }
+        this.state.data=tmp
+        // this.setState({data:{...this.state.data,
+        //     firstname:tmp[0].firstname,
+        //     lastname:tmp[0].lastname,
+        //     agree:false,
+        //     country:tmp[0].country,
+        //     city:tmp[0].city,
+        //     address:tmp[0].address,
+        //     email:tmp[0].email,
+        //     phone:tmp[0].phone,
+        //     company:tmp[0].company,
+        //     orderitems:tmp[0].orderitems
+        // }})
+    }
+}
+
 handleChange=(e,data)=>{
     const {value,name,id,type}=e.target
     const {guest} =this.props
@@ -85,7 +121,9 @@ handleChange=(e,data)=>{
     
 }
 orderdetails=()=>{
+    
     const {data} =this.state
+    console.log(data)
     var items = data.orderitems.map(item=>{
         return(
             <Table.Row>
@@ -352,7 +390,7 @@ itemlist=()=>{
 
 confirm=()=>{
     
-    console.log(this.state.data.orderitems)
+    this.clone()
     return(
            <Container textAlign='center'>
            
@@ -381,7 +419,7 @@ confirm=()=>{
       }
     render() {
         const {auth,guest}=this.props
-    
+        
         if (!auth.uid) {
             if (!guest) {
                 return <Redirect to='/'/>
@@ -389,6 +427,7 @@ confirm=()=>{
         }
 
         if (!this.isEmptyObject(this.props.data)) {
+            
             return (
                 <div style={{ maxWidth: 450 }}>
                  
@@ -416,7 +455,7 @@ confirm=()=>{
                       </Step.Content>
                       </Step>
                   </Step.Group>
-                  <Segment >
+                  <Segment>
                   
                   {this.state.step===1?this.itemlist():null}
                   {this.state.step===2?this.billing():null}
@@ -471,5 +510,5 @@ const mapDispatchToProps = (dispatch) =>{
   }
 export default withRouter(compose(
     connect(mapStateToProps,mapDispatchToProps),
-    firestoreConnect([{collection:'items'},{collection:'addresses'}])
+    firestoreConnect([{collection:'items'},{collection:'addresses'},{collection:'orders'}])
   )(CreateOrderForm))
