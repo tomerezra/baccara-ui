@@ -132,7 +132,9 @@ isStandard=(id,value)=>{
         return 'green'
     }
     else {
-        var tmp = this.state.tree.filter(p=>p.id===id)
+        
+        var tmp = this.state.tree.filter(p=>p.id==id)
+        
         
 
         var tmp2 = tmp.filter(p=>p.parent.test(this.state.value))
@@ -154,7 +156,7 @@ isStandard=(id,value)=>{
             this.state.change[id-2]=true
             this.setState({first:true})
         }
-        
+        console.log('aaa')
         return 'yellow'
     }
     
@@ -411,7 +413,7 @@ buttonChange=()=>{
   }
 }
 const mapStateToProps = (state) => {
-  console.log(state)
+  
     return{
       auth:state.firebase.auth,
       guest:state.auth.guest,

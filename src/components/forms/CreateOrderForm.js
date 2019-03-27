@@ -44,7 +44,7 @@ componentDidMount(){
   }
 handleChange=(e,data)=>{
     const {value,name,id,type}=e.target
-    
+    const {guest} =this.props
     if (type==='checkbox') {
         var itemtopush={id:id,serial:name,quantity:value}
         if (e.target.checked) {
@@ -52,7 +52,7 @@ handleChange=(e,data)=>{
                         
         }
         else {
-            var tmp=this.state.data.orderitems.filter(item=>!(item.id===id))
+            var tmp=this.state.data.orderitems.filter(item=>!(guest?item.serial:item.id===id))
             
             this.setState({data:{...this.state.data,orderitems:tmp}})
             
@@ -60,8 +60,8 @@ handleChange=(e,data)=>{
         
     }
     else if (name==='quantity' && this.state.data.orderitems.length>0) {
-        var tmp=this.state.data.orderitems.filter(item=>(item.id===id))
-        console.log(tmp)
+        var tmp=this.state.data.orderitems.filter(item=>(guest?item.serial:item.id===id))
+        
         tmp[0].quantity=value
     }
     else if (data.name==='select') {
@@ -196,6 +196,7 @@ billing=()=>{
         placeholder='Select your address' 
         options={tmp2} 
         onChange={this.handleChange}
+        disabled={this.props.guest}
         />
     
     <Grid textAlign='center'>
@@ -310,10 +311,6 @@ itemlist=()=>{
             <Grid columns='2' verticalAlign='middle'>
             {items.map(item=>{
                 
-                if (item.id===this.state.chose) {
-                    item.checked=true
-                    
-                }
                 return(
                    
                    <Grid.Row>
@@ -321,7 +318,7 @@ itemlist=()=>{
                     <Grid.Column>
                     <Form.Checkbox
                         
-                        id={item.id}
+                        id={guest?item.serial:item.id}
                         name={item.serial}
                         label={item.partname}
                         onChange={this.handleChange}
@@ -355,7 +352,7 @@ itemlist=()=>{
 
 confirm=()=>{
     
-    
+    console.log(this.state.data.orderitems)
     return(
            <Container textAlign='center'>
            

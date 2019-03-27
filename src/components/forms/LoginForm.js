@@ -73,7 +73,7 @@ class LoginForm extends Component {
                     type="text"
                     id="email"
                     name="email"
-                    // pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                     fluid icon='user' 
                     iconPosition='left' 
                     placeholder='E-mail address'
@@ -90,7 +90,7 @@ class LoginForm extends Component {
                     fluid icon='lock'
                     iconPosition='left'
                     placeholder='Password'
-                    // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                     value={data.password}
                     onChange={this.HandleChange}>
             </Form.Input>

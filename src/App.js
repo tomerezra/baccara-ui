@@ -14,16 +14,17 @@ import SearchNavbar from "./components/SearchNavbar"
 import ItemsPage from './pages/ItemsPage';
 import ShippingPage from './pages/ShippingPage';
 import OrdersPage from './pages/OrdersPage';
+import initReactFastclick from 'react-fastclick';
 
 
 class App extends Component{
  
   
   render(){
-    
+    initReactFastclick();
     return (
       <>
-        {/* <Navbar/> */}
+        
         <SearchNavbar/>
         <div style={{paddingBottom:'15%',paddingTop:'20%'}}>
         

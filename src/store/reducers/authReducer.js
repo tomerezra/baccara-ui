@@ -18,7 +18,8 @@ const initState = {
         console.log('log in success')  
         return {
             ...state,
-            authError:null
+            authError:null,
+            guest:false
     }
       case 'LOGIN_ERROR':
           console.log('log in error')  
