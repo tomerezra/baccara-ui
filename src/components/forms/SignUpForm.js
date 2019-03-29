@@ -23,19 +23,23 @@ class SignUpForm extends Component {
         },
         apidata:{},
         errors:{},
-        pagename:''
+        
     }
     componentDidMount = () => {
       
         const {auth}=this.props
         if (auth.uid) {
-          this.setState({pagename:'Update'})
+          
           this.setState({data:{...this.state.data,email:auth.email}})
         }
-        else this.setState({pagename:'Sign Up'})
+        
         
     }
-  
+    componentDidUpdate(prevProps){
+      if(prevProps.auth.uid !== this.props.auth.uid){
+        this.props.history.push('/acount')
+      }
+   }
     handleChange=(e)=>{
         const {value,name}=e.target
         name==="agree" ? this.setState({data:{...this.state.data,[name]:!this.state.data.agree}}) :
@@ -50,7 +54,6 @@ class SignUpForm extends Component {
         else if(this.validate())
         {
           this.props.createUser(this.state.data)
-          this.props.history.push('/acount')   
         }
         
         
@@ -63,11 +66,11 @@ class SignUpForm extends Component {
     const {data}=this.state
     const {auth,authError}=this.props
     // if (auth.uid) {return <Redirect to='/acount'/>}
-    
+    var pagename=auth.uid?'Update':'Signup'
     return (
       <div style={{maxWidth: 450}}>
         {/* <MobileCotainer pagename={this.props.logedin? 'Update Profile':'Sign Up'}/> */}
-        <Header textAlign='center'>{this.state.pagename}</Header>
+        <Header textAlign='center'>{pagename}</Header>
         <Segment>
     <Grid textAlign='center' >
       <Grid.Column>
@@ -209,7 +212,8 @@ const mapStateToProps = (state) => {
   return{
         authError:state.auth.authError,
         auth:state.firebase.auth,
-        profile:state.firebase.profile
+        profile:state.firebase.profile,
+        signup:state.firebase.signup
     }
     
   }

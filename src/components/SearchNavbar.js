@@ -63,7 +63,7 @@ handleResultSelect = (e, {result}) => {
             
             tmp.push(
               <Table.Row>
-                <Table.Cell>{key}</Table.Cell>
+                <Table.Cell>{key.charAt(0).toUpperCase()+key.slice(1)}</Table.Cell>
                 <Table.Cell>{(key,result.obj[key])?'Yes':'No'}</Table.Cell>
               </Table.Row>
             )
@@ -71,7 +71,7 @@ handleResultSelect = (e, {result}) => {
           else if (key==='createdAt') {
             tmp.push(
               <Table.Row>
-                <Table.Cell>{key}</Table.Cell>
+                <Table.Cell>{key.charAt(0).toUpperCase()+key.slice(1)}</Table.Cell>
                 <Table.Cell>{(key,moment(result.obj[key].toDate()).calendar())}</Table.Cell>
               </Table.Row>
               
@@ -79,7 +79,7 @@ handleResultSelect = (e, {result}) => {
           }
           else tmp.push(
             <Table.Row>
-              <Table.Cell>{key}</Table.Cell>
+              <Table.Cell>{key.charAt(0).toUpperCase()+key.slice(1)}</Table.Cell>
               <Table.Cell>{(key,result.obj[key])}</Table.Cell>
             </Table.Row>
           )

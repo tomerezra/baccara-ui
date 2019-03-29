@@ -61,7 +61,7 @@ export const updateUser = (data)=>{
 export const createUser = (user)=>{
     return (dispatch, getState, {firebase})=>{
         
-        const firestore=firebase.firestore()
+        // const firestore=firebase.firestore()
         firebase.auth().createUserWithEmailAndPassword(
             user.email,
             user.password
@@ -80,6 +80,7 @@ export const createUser = (user)=>{
         // })
         .then(()=>{
             dispatch({type: 'CREATE_USER'})
+            
         }).catch((err)=>{
             dispatch({type: 'CREATE_USER_ERROR',err})
             
