@@ -16,7 +16,7 @@ export class CreateOrderForm extends Component {
             firstname:"",
             lastname:"",
             agree:false,
-            country:"",
+            // country:"",
             city:"",
             address:"",
             email:"",
@@ -32,7 +32,7 @@ export class CreateOrderForm extends Component {
   }
 componentDidMount(){
     const {auth}=this.props
-    if (this.props.match.params.id!=0) {
+    if (this.props.match.params.id!==0) {
         this.setState({step:3})
     }
     if (!auth.isEmpty) {
@@ -42,14 +42,14 @@ componentDidMount(){
     
   }
 clone=()=>{
-    if (this.props.match.params.id!=0) {
+    if (this.props.match.params.id!==0) {
                 
         var tmp = this.props.data.orders.filter(order=>order.id===this.props.match.params.id)
         tmp={
             firstname:tmp[0].firstname,
             lastname:tmp[0].lastname,
             agree:false,
-            country:tmp[0].country,
+            // country:tmp[0].country,
             city:tmp[0].city,
             address:tmp[0].address,
             email:tmp[0].email,
@@ -101,7 +101,7 @@ handleChange=(e,data)=>{
         this.setState({data:{...this.state.data,
             firstname:tmp[0].firstname,
             lastname:tmp[0].lastname,
-            country:tmp[0].country,
+            // country:tmp[0].country,
             city:tmp[0].city,
             address:tmp[0].address,
             phone:tmp[0].phone,
@@ -152,10 +152,10 @@ orderdetails=()=>{
                         <Table.Cell>City</Table.Cell>
                         <Table.Cell>{data.city}</Table.Cell>
                     </Table.Row>
-                    <Table.Row>
+                    {/* <Table.Row>
                         <Table.Cell>Country</Table.Cell>
                         <Table.Cell>{data.country}</Table.Cell>
-                    </Table.Row>
+                    </Table.Row> */}
                     <Table.Row>
                         <Table.Cell>Company</Table.Cell>
                         <Table.Cell>{data.company}</Table.Cell>
@@ -260,7 +260,7 @@ billing=()=>{
                             value={this.state.data.lastname}
                             onChange={this.handleChange}>
                         </Form.Input>
-                    <Form.Input 
+                    {/* <Form.Input 
                             type="text"
                             id="country"
                             name="country"
@@ -270,7 +270,7 @@ billing=()=>{
                             placeholder='Country'
                             value={this.state.data.country}
                             onChange={this.handleChange}>
-                        </Form.Input>
+                        </Form.Input> */}
                     <Form.Input 
                             type="text"
                             id="city"

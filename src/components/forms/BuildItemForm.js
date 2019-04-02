@@ -6,8 +6,9 @@ import swal from '@sweetalert/with-react'
 import {withRouter,Redirect} from 'react-router-dom'
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
-import Parts from '../../data/parts'
-
+// import Parts from '../../data/parts'
+import Axios from 'axios';
+import firebase from 'firebase/app'
 
 
 class BuildItemForm extends Component {
@@ -39,12 +40,28 @@ class BuildItemForm extends Component {
       change:[null,null,null,null,null,null,null,null,null,null],
       first:false,
       tree:[],
-      orderbutton:true
+      orderbutton:true,
+      partdata:{},
+      questions:[]
   }
+
 componentDidMount(){
+    var db =firebase.firestore()
+    var tree=[]
     this.setState({datatmp:this.state.data})
+    Axios.get('http://localhost:49699/api/AllItem')
+    .then(res=>this.setState({partdata:res.data}))
+      
+    Axios.get('http://localhost:49699/api/Question')
+    .then(res=>this.setState({questions:res.data}))
     
-    
+    db.collection("standard").orderBy('id', 'asc').get().then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {    
+            tree.push({id:doc.data().id,parent:new RegExp(doc.data().parent,'i'),value:new RegExp(doc.data().value,'i')});
+        });
+       
+    })
+    this.setState({tree})
     // swal({
     //     content:(
     //     <div>
@@ -58,7 +75,7 @@ getdata=()=>{
     const {data} =this.props
     var tree = data.standard.map(x=>{return{id:x.id,parent:new RegExp(x.parent,'i'),value:new RegExp(x.value,'i')}})
     this.setState({tree})
-            
+        
           
 }
 handleSubmit=(e)=>{
@@ -91,7 +108,8 @@ startOver=()=>{
     
 }
 handleClick=(e)=>{
-    this.getdata()
+    
+    // this.getdata()
     const {name}=e.target
     if (name==='order') {
         this.props.history.push('/createorder/0')
@@ -132,21 +150,14 @@ isStandard=(id,value)=>{
         return 'green'
     }
     else {
-        
         var tmp = this.state.tree.filter(p=>p.id==id)
-        
-        
-
         var tmp2 = tmp.filter(p=>p.parent.test(this.state.value))
       if(tmp2.length===0){
         return 'yellow'
       }
-      
-        else if (tmp2[0].value.test(value)) {
-            
+        else if (tmp2[0].value.test(value)) {  
             return 'green'
         }
-        
         else return 'yellow'
    }
    
@@ -156,7 +167,7 @@ isStandard=(id,value)=>{
             this.state.change[id-2]=true
             this.setState({first:true})
         }
-        console.log('aaa')
+        
         return 'yellow'
     }
     
@@ -165,22 +176,27 @@ isStandard=(id,value)=>{
     
 }
 makeQuestions=()=>{
+    const {partdata,questions,progress} =this.state
     this.setState({cancel:false})
-    const tmp = Parts.filter(part=>part.id===this.state.progress+1)
-    const part=tmp[0]
+    var part = partdata[progress+1]
+    var question = questions.filter(q=>q.QID===progress+1)
+    question=question[0]
+    
+    // const tmp = Parts.filter(part=>part.id===this.state.progress+1)
+    // const part=tmp[0]
     
     
-    const buttons =part.options.map(opt=>
+    const buttons =part.map(opt=>
                                     <Grid.Column
                                     style={{width:'30%'}}>
                                     <Button 
                                         size='mini'
                                         fluid
-                                        content={opt.name}
-                                        value={opt.value} 
-                                        color={this.isStandard(part.id,opt.value)}
+                                        content={opt.Description}
+                                        value={opt.ID} 
+                                        color={this.isStandard(progress+1,opt.ID)}
                                         onClick={(event,data)=>{
-                                            this.setState({data:{...this.state.data,[part.value]:data.value}})
+                                            this.setState({data:{...this.state.data,[question.Name.toLowerCase()]:data.value}})
                                             this.setState(prev=>{return{add:{...this.state.add,serial:prev.add.serial+data.value,standard:data.color==='yellow'?false:true}}})
                                             
                                             this.setState({value:data.value})
@@ -196,10 +212,11 @@ makeQuestions=()=>{
 
     
     swal({
+        
         content:(
         <div>
-            <h1>{part.name}</h1>
-            <p>{part.question}</p>
+            <h1>{question.Name}</h1>
+            <p>{question.Question}</p>
             <Grid columns='3' centered>
                 {buttons}
             </Grid>
@@ -240,6 +257,8 @@ makeQuestions=()=>{
      
     
 })}
+
+
 buttonChange=()=>{
     
     if (this.state.progress===10) {
@@ -262,7 +281,6 @@ buttonChange=()=>{
         return (
             
             <div style={{width:'100%',maxWidth: 450}} >
-            {/* <MobileContainer pagename={this.state.pagename}/> */}
             <Header textAlign='center'>{this.state.pagename}</Header>
             <Segment style={{display:this.state.progress>0?'block':'none'}} compact>
                 {/* <Grid columns={10}  divided style={{fontSize:'8px'}}>

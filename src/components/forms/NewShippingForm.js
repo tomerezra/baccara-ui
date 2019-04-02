@@ -4,18 +4,20 @@ import {Button,Grid,Header,Segment,Form} from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import {Redirect} from 'react-router-dom'
 import {createAddress} from '../../store/actions/dataActions'
+import Axios from 'axios';
 
 class NewShippingForm extends Component {
     state={
         pagename:'New Shipping Address',
         data:{
-            firstname:'',
-            lastname:'',
-            country:'',
-            city:'',
-            address:'',
-            phone:'',
-            company:''
+            FirstName:'',
+            LastName:'',
+            // Country:'',
+            PhoneNumber:'',
+            CompanyName:'',
+            Adress:'',
+            City:'',
+            UID:this.props.auth.uid
         }
     }
   handleChange =(e)=>{
@@ -24,8 +26,8 @@ class NewShippingForm extends Component {
       this.setState({data:{...this.state.data,[name]:value}})
   } 
   handleSubmit=()=>{
-    this.props.createAddress(this.state.data)
-    
+    // this.props.createAddress(this.state.data)
+    Axios.post('http://localhost:49699/api/Addressapp','='+JSON.stringify(this.state.data))
   }   
    render(){
     const {data}=this.state
@@ -42,79 +44,79 @@ class NewShippingForm extends Component {
         <Header textAlign='center'>{this.state.pagename}</Header>
           <Form.Input 
                 type="text"
-                id="firstname"
-                name="firstname"
+                id="FirstName"
+                name="FirstName"
                 
                 fluid icon='user' 
                 iconPosition='left' 
                 placeholder='First Name'
-                value={data.firstname}
+                value={data.FirstName}
                 onChange={this.handleChange}>
             </Form.Input>
           <Form.Input 
                 type="text"
-                id="lastname"
-                name="lastname"
+                id="LastName"
+                name="LastName"
                 
                 fluid icon='user' 
                 iconPosition='left' 
                 placeholder='Last Name'
-                value={data.lastname}
+                value={data.LastName}
                 onChange={this.handleChange}>
             </Form.Input>
             <Form.Input 
                 type="text"
-                id="company"
-                name="company"
+                id="CompanyName"
+                name="CompanyName"
                 
                 fluid icon='suitcase' 
                 iconPosition='left' 
                 placeholder='Company'
-                value={data.company}
+                value={data.CompanyName}
                 onChange={this.handleChange}>
             </Form.Input>
-          <Form.Input 
+          {/* <Form.Input 
                 type="text"
-                id="country"
-                name="country"
+                id="Country"
+                name="Country"
                 
                 fluid icon='globe' 
                 iconPosition='left' 
                 placeholder='Country'
-                value={data.country}
+                value={data.Country}
                 onChange={this.handleChange}>
-            </Form.Input>
+            </Form.Input> */}
           <Form.Input 
                 type="text"
-                id="city"
-                name="city"
+                id="City"
+                name="City"
                 
                 fluid icon='address card' 
                 iconPosition='left' 
                 placeholder='City'
-                value={data.city}
+                value={data.City}
                 onChange={this.handleChange}>
             </Form.Input>
           <Form.Input 
                 type="text"
-                id="address"
-                name="address"
+                id="Adress"
+                name="Adress"
                 
                 fluid icon='envelope' 
                 iconPosition='left' 
                 placeholder='Address'
-                value={data.address}
+                value={data.Adress}
                 onChange={this.handleChange}>
             </Form.Input>
           <Form.Input 
                 type="text"
-                id="phone"
-                name="phone"
+                id="PhoneNumber"
+                name="PhoneNumber"
                 
                 fluid icon='phone' 
                 iconPosition='left' 
                 placeholder='Phone Number'
-                value={data.phone}
+                value={data.PhoneNumber}
                 onChange={this.handleChange}>
             </Form.Input>
             <Button 

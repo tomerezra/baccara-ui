@@ -6,6 +6,8 @@ import {createUser,updateUser} from '../../store/actions/authAction'
 import {withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {Redirect} from 'react-router-dom'
+import Axios from 'axios';
+import firebase from 'firebase/app'
 class SignUpForm extends Component {
     state={
         data:{
@@ -54,6 +56,8 @@ class SignUpForm extends Component {
         else if(this.validate())
         {
           this.props.createUser(this.state.data)
+           
+          
         }
         
         
@@ -190,10 +194,48 @@ class SignUpForm extends Component {
                 {auth.uid? 'Update' : 'Sign Up'}
             </Button>
             
-            <Button color='grey' onClick={()=>{this.props.history.goBack()}}>
+            
+          <Button icon='google' style={{display:auth.uid?'none':''}} color='google plus' onClick={()=>{
+            var provider = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithPopup(provider).then(function(result) {
+              // This gives you a Google Access Token. You can use it to access the Google API.
+              var token = result.credential.accessToken;
+              // The signed-in user info.
+              var user = result.user;
+              // ...
+            }).catch(function(error) {
+              // Handle Errors here.
+              var errorCode = error.code;
+              var errorMessage = error.message;
+              // The email of the user's account used.
+              var email = error.email;
+              // The firebase.auth.AuthCredential type that was used.
+              var credential = error.credential;
+              // ...
+            });
+          }}></Button>
+          <Button icon='facebook' style={{display:auth.uid?'none':''}} color='facebook' onClick={()=>{
+            var provider = new firebase.auth.FacebookAuthProvider();
+            firebase.auth().signInWithPopup(provider).then(function(result) {
+              // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+              var token = result.credential.accessToken;
+              // The signed-in user info.
+              var user = result.user;
+              // ...
+            }).catch(function(error) {
+              // Handle Errors here.
+              var errorCode = error.code;
+              var errorMessage = error.message;
+              // The email of the user's account used.
+              var email = error.email;
+              // The firebase.auth.AuthCredential type that was used.
+              var credential = error.credential;
+              // ...
+            });
+          }}></Button>
+          <Button color='grey' onClick={()=>{this.props.history.goBack()}}>
               Cancel
             </Button>
-          
         </Form>
         
       </Grid.Column>

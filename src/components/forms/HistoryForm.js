@@ -7,14 +7,24 @@ import { connect } from 'react-redux'
 import CardComponent from '../CardComponent';
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
+import Axios from 'axios';
 
 class HistoryForm extends Component{
    state={
-       pagename:''
+       pagename:'',
+       addresses:[],
+       items:[],
+       orders:[]
        
        
    }
    componentDidMount(){
+        Axios.get('http://localhost:49699/api/Address')
+          .then(res=>this.setState({addresses:res.data}))
+        // Axios.get('http://localhost:49699/api/Item')
+        //   .then(res=>this.setState({items:res.data}))
+        // Axios.get('http://localhost:49699/api/Order')
+        //   .then(res=>this.setState({orders:res.data}))
         const name= this.props.pagename
         // tree.map((item)=>{this.props.standard(item)})
         if (name==='orders') {
@@ -44,7 +54,7 @@ class HistoryForm extends Component{
 
   tmp =()=>{
     const {auth,data} = this.props
-    
+    const {items,addresses,orders}=this.state
       if (this.props.pagename==='orders') {
         var tmp = data.orders.filter(order=>auth.uid===order.userid)
         if (tmp.length>0) {
@@ -68,7 +78,8 @@ class HistoryForm extends Component{
        
       }
       else if (this.props.pagename==='shipping') {
-        var tmp = data.addresses.filter(address=>auth.uid===address.userid)
+        var tmp = addresses.filter(address=>auth.uid===address.UID)
+        
         if (tmp.length>0) {
           return(
             tmp.map(address => <CardComponent address={address} delete={this.props.deleteAddress}/>)
@@ -81,16 +92,16 @@ class HistoryForm extends Component{
     } 
     
     isEmptyObject=(obj)=>{
-      return (Object.getOwnPropertyNames(obj).length === 3);
+      return (Object.getOwnPropertyNames(obj).length === 0);
     }
   render(){
     const {auth}=this.props
     
     if (!auth.uid) {return <Redirect to='/'/>}
-    if (this.isEmptyObject(this.props.data)) {
+    if (!this.isEmptyObject(this.props.data)) {
       return(
         <div style={{maxWidth: 450}}>
-            {/* <MobileCotainer pagename={this.state.pagename}/> */}
+            
             <Header textAlign='center'>{this.state.pagename}</Header>
               <Segment textAlign='center' >
                   <Grid verticalAlign='top' columns={1} centered>

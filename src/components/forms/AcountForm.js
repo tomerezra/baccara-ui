@@ -25,7 +25,7 @@ class HomePageForm extends Component{
             
             <Header textAlign='center'>{this.state.pagename}</Header>
             <Segment textAlign='center'>
-                <Grid verticalAlign='top' columns={2} centered columns='equal'>
+                <Grid verticalAlign='top' centered columns='equal'>
                 <Grid.Row >
                   
                   <Grid.Column >

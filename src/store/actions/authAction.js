@@ -1,3 +1,5 @@
+import Axios from 'axios'
+
 export const logasguest =()=>{
     return(dispatch, getState)=>{
         dispatch({type:'GUEST'})
@@ -11,9 +13,13 @@ export const signIn = (credentials)=>{
             credentials.email,
             credentials.password
         )
+        
         .then(()=>{
+                       
             dispatch({type:'LOGIN_SUCCESS'})
+                       
         })
+        
         .catch((err)=>{
             dispatch({type:'LOGIN_ERROR',err})
         })
@@ -66,18 +72,19 @@ export const createUser = (user)=>{
             user.email,
             user.password
         )
-        // .then((resp)=>{
-        //     return firestore.collection('users').doc(resp.user.uid).set({
-        //         firstname:user.firstname,
-        //         lastname:user.lastname,
-        //         country:user.country,
-        //         city:user.city,
-        //         address:user.address,
-        //         phone:user.phone,
-        //         company:user.company
+        .then((resp)=>{
+            console.log(resp.user.uid)
+            Axios.post('http://localhost:49699/api/Customer','='+resp.user.uid)
+            // return firestore.collection('addresses').add({
+            //     userid:resp.user.uid,
+            //     country:user.country,
+            //     city:user.city,
+            //     address:user.address,
+            //     phone:user.phone,
+            //     company:user.company
 
-        //     })
-        // })
+            // })
+        })
         .then(()=>{
             dispatch({type: 'CREATE_USER'})
             

@@ -9,28 +9,30 @@ export class CardComponent extends Component {
   itemorcard=()=>{
     
     if (this.props.location.pathname==='/orders') {
+      const {id,status,createdAt}=this.props.order
       return(
         <Card
               onClick={()=>{this.props.history.push('/orderdetails/' + this.props.order.id)}}
               centered 
               fluid>
               <Card.Content>
-                <Card.Header>{this.props.order.id}</Card.Header>
-                <Card.Meta>{moment(this.props.order.createdAt.toDate()).calendar()}</Card.Meta>
-                <Card.Description>{this.props.order.status}</Card.Description>
+                <Card.Header>{id}</Card.Header>
+                <Card.Meta>{moment(createdAt.toDate()).calendar()}</Card.Meta>
+                <Card.Description>{status}</Card.Description>
                 
               </Card.Content>
           </Card>
       )
       
     } else if(this.props.location.pathname==='/items'){
+      const {partname,serial} = this.props.item
       return(
           <Card
               centered 
               fluid>
               <Card.Content>
-                <Card.Header>{this.props.item.partname}</Card.Header>
-                <Card.Meta>{this.props.item.serial}
+                <Card.Header>{partname}</Card.Header>
+                <Card.Meta>{serial}
                 <Button
                     onClick={()=>{this.props.delete(this.props.item)}}
                     floated='right'
@@ -48,13 +50,14 @@ export class CardComponent extends Component {
       
     }
     else if(this.props.location.pathname==='/shipping'){
+      const {FirstName,LastName,Adress,City}=this.props.address
       return(
           <Card
               centered 
               fluid>
               <Card.Content>
-                <Card.Header>{this.props.address.country}</Card.Header>
-                <Card.Meta>{this.props.address.city}
+                <Card.Header>{FirstName} {LastName}</Card.Header>
+                <Card.Meta>{City}
                 <Button
                     onClick={()=>{this.props.delete(this.props.address)}}
                     floated='right'
@@ -65,7 +68,7 @@ export class CardComponent extends Component {
                   
                   
                     </Card.Meta>
-                <Card.Description>{this.props.address.address}</Card.Description>
+                <Card.Description>{Adress}</Card.Description>
               </Card.Content>
           </Card>
       )

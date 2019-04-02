@@ -6,7 +6,7 @@ import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/core/styles';
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
-import { Icon, Search ,Button, List,Table} from 'semantic-ui-react';
+import { Icon, Search ,Button,Table} from 'semantic-ui-react';
 import {withRouter} from 'react-router-dom';
 import { connect } from 'react-redux'
 import swal from '@sweetalert/with-react'
@@ -171,15 +171,17 @@ handleSearchChange = (e, { value }) => {
       <div className={classes.root}>
         <AppBar position="static" style={{backgroundColor:'grey',display:this.props.location.pathname==='/'?'none':''}}>
           <Toolbar>
-            <IconButton className={classes.menuButton} color="inherit" aria-label="Open drawer">
+            <IconButton 
+              className={classes.menuButton} 
+              color="inherit" 
+              aria-label="Open drawer"
+              onClick={()=>{
+                if (this.props.location.pathname==='/acount') {  
+                }
+                else this.props.history.goBack()}}
+              >
               <Icon 
                 name='arrow circle left' 
-                onClick={()=>{
-                    
-                    if (this.props.location.pathname==='/acount') {
-                        
-                    }
-                    else this.props.history.goBack()}}
                 style={{display:auth.uid?'':'none'}}/>
             </IconButton>
             

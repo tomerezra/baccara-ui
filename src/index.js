@@ -14,7 +14,7 @@ import thunk from 'redux-thunk'
 import rootReducer from '../src/store/reducers/rootReducer'
 import App from "./App"
 import { HashRouter as Router } from "react-router-dom";
-import fbConfig from '../src/config/fbConfig'
+import fbConfig from '../src/config/fbconfig'
 
 // react-redux-firebase config
 const rrfConfig = {
