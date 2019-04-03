@@ -55,6 +55,7 @@ componentDidMount(){
     Axios.get('http://localhost:49699/api/Question')
     .then(res=>this.setState({questions:res.data}))
     
+    
     db.collection("standard").orderBy('id', 'asc').get().then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {    
             tree.push({id:doc.data().id,parent:new RegExp(doc.data().parent,'i'),value:new RegExp(doc.data().value,'i')});

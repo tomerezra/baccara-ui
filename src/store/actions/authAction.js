@@ -72,9 +72,9 @@ export const createUser = (user)=>{
             user.email,
             user.password
         )
-        .then((resp)=>{
-            console.log(resp.user.uid)
-            Axios.post('http://localhost:49699/api/Customer','='+resp.user.uid)
+        .then(()=>{
+            
+            Axios.post('http://localhost:49699/api/Customer','='+user.email)
             // return firestore.collection('addresses').add({
             //     userid:resp.user.uid,
             //     country:user.country,

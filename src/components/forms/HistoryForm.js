@@ -19,6 +19,7 @@ class HistoryForm extends Component{
        
    }
    componentDidMount(){
+     
         Axios.get('http://localhost:49699/api/Address')
           .then(res=>this.setState({addresses:res.data}))
         // Axios.get('http://localhost:49699/api/Item')
@@ -56,7 +57,7 @@ class HistoryForm extends Component{
     const {auth,data} = this.props
     const {items,addresses,orders}=this.state
       if (this.props.pagename==='orders') {
-        var tmp = data.orders.filter(order=>auth.uid===order.userid)
+        var tmp = data.orders.filter(order=>auth.email===order.Email)
         if (tmp.length>0) {
           return(
             tmp.map(order => <CardComponent order={order}/>)
@@ -67,7 +68,7 @@ class HistoryForm extends Component{
         
       }
       else if (this.props.pagename==='items') {
-        var tmp = data.items.filter(item=>auth.uid===item.userid)
+        var tmp = data.items.filter(item=>auth.email===item.Email)
         if (tmp.length>0) {
           return(
             tmp.map(item => <CardComponent item={item} delete={this.props.deleteItem}/>)
@@ -78,7 +79,7 @@ class HistoryForm extends Component{
        
       }
       else if (this.props.pagename==='shipping') {
-        var tmp = addresses.filter(address=>auth.uid===address.UID)
+        var tmp = addresses.filter(address=>auth.email===address.Email)
         
         if (tmp.length>0) {
           return(

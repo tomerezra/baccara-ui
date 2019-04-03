@@ -8,7 +8,8 @@ import Axios from 'axios';
 
 class NewShippingForm extends Component {
     state={
-        pagename:'New Shipping Address',
+      citys:[],  
+      pagename:'New Shipping Address',
         data:{
             FirstName:'',
             LastName:'',
@@ -17,9 +18,14 @@ class NewShippingForm extends Component {
             CompanyName:'',
             Adress:'',
             City:'',
-            UID:this.props.auth.uid
+            Email:this.props.auth.email
         }
     }
+    componentDidMount = () => {
+      Axios.get('http://localhost:49699/api/City')
+      .then(resp=>this.setState({citys:resp.data}))
+    }
+    
   handleChange =(e)=>{
       
       const {name,value}=e.target
@@ -27,16 +33,19 @@ class NewShippingForm extends Component {
   } 
   handleSubmit=()=>{
     // this.props.createAddress(this.state.data)
-    Axios.post('http://localhost:49699/api/Addressapp','='+JSON.stringify(this.state.data))
-  }   
+    
+    Axios.post('http://localhost:49699/api/Address',JSON.stringify(this.state.data),{headers: { "Content-Type": "application/json" }})
+}
+ 
    render(){
     const {data}=this.state
     const {auth}=this.props
     if (!auth.uid) {return <Redirect to='/'/>}
-       return(
-           <div style={{maxWidth: 450}}>
-               {/* <MobileCotainer pagename={this.state.pagename}/> */}
-               <Segment>
+    var citylist = this.state.citys.map(city=>{return{text:city.Name,value:city.Name}})
+    return(
+    <div style={{maxWidth: 450}}>
+               
+    <Segment>
     <Grid textAlign='center' >
       <Grid.Column>
        
@@ -86,17 +95,14 @@ class NewShippingForm extends Component {
                 value={data.Country}
                 onChange={this.handleChange}>
             </Form.Input> */}
-          <Form.Input 
-                type="text"
-                id="City"
-                name="City"
-                
-                fluid icon='address card' 
-                iconPosition='left' 
-                placeholder='City'
-                value={data.City}
-                onChange={this.handleChange}>
-            </Form.Input>
+          <Form.Select 
+            name='City'
+            placeholder='Select your City' 
+            options={citylist} 
+            onChange={this.handleChange}
+            
+            />
+          
           <Form.Input 
                 type="text"
                 id="Adress"
