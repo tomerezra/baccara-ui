@@ -189,6 +189,9 @@ isInvalid=(id,value)=>{
     
 }
 isStandard=(id,value)=>{
+   if (this.isInvalid(id,value)) {
+       return
+   }
     
    if (this.state.add.standard) {
     if (id===1) {
