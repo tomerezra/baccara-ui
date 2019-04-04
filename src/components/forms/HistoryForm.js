@@ -8,7 +8,7 @@ import CardComponent from '../CardComponent';
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
 import Axios from 'axios';
-
+import firebase from 'firebase/app'
 class HistoryForm extends Component{
    state={
        pagename:'',
@@ -19,7 +19,8 @@ class HistoryForm extends Component{
        
    }
    componentDidMount(){
-     
+      
+
         Axios.get('http://localhost:49699/api/Address')
           .then(res=>this.setState({addresses:res.data}))
         // Axios.get('http://localhost:49699/api/Item')

@@ -1,6 +1,6 @@
 const Parts = [
     {
-        id:1,
+        id:'1',
         name: "Module",
         value:'module',
         question:'Which module do need?',
@@ -8,7 +8,7 @@ const Parts = [
         
     },
     {
-        id:2,
+        id:'2',
         name: "Body",
         value:'body',
         question:'Which body do need?',
@@ -16,7 +16,7 @@ const Parts = [
         
     },
     {
-        id:3,
+        id:'3',
         name: "Port",
         value:'port',
         question:'Which port do need?',
@@ -24,7 +24,7 @@ const Parts = [
         
     },
     {
-        id:4,
+        id:'4',
         name: "Function",
         value:'function',
         question:'Which function do need?',
@@ -33,7 +33,7 @@ const Parts = [
     
     },
     {
-        id:5,
+        id:'5',
         name: "Orifice",
         value:'orifice',
         question:'Which orifice do need?',
@@ -48,7 +48,7 @@ const Parts = [
         
     },
     {
-        id:6,
+        id:'6',
         name: "Seals",
         value:'seals',
         question:'Wich seals do need?',
@@ -62,7 +62,7 @@ const Parts = [
         
     },
     {
-        id:7,
+        id:'7',
         name: "Override",
         value:'override',
         question:'Which override do need?',
@@ -74,7 +74,7 @@ const Parts = [
         
     },
     {
-        id:8,
+        id:'8',
         name: "Voltage",
         value:'voltage',
         question:'Which voltage do need?',
@@ -93,7 +93,7 @@ const Parts = [
         
     },
     {
-        id:9,
+        id:'9',
         name: "Power",
         value:'power',
         question:'Which power do need?',
@@ -111,7 +111,7 @@ const Parts = [
         
     },
     {
-        id:10,
+        id:'10',
         name: "Connector",
         value:'connector',
         question:'Which conector do need?',

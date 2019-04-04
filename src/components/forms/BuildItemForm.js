@@ -6,7 +6,7 @@ import swal from '@sweetalert/with-react'
 import {withRouter,Redirect} from 'react-router-dom'
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
-// import Parts from '../../data/parts'
+import Parts from '../../data/parts'
 import Axios from 'axios';
 import firebase from 'firebase/app'
 
@@ -42,25 +42,55 @@ class BuildItemForm extends Component {
       tree:[],
       orderbutton:true,
       partdata:{},
-      questions:[]
+      questions:[],
+      invalid:[]
   }
 
 componentDidMount(){
     var db =firebase.firestore()
     var tree=[]
+    var invalid=[]
     this.setState({datatmp:this.state.data})
     Axios.get('http://localhost:49699/api/AllItem')
     .then(res=>this.setState({partdata:res.data}))
       
     Axios.get('http://localhost:49699/api/Question')
     .then(res=>this.setState({questions:res.data}))
+    // Add invalid to firebase
+    // Parts.map(part=>{
     
+    //     db.collection('invalid').doc(part.id).set({
+    //         id:part.id,
+    //         stage:part.value,
+    //         module:'',  
+    //         body:'',
+    //         port:'',
+    //         function:'',
+    //         orifice:'',
+    //         seals:'',
+    //         override:'',
+    //         voltage:'',
+    //         power:'',
+    //         connector:''
+
+    //     })
+    // })
     
+    db.collection("invalid").get().then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {    
+            invalid.push(doc.data());
+            
+        });
+        
+        console.log(invalid)
+       
+    }) 
+    this.setState({invalid})
     db.collection("standard").orderBy('id', 'asc').get().then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {    
             tree.push({id:doc.data().id,parent:new RegExp(doc.data().parent,'i'),value:new RegExp(doc.data().value,'i')});
         });
-       
+        
     })
     this.setState({tree})
     // swal({
@@ -71,6 +101,7 @@ componentDidMount(){
     //         <p>lets go!!</p>
     //     </div>)
     // })
+    
 }
 getdata=()=>{
     const {data} =this.props
@@ -110,7 +141,7 @@ startOver=()=>{
 }
 handleClick=(e)=>{
     
-    // this.getdata()
+    this.getdata()
     const {name}=e.target
     if (name==='order') {
         this.props.history.push('/createorder/0')
@@ -143,7 +174,20 @@ handleClick=(e)=>{
     } 
     else {this.makeQuestions()}          
 }
-
+isInvalid=(id,value)=>{
+    
+    var tmp = this.state.invalid.filter(s=>s.id==id)
+    for (const name in tmp[0]) {
+        if (name=='id' || name=='stage'|| tmp[0][name].length==0) {
+            
+        }
+        else if (RegExp(tmp[0][name]).test(value)) {
+            return true
+        }
+    }
+    
+    
+}
 isStandard=(id,value)=>{
     
    if (this.state.add.standard) {
@@ -196,6 +240,7 @@ makeQuestions=()=>{
                                         content={opt.Description}
                                         value={opt.ID} 
                                         color={this.isStandard(progress+1,opt.ID)}
+                                        disabled={this.isInvalid(progress+1,opt.ID)}
                                         onClick={(event,data)=>{
                                             this.setState({data:{...this.state.data,[question.Name.toLowerCase()]:data.value}})
                                             this.setState(prev=>{return{add:{...this.state.add,serial:prev.add.serial+data.value,standard:data.color==='yellow'?false:true}}})
