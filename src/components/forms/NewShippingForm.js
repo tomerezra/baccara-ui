@@ -22,7 +22,7 @@ class NewShippingForm extends Component {
         }
     }
     componentDidMount = () => {
-      Axios.get('http://localhost:49699/api/City')
+      Axios.get('http://127.0.0.1:8080/api/City')
       .then(resp=>this.setState({citys:resp.data}))
     }
     
@@ -34,7 +34,7 @@ class NewShippingForm extends Component {
   handleSubmit=()=>{
     // this.props.createAddress(this.state.data)
     
-    Axios.post('http://localhost:49699/api/Address',JSON.stringify(this.state.data),{headers: { "Content-Type": "application/json" }})
+    Axios.post('http://127.0.0.1:8080/api/Address',JSON.stringify(this.state.data),{headers: { "Content-Type": "application/json" }})
 }
  
    render(){

@@ -4,7 +4,7 @@ const Parts = [
         name: "Module",
         value:'module',
         question:'Which module do need?',
-        options:[{name:'1-way',value:'GEM-A'}] 
+        options:[{name:'1-way',value:'gem-a'}] 
         
     },
     {
@@ -85,7 +85,7 @@ const Parts = [
                 {name:'48', value:'4'},
                 {name:'110', value:'5'},
                 {name:'120', value:'6'},
-                {name:'220', value:'7A'},
+                {name:'220', value:'7a'},
                 {name:'230', value:'7'},
                 {name:'240', value:'8'},
                 {name:'Latch/Other', value:'9'}
@@ -118,7 +118,16 @@ const Parts = [
         options:[{name:'None',value:'0'},
                 {name:'with', value:'1'},
                 {name:'with LED', value:'2'},
-                {name:'with', value:'2'},] 
+                
+                {name:'24', value:'3'},
+                {name:'48', value:'4'},
+                {name:'110', value:'5'},
+                {name:'120', value:'6'},
+                
+                {name:'230', value:'7'},
+                {name:'240', value:'8'},
+                {name:'Latch/Other', value:'9'}
+            ] 
         
     },
     ]

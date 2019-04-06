@@ -47,50 +47,61 @@ class BuildItemForm extends Component {
   }
 
 componentDidMount(){
+    
+    
     var db =firebase.firestore()
     var tree=[]
     var invalid=[]
     this.setState({datatmp:this.state.data})
-    Axios.get('http://localhost:49699/api/AllItem')
+    Axios.get('http://127.0.0.1:8080/api/AllItem')
     .then(res=>this.setState({partdata:res.data}))
       
-    Axios.get('http://localhost:49699/api/Question')
+    Axios.get('http://127.0.0.1:8080/api/Question')
     .then(res=>this.setState({questions:res.data}))
     // Add invalid to firebase
     // Parts.map(part=>{
-    
-    //     db.collection('invalid').doc(part.id).set({
-    //         id:part.id,
-    //         stage:part.value,
-    //         module:'',  
-    //         body:'',
-    //         port:'',
-    //         function:'',
-    //         orifice:'',
-    //         seals:'',
-    //         override:'',
-    //         voltage:'',
-    //         power:'',
-    //         connector:''
-
-    //     })
-    // })
-    
-    db.collection("invalid").get().then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {    
-            invalid.push(doc.data());
-            
-        });
         
-        console.log(invalid)
-       
-    }) 
+    //     var options = part.options.map(x=>x.value)
+    //     options.forEach(opt => {
+    //         db.collection('invalid'+part.id).doc(opt).set({
+    //             module:"",  
+    //             body:"",
+    //             port:"",
+    //             function:"",
+    //             orifice:"",
+    //             seals:"",
+    //             override:"",
+    //             voltage:"",
+    //             power:"",
+    //             connector:""
+    //         })
+    //     });
+        
+    // })
+    var invtmp=[]
+    for (let i = 1; i < 11; i++) {
+        
+        
+        db.collection('invalid'+i.toString()).get().then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {    
+                invtmp.push({[doc.id]:doc.data()}); 
+            });
+           
+            
+        })
+        .then(()=>invalid.push({stage:i,value:invtmp}))
+        .then(()=>{
+            
+            invtmp=[]})
+        
+    }
     this.setState({invalid})
+   
     db.collection("standard").orderBy('id', 'asc').get().then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {    
             tree.push({id:doc.data().id,parent:new RegExp(doc.data().parent,'i'),value:new RegExp(doc.data().value,'i')});
         });
-        
+
     })
     this.setState({tree})
     // swal({
@@ -175,16 +186,26 @@ handleClick=(e)=>{
     else {this.makeQuestions()}          
 }
 isInvalid=(id,value)=>{
+    console.log(id,value)
+    var stage = this.state.invalid.filter(s=>s.stage==id)
     
-    var tmp = this.state.invalid.filter(s=>s.id==id)
-    for (const name in tmp[0]) {
-        if (name=='id' || name=='stage'|| tmp[0][name].length==0) {
+    var val = stage[0].value.filter(x=>Object.getOwnPropertyNames(x)==value)
+    if (id===1) {
+        
+    } else {
+        
+    for (const name in val[0][value]) {
+        
+        if (val[0][value][name]=='') {
             
         }
-        else if (RegExp(tmp[0][name]).test(value)) {
+        else if (RegExp(val[0][value][name]).test(this.state.data[name])) {
+            
             return true
         }
     }
+    }
+    
     
     
 }
@@ -321,7 +342,7 @@ buttonChange=()=>{
     render() {
     const data=this.state.data
     const {auth,guest}=this.props
-    
+    // console.log(this.state.partdata)
     if (!auth.uid) {
         if (!guest) {
             return <Redirect to='/'/>
