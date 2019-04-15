@@ -15,7 +15,9 @@ class HomePageForm extends Component{
       this.props.history.push(value)
   
    }
-   
+   componentDidMount=()=>{
+    // this.props.getAllData()
+   }
     render(){
       const {auth}=this.props
       if (!auth.uid) {return <Redirect to='/'/>}
@@ -109,7 +111,9 @@ const mapStateToProps = (state) => {
   
 }
 
-const mapDispatchToProps =(dispatch)=> ({
-  
-})
+const mapDispatchToProps =(dispatch)=> {
+  return{
+    
+  } 
+}
 export default withRouter(connect(mapStateToProps,mapDispatchToProps)(HomePageForm))

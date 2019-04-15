@@ -27,9 +27,10 @@ class BuildItemForm extends Component {
         
       },
       add:{
-        serial:'',
-        partname:'',
-        standard:true
+        ItemSerial:'',
+        ItemName:'',
+        IsStandard:true,
+        Email:this.props.auth.email
       },
       progress:0,
       pagename:"Build New Item",
@@ -114,23 +115,23 @@ componentDidMount(){
     // })
     
 }
-getdata=()=>{
-    const {data} =this.props
-    var tree = data.standard.map(x=>{return{id:x.id,parent:new RegExp(x.parent,'i'),value:new RegExp(x.value,'i')}})
-    this.setState({tree})
+// getdata=()=>{
+//     const {data} =this.props
+//     var tree = data.standard.map(x=>{return{id:x.id,parent:new RegExp(x.parent,'i'),value:new RegExp(x.value,'i')}})
+//     this.setState({tree})
         
           
-}
+// }
 handleSubmit=(e)=>{
     e.preventDefault()
     swal({
-        title:this.state.add.serial,
+        title:this.state.add.ItemSerial,
         text:'Give name to the item',    
         content:'input'
     })
     .then((value)=>{
         
-        this.setState({add:{...this.state.add,partname:value}})
+        this.setState({add:{...this.state.add,ItemName:value}})
         if (this.props.guest) {
            this.props.createitemguest(this.state.add) 
         }
@@ -145,14 +146,14 @@ handleSubmit=(e)=>{
 startOver=()=>{
     this.setState({progress:0});
     this.setState({data:this.state.datatmp})
-    this.setState({add:{...this.state.add,serial:'',standard:true}})
+    this.setState({add:{...this.state.add,ItemSerial:'',IsStandard:true}})
     var tmp =this.state.change.map((i)=>i=null)
     this.setState({change:tmp,first:false})
     
 }
 handleClick=(e)=>{
     
-    this.getdata()
+    // this.getdata()
     const {name}=e.target
     if (name==='order') {
         this.props.history.push('/createorder/0')
@@ -214,7 +215,7 @@ isStandard=(id,value)=>{
        return
    }
     
-   if (this.state.add.standard) {
+   if (this.state.add.IsStandard) {
     if (id===1) {
         return 'green'
     }
@@ -267,7 +268,7 @@ makeQuestions=()=>{
                                         disabled={this.isInvalid(progress+1,opt.ID)}
                                         onClick={(event,data)=>{
                                             this.setState({data:{...this.state.data,[question.Name.toLowerCase()]:data.value}})
-                                            this.setState(prev=>{return{add:{...this.state.add,serial:prev.add.serial+data.value,standard:data.color==='yellow'?false:true}}})
+                                            this.setState(prev=>{return{add:{...this.state.add,ItemSerial:prev.add.ItemSerial+data.value,IsStandard:data.color==='yellow'?false:true}}})
                                             
                                             this.setState({value:data.value})
                                                                                         
@@ -397,7 +398,7 @@ buttonChange=()=>{
                         progress='ratio'
                         active
                         success={this.state.progress===10?true:false}
-                        warning={this.state.add.standard?false:true}
+                        warning={this.state.add.IsStandard?false:true}
                         // color='green'
                         >
                     </Progress>

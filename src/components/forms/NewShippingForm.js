@@ -34,10 +34,9 @@ class NewShippingForm extends Component {
   } 
   handleSubmit=()=>{
     // this.props.createAddress(this.state.data)
+    this.props.createAddress(this.state.data)
     
-    Axios.post('http://127.0.0.1:8080/api/Address',JSON.stringify(this.state.data),{headers: { "Content-Type": "application/json" }})
-    .then(res=>swal('Done','succses'))
-    .catch()
+    
 }
  
    render(){

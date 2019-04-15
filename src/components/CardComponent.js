@@ -9,30 +9,31 @@ export class CardComponent extends Component {
   itemorcard=()=>{
     
     if (this.props.location.pathname==='/orders') {
-      const {id,status,createdAt}=this.props.order
+      
+      const {OrderId,Status,OrderDate}=this.props.order
       return(
         <Card
-              onClick={()=>{this.props.history.push('/orderdetails/' + this.props.order.id)}}
+              onClick={()=>{this.props.history.push('/orderdetails/' + this.props.order.OrderId)}}
               centered 
               fluid>
               <Card.Content>
-                <Card.Header>{id}</Card.Header>
-                <Card.Meta>{moment(createdAt.toDate()).calendar()}</Card.Meta>
-                <Card.Description>{status}</Card.Description>
+                <Card.Header>{OrderId}</Card.Header>
+                <Card.Meta>{OrderDate}</Card.Meta>
+                <Card.Description>{Status}</Card.Description>
                 
               </Card.Content>
           </Card>
       )
       
     } else if(this.props.location.pathname==='/items'){
-      const {partname,serial} = this.props.item
+      const {ItemName,ItemSerial,IsStandard} = this.props.item
       return(
           <Card
               centered 
               fluid>
               <Card.Content>
-                <Card.Header>{partname}</Card.Header>
-                <Card.Meta>{serial}
+                <Card.Header>{ItemName}</Card.Header>
+                <Card.Meta>{ItemSerial}
                 <Button
                     onClick={()=>{this.props.delete(this.props.item)}}
                     floated='right'
@@ -43,7 +44,7 @@ export class CardComponent extends Component {
                   
                   
                     </Card.Meta>
-                <Card.Description>Standard : {this.props.item.standard?'Yes':'No'}</Card.Description>
+                <Card.Description>Standard : {IsStandard?'Yes':'No'}</Card.Description>
               </Card.Content>
           </Card>
       )

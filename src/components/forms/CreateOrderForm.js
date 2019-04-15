@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { Table,Select,Loader,Button,Step,Icon, Form, Grid, Header,Segment,Container } from 'semantic-ui-react'
+import { Table,Select,Loader,Button,Step,Icon, Form, Grid, Header,Segment,Container, Divider } from 'semantic-ui-react'
 import Validator from 'validator'
 import {withRouter,Redirect} from 'react-router-dom'
 import { connect } from 'react-redux'
-import {createOrder} from '../../store/actions/dataActions'
+import {createOrder,getItems,getAddresses} from '../../store/actions/dataActions'
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
 import swal from '@sweetalert/with-react'
@@ -11,65 +11,53 @@ import swal from '@sweetalert/with-react'
 export class CreateOrderForm extends Component {
   state={
         pagename:'Create New Order',
+        orderitems:[],
+        agree:false, 
+        Address:{
+            ID:null,
+            FirstName:'',
+            LastName:'',
+            PhoneNumber:'',
+            CompanyName:'',
+            Adress:'',
+            City:'',
+            Email:'',
+            
+        },
+        
         data:{
-        
-            firstname:"",
-            lastname:"",
-            agree:false,
-            // country:"",
-            city:"",
-            address:"",
-            email:"",
-            phone:"",
-            company:"",
-            orderitems:[],
-        
-        }, 
-        
+            Email:'',
+            Part:[],
+            Quantity:[],
+                        
+        },
         step:1,
+        clone:false
         
 
   }
 componentDidMount(){
     const {auth}=this.props
-    if (this.props.match.params.id!==0) {
-        this.setState({step:3})
+    
+    if (this.props.match.params.id!=='0') {
+        this.setState({step:3,clone:true})
     }
     if (!auth.isEmpty) {
-        this.setState({data:{...this.state.data,email:auth.email}})
+        this.setState({data:{...this.state.data,Email:auth.email}})
         
     }
     
   }
 clone=()=>{
-    if (this.props.match.params.id!==0) {
-                
-        var tmp = this.props.data.orders.filter(order=>order.id===this.props.match.params.id)
-        tmp={
-            firstname:tmp[0].firstname,
-            lastname:tmp[0].lastname,
-            agree:false,
-            // country:tmp[0].country,
-            city:tmp[0].city,
-            address:tmp[0].address,
-            email:tmp[0].email,
-            phone:tmp[0].phone,
-            company:tmp[0].company,
-            orderitems:tmp[0].orderitems
-        }
-        this.state.data=tmp
-        // this.setState({data:{...this.state.data,
-        //     firstname:tmp[0].firstname,
-        //     lastname:tmp[0].lastname,
-        //     agree:false,
-        //     country:tmp[0].country,
-        //     city:tmp[0].city,
-        //     address:tmp[0].address,
-        //     email:tmp[0].email,
-        //     phone:tmp[0].phone,
-        //     company:tmp[0].company,
-        //     orderitems:tmp[0].orderitems
-        // }})
+    if (this.state.clone) {
+        this.setState({clone:false})     
+        var tmp = this.props.data.orders.filter(order=>order.OrderId==this.props.match.params.id)
+        
+        this.state.Address=tmp[0].Address
+        tmp[0].Part.map((p,i)=>{
+            this.state.orderitems.push({serial:p,quantity:tmp[0].Quantity[i]})
+        })
+        
     }
 }
 
@@ -79,35 +67,36 @@ handleChange=(e,data)=>{
     if (type==='checkbox') {
         var itemtopush={id:id,serial:name,quantity:value}
         if (e.target.checked) {
-            this.state.data.orderitems.push(itemtopush)
-                        
+            this.state.orderitems.push(itemtopush)
+            
         }
         else {
-            var tmp=this.state.data.orderitems.filter(item=>!(guest?item.serial:item.id===id))
+            var tmp=this.state.orderitems.filter(item=>!(guest?item.serial:item.id===id))
             
-            this.setState({data:{...this.state.data,orderitems:tmp}})
+            this.setState({orderitems:tmp})
             
         }
         
     }
-    else if (name==='quantity' && this.state.data.orderitems.length>0) {
-        var tmp=this.state.data.orderitems.filter(item=>(guest?item.serial:item.id===id))
+    else if (name==='quantity' && this.state.orderitems.length>0) {
+        var tmp=this.state.orderitems.filter(item=>(guest?item.serial:item.id===id))
         
         tmp[0].quantity=value
     }
     else if (data.name==='select') {
-        var tmp = this.props.data.addresses.filter(adr=>adr.id===data.value)
+        var tmp = this.props.data.addresses.filter(adr=>adr.ID===data.value)
         
-        this.setState({data:{...this.state.data,
-            firstname:tmp[0].firstname,
-            lastname:tmp[0].lastname,
-            // country:tmp[0].country,
-            city:tmp[0].city,
-            address:tmp[0].address,
-            phone:tmp[0].phone,
-            company:tmp[0].company
-            
-          }})
+          this.setState({Address:{...this.state.data.Address,
+            FirstName:tmp[0].FirstName,
+            LastName:tmp[0].LastName,
+            PhoneNumber:tmp[0].PhoneNumber,
+            CompanyName:tmp[0].CompanyName,
+            Adress:tmp[0].Adress,
+            City:tmp[0].City,
+            Email:tmp[0].Email,
+            ID:tmp[0].ID
+        }})
+        
     }
     else {
         this.setState({data:{...this.state.data,[name]:value}})   
@@ -118,9 +107,9 @@ handleChange=(e,data)=>{
 }
 orderdetails=()=>{
     
-    const {data} =this.state
-    console.log(data)
-    var items = data.orderitems.map(item=>{
+    const {orderitems,Address} =this.state
+    
+    var items = orderitems.map(item=>{
         return(
             <Table.Row>
             <Table.Cell>{item.serial}</Table.Cell>
@@ -138,19 +127,19 @@ orderdetails=()=>{
                 <Table.Body >
                     <Table.Row>
                         <Table.Cell>First Name</Table.Cell>
-                        <Table.Cell>{data.firstname}</Table.Cell>
+                        <Table.Cell>{Address.FirstName}</Table.Cell>
                     </Table.Row>
                     <Table.Row>
                         <Table.Cell>Last Name</Table.Cell>
-                        <Table.Cell>{data.lastname}</Table.Cell>
+                        <Table.Cell>{Address.LastName}</Table.Cell>
                     </Table.Row>
                     <Table.Row>
                         <Table.Cell>Address</Table.Cell>
-                        <Table.Cell>{data.address}</Table.Cell>
+                        <Table.Cell>{Address.Adress}</Table.Cell>
                     </Table.Row>
                     <Table.Row>
                         <Table.Cell>City</Table.Cell>
-                        <Table.Cell>{data.city}</Table.Cell>
+                        <Table.Cell>{Address.City}</Table.Cell>
                     </Table.Row>
                     {/* <Table.Row>
                         <Table.Cell>Country</Table.Cell>
@@ -158,15 +147,15 @@ orderdetails=()=>{
                     </Table.Row> */}
                     <Table.Row>
                         <Table.Cell>Company</Table.Cell>
-                        <Table.Cell>{data.company}</Table.Cell>
+                        <Table.Cell>{Address.CompanyName}</Table.Cell>
                     </Table.Row>   
                     <Table.Row>
                         <Table.Cell>Phone Number</Table.Cell>
-                        <Table.Cell>{data.phone}</Table.Cell>
+                        <Table.Cell>{Address.PhoneNumber}</Table.Cell>
                     </Table.Row> 
                     <Table.Row>
                         <Table.Cell>Email</Table.Cell>
-                        <Table.Cell>{data.email}</Table.Cell>
+                        <Table.Cell>{Address.Email}</Table.Cell>
                     </Table.Row> 
                  
                 </Table.Body>
@@ -192,8 +181,13 @@ orderdetails=()=>{
 }
 handleSubmit=(e)=>{
     e.preventDefault()
+    this.state.orderitems.map((item)=>{
+        this.state.data.Part.push(item.serial)
+        this.state.data.Quantity.push(item.quantity)
+    })
     if (this.Validate(this.state.data)) {
-        this.props.createOrder(this.state.data)
+        
+        this.props.createOrder(this.state.data,this.state.Address.ID)
 } 
     
 }
@@ -219,16 +213,17 @@ nextstep=(e)=>{
     }
   }
 billing=()=>{
-    var tmp = this.props.data.addresses.filter(adr=>adr.userid===this.props.auth.uid)
-    var tmp2 = tmp.map(adr=>{return{text:adr.firstname+' '+ adr.lastname,value:adr.id}})
-    console.log(this.state.data.email)
+    this.props.getAddresses()
+    // var tmp = this.props.data.addresses.filter(adr=>adr.userid===this.props.auth.uid)
+    var tmp = this.props.data.addresses.map(adr=>{return{text:adr.FirstName+' '+ adr.LastName,value:adr.ID}})
+    const {Address}=this.state
     return(
     <>
     <Select 
         
         name='select'
         placeholder='Select your address' 
-        options={tmp2} 
+        options={tmp} 
         onChange={this.handleChange}
         disabled={this.props.guest}
         />
@@ -246,7 +241,7 @@ billing=()=>{
                             fluid icon='user' 
                             iconPosition='left' 
                             placeholder='First Name'
-                            value={this.state.data.firstname}
+                            value={this.state.Address.FirstName}
                             onChange={this.handleChange}>
                         </Form.Input>
                     <Form.Input 
@@ -257,7 +252,7 @@ billing=()=>{
                             fluid icon='user' 
                             iconPosition='left' 
                             placeholder='Last Name'
-                            value={this.state.data.lastname}
+                            value={this.state.Address.LastName}
                             onChange={this.handleChange}>
                         </Form.Input>
                     {/* <Form.Input 
@@ -279,7 +274,7 @@ billing=()=>{
                             fluid icon='address card' 
                             iconPosition='left' 
                             placeholder='City'
-                            value={this.state.data.city}
+                            value={this.state.Address.City}
                             onChange={this.handleChange}>
                         </Form.Input>
                     <Form.Input 
@@ -290,7 +285,7 @@ billing=()=>{
                             fluid icon='envelope' 
                             iconPosition='left' 
                             placeholder='Address'
-                            value={this.state.data.address}
+                            value={this.state.Address.Adress}
                             onChange={this.handleChange}>
                         </Form.Input>
                     <Form.Input 
@@ -301,7 +296,7 @@ billing=()=>{
                             fluid icon='phone' 
                             iconPosition='left' 
                             placeholder='Phone Number'
-                            value={this.state.data.phone}
+                            value={this.state.Address.PhoneNumber}
                             onChange={this.handleChange}>
                         </Form.Input>
                         <Form.Input 
@@ -312,7 +307,7 @@ billing=()=>{
                             fluid icon='suitcase' 
                             iconPosition='left' 
                             placeholder='Company'
-                            value={this.state.data.company}
+                            value={this.state.Address.CompanyName}
                             onChange={this.handleChange}>
                         </Form.Input>
                         <Form.Input 
@@ -323,7 +318,7 @@ billing=()=>{
                             fluid icon='at' 
                             iconPosition='left' 
                             placeholder='Email'
-                            value={this.state.data.email}
+                            value={this.state.Address.Email}
                             onChange={this.handleChange}>
                         </Form.Input>
                         
@@ -334,11 +329,12 @@ billing=()=>{
     )
     }
 itemlist=()=>{
-    const {auth,data,guestdata,guest}=this.props
+    const {auth,data,guest}=this.props
     if (guest) {
-        var items = guestdata.items
+        var items = data.guestdata.items
     } else {
-        var items = data.items.filter(item=>auth.uid===item.userid)
+        this.props.getItems()
+        var items = this.props.data.items
     }
        
     return(
@@ -352,9 +348,9 @@ itemlist=()=>{
                     <Grid.Column>
                     <Form.Checkbox
                         
-                        id={guest?item.serial:item.id}
-                        name={item.serial}
-                        label={item.partname}
+                        id={guest?item.serial:item.ItemID}
+                        name={item.ItemSerial}
+                        label={item.ItemName}
                         onChange={this.handleChange}
     
                         >
@@ -367,7 +363,7 @@ itemlist=()=>{
                         size='mini'
                         type='number'
                         min='1'
-                        id={item.id}
+                        id={item.ItemID}
                         name='quantity'
                         // value={this.state.tmp[item.id-1].quantity}
                         onChange={this.handleChange}
@@ -386,18 +382,19 @@ itemlist=()=>{
 
 confirm=()=>{
     
-    this.clone()
+    
     return(
            <Container textAlign='center'>
            
-           <Button onClick={this.orderdetails}>Order</Button>
-          
+            <Button onClick={()=>{
+                this.clone();this.orderdetails()}}>Order Details</Button>
+          <Divider></Divider>
             <Form.Checkbox
                 id="agree"
                 name="agree"
                 label="I agree to the Terms and Conditions"
-                value={this.state.data.agree}
-                onChange={()=>{this.setState({data:{...this.state.data,agree:!this.state.data.agree}})}}>>
+                value={this.state.agree}
+                onChange={()=>{this.setState({agree:!this.state.data.agree})}}>>
             </Form.Checkbox>
             <br/>
             <Button color='linkedin' onClick={this.handleSubmit}>
@@ -410,9 +407,7 @@ confirm=()=>{
         )
     }
     
-      isEmptyObject=(obj)=>{
-        return (Object.getOwnPropertyNames(obj).length === 0);
-      }
+      
     render() {
         const {auth,guest}=this.props
         
@@ -422,7 +417,7 @@ confirm=()=>{
             } 
         }
 
-        if (!this.isEmptyObject(this.props.data)) {
+        
             
             return (
                 <div style={{ maxWidth: 450 }}>
@@ -476,15 +471,9 @@ confirm=()=>{
                   </Segment>
               </div>
               )
-        } else {
-            return (
-                <Loader active inline='centered'></Loader>
-            )
-            
-            
-        }
+        } 
     
-  }
+  
 }
 const mapStateToProps = (state) => {
   
@@ -492,16 +481,17 @@ const mapStateToProps = (state) => {
          
           auth:state.firebase.auth,
         //   profile:state.firebase.profile,
-          data:state.firestore.ordered,
+        //   data:state.firestore.ordered,
           guest:state.auth.guest,
-          guestdata:state.data
+          data:state.data
       }
       
     }
 const mapDispatchToProps = (dispatch) =>{
     return{
-        createOrder:(order)=>dispatch(createOrder(order)),
-        
+        createOrder:(order,addressid)=>dispatch(createOrder(order,addressid)),
+        getItems:()=>dispatch(getItems()),
+        getAddresses:()=>dispatch(getAddresses())
     }
   }
 export default withRouter(compose(

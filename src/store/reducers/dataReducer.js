@@ -1,9 +1,14 @@
 import swal from "sweetalert";
 
 const initState={
-
+    guestdata:{
+        gitems:[],
+        gorders:[],
+        
+    },
         items:[],
-        orders:[]
+        orders:[],
+        addresses:[],
 }
 
 const dataReducer=(state=initState,action)=>{
@@ -14,7 +19,28 @@ const dataReducer=(state=initState,action)=>{
             state.items.push(action.item)
             return state               
             
-
+        case 'GET_ADDRESSES':
+                            
+            return {
+                ...state,
+                
+                addresses:action.addresses,
+            }               
+        case 'GET_ORDERS':
+                            
+            return {
+                ...state,
+                
+                orders:action.orders,
+                
+            }   
+        case 'GET_ITEMS':
+                            
+            return {
+                ...state,
+                items:action.items,
+                
+            }   
         case 'CREATE_ITEM':
             swal("Success", "The item has been added", "success");
             return state ;
@@ -36,7 +62,7 @@ const dataReducer=(state=initState,action)=>{
             console.log('create address error',action.err)
             return state;
         case 'DELETE_ITEM':
-            console.log(action.item)
+            swal("Success", "The item has been delete", "success")
             return state;
         case 'DELETE_ITEM_ERROR':
                 console.log('delete item error',action.err)

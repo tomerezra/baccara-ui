@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import {withRouter,Redirect} from 'react-router-dom'
 import {Grid,Header,Loader,Segment} from 'semantic-ui-react'
-import {createAddress,createItem,createOrder,deleteAddress,deleteItem,standard} from '../../store/actions/dataActions'
+import {createAddress,createItem,createOrder,deleteAddress,deleteItem,getAddresses,getItems,getOrders} from '../../store/actions/dataActions'
 import { connect } from 'react-redux'
 import CardComponent from '../CardComponent';
 import { firestoreConnect } from 'react-redux-firebase';
@@ -12,31 +12,25 @@ import firebase from 'firebase/app'
 class HistoryForm extends Component{
    state={
        pagename:'',
-       addresses:[],
-       items:[],
-       orders:[]
+       
        
        
    }
    componentDidMount(){
-      
-
-        Axios.get('http://127.0.0.1:8080/api/Address/5?email='+this.props.auth.email)
-          .then(res=>this.setState({addresses:res.data}) )
-        Axios.get('http://127.0.0.1:8080/api/ItemsCustomer?email='+this.props.auth.email)
-          .then(res=>console.log('items',res.data))
-        Axios.get('http://127.0.0.1:8080/api/Order?email='+this.props.auth.email)
-          .then(res=>console.log('orders',res.data))
+             
         const name= this.props.pagename
-        // tree.map((item)=>{this.props.standard(item)})
+        
         if (name==='orders') {
             this.setState({pagename:'My Orders'})
+            this.props.getOrders()
         }
         else if (name==='items') {
             this.setState({pagename:'My Items'})
+            this.props.getItems()
         }
         else if (name==='shipping') {
           this.setState({pagename:'My Addresses'})
+          this.props.getAddresses()
         }
     }
     
@@ -54,9 +48,9 @@ class HistoryForm extends Component{
     }
   }
 
-  tmp =()=>{
+  cards =()=>{
     const {auth,data} = this.props
-    const {items,addresses,orders}=this.state
+    const {items,addresses,orders}=data
       if (this.props.pagename==='orders') {
         
         if (orders.length>0) {
@@ -93,14 +87,12 @@ class HistoryForm extends Component{
       }
     } 
     
-    isEmptyObject=(obj)=>{
-      return (Object.getOwnPropertyNames(obj).length === 0);
-    }
+    
   render(){
     const {auth}=this.props
     
     if (!auth.uid) {return <Redirect to='/'/>}
-    if (!this.isEmptyObject(this.props.data)) {
+    
       return(
         <div style={{maxWidth: 450}}>
             
@@ -109,18 +101,14 @@ class HistoryForm extends Component{
                   <Grid verticalAlign='top' columns={1} centered>
                   <Grid.Row>
                       <Grid.Column>
-                        {this.tmp()}
+                        {this.cards()}
                       </Grid.Column>
                   </Grid.Row>
               </Grid>
           </Segment>
         </div>
     )
-    } else {
-      return(
-        <Loader active inline='centered'></Loader>
-      )
-    }  
+    
     
   }
 } 
@@ -129,7 +117,7 @@ const mapStateToProps = (state) => {
   
   return{
     auth:state.firebase.auth,
-    data:state.firestore.ordered
+    data:state.data
   }
    
 }
@@ -140,8 +128,11 @@ const mapDispatchToProps = (dispatch) =>{
         createOrder:(order)=>dispatch(createOrder(order)),
         createAddress:(address)=>dispatch(createAddress(address)),
         deleteItem:(item)=>dispatch(deleteItem(item)),
-        standard:(item)=>dispatch(standard(item)),
+        
         deleteAddress:(address)=>dispatch(deleteAddress(address)),
+        getAddresses:()=>dispatch(getAddresses()),
+        getItems:()=>dispatch(getItems()),
+        getOrders:()=>dispatch(getOrders())
     }
   }
 

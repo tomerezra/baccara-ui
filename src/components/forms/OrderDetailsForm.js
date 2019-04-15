@@ -18,13 +18,37 @@ class OrderDetailsForm extends Component {
     reload=()=>{
         const id = this.props.match.params.id
         
-        const tmp=this.props.data.orders.filter(order=>id===order.id)
+        const tmp=this.props.data.orders.filter(order=>id==order.OrderId)
         const data = tmp[0]
         
-        const view = data.orderitems.map(item=>{return(
+        const viewaddress =
+        <>
+                <Table.Row>
+                    <Table.Cell>Full Name</Table.Cell>
+                    <Table.Cell>{data.Address.FirstName} {data.Address.LastName}</Table.Cell>
+                </Table.Row>
+                <Table.Row>
+                    <Table.Cell>Company Name</Table.Cell>
+                    <Table.Cell>{data.Address.CompanyName}</Table.Cell>
+                </Table.Row>
+                <Table.Row>
+                    <Table.Cell>City</Table.Cell>
+                    <Table.Cell>{data.Address.City}</Table.Cell>
+                </Table.Row>
+                <Table.Row>
+                    <Table.Cell>Address</Table.Cell>
+                    <Table.Cell>{data.Address.Adress}</Table.Cell>
+                </Table.Row>
+                <Table.Row>
+                    <Table.Cell>Phone Number</Table.Cell>
+                    <Table.Cell>{data.Address.PhoneNumber}</Table.Cell>
+                </Table.Row>
+        </>
+                
+        const viewitems = data.Part.map((item,i)=>{return(
             <Table.Row>
-            <Table.Cell>{item.serial}</Table.Cell>
-            <Table.Cell>{item.quantity}</Table.Cell>
+            <Table.Cell>{item}</Table.Cell>
+            <Table.Cell>{data.Quantity[i]}</Table.Cell>
             </Table.Row>
         )})
         
@@ -33,12 +57,35 @@ class OrderDetailsForm extends Component {
             <Grid.Row >
                         <Grid.Column textAlign='center' mobile='2'>1</Grid.Column>
                         <Grid.Column textAlign='center' mobile='7'>Order Date</Grid.Column>  
-                        <Grid.Column textAlign='center' mobile='7'>{moment(data.createdAt.toDate()).calendar()}</Grid.Column> 
+                        <Grid.Column textAlign='center' mobile='7'>{data.OrderDate}</Grid.Column> 
                     </Grid.Row>
                     <Grid.Row >
                         <Grid.Column textAlign='center' mobile='2'>2</Grid.Column>
-                        <Grid.Column textAlign='center' mobile='7'>Name</Grid.Column>  
-                        <Grid.Column textAlign='center' mobile='7'>{data.firstname} {data.lastname}</Grid.Column> 
+                        <Grid.Column textAlign='center' mobile='7'>Address</Grid.Column>  
+                        <Grid.Column textAlign='center' mobile='7'>
+                        <Button 
+                                color='linkedin' 
+                                size='mini'
+                                compact
+                                onClick={()=>swal(
+                                                <div>
+                                                        <h2>Address</h2>
+                                                        <Table celled unstackable compact fixed size='small'>
+                                                        <Table.Header>
+                                                            <Table.HeaderCell>Description</Table.HeaderCell>
+                                                            <Table.HeaderCell>Detiles</Table.HeaderCell>
+                                                        </Table.Header>
+                                                        <Table.Body>
+                                                            {viewaddress}
+                                                        </Table.Body>
+                                                        </Table>
+                                                </div>
+                                    
+                                    
+                                )}
+                                content='View'>
+                                </Button>
+                        </Grid.Column> 
                     </Grid.Row>
                     <Grid.Row >
                         <Grid.Column textAlign='center' mobile='2'>3</Grid.Column>
@@ -57,7 +104,7 @@ class OrderDetailsForm extends Component {
                                                             <Table.HeaderCell>Quantity</Table.HeaderCell>
                                                         </Table.Header>
                                                         <Table.Body>
-                                                            {view}
+                                                            {viewitems}
                                                         </Table.Body>
                                                         </Table>
                                                 </div>
@@ -71,31 +118,25 @@ class OrderDetailsForm extends Component {
                     <Grid.Row >
                         <Grid.Column textAlign='center' mobile='2'>6</Grid.Column>
                         <Grid.Column textAlign='center' mobile='7'>Order Number</Grid.Column>  
-                        <Grid.Column textAlign='center' mobile='7'>{data.id}</Grid.Column> 
+                        <Grid.Column textAlign='center' mobile='7'>{data.OrderId}</Grid.Column> 
                     </Grid.Row>
                     <Grid.Row >
                         <Grid.Column textAlign='center' mobile='2'>7</Grid.Column>
                         <Grid.Column textAlign='center' mobile='7'>Status</Grid.Column>  
-                        <Grid.Column textAlign='center' mobile='7'>{data.status}</Grid.Column> 
+                        <Grid.Column textAlign='center' mobile='7'>{data.Status}</Grid.Column> 
                     </Grid.Row>
-                    <Grid.Row >
-                        <Grid.Column textAlign='center' mobile='2'>8</Grid.Column>
-                        <Grid.Column textAlign='center' mobile='7'>Description</Grid.Column>  
-                        <Grid.Column textAlign='center' mobile='7'>something</Grid.Column> 
-                    </Grid.Row>
+                    
                     </Grid>
         )
 
     }
-    isEmptyObject=(obj)=>{
-        return (Object.getOwnPropertyNames(obj).length === 3);
-    }
+    
     render() {
     const {auth}=this.props
     
     
     if (!auth.uid) {return <Redirect to='/'/>}
-    if (this.isEmptyObject(this.props.data)) {
+    
         
     return (
       <div style={{maxWidth: 450}}>
@@ -114,12 +155,8 @@ class OrderDetailsForm extends Component {
               </Segment>
       </div>
     )
-  }else {
-    return(
-      <Loader active inline='centered'></Loader>
-    )
-  }  
-}
+  }
+
 }
 
 const mapStateToProps = (state) => {
@@ -128,7 +165,7 @@ const mapStateToProps = (state) => {
           
           auth:state.firebase.auth,
           
-          data:state.firestore.ordered
+          data:state.data
       }
       
     }
