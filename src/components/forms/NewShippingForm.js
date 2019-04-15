@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import {Redirect} from 'react-router-dom'
 import {createAddress} from '../../store/actions/dataActions'
 import Axios from 'axios';
+import swal from 'sweetalert';
 
 class NewShippingForm extends Component {
     state={
@@ -26,15 +27,17 @@ class NewShippingForm extends Component {
       .then(resp=>this.setState({citys:resp.data}))
     }
     
-  handleChange =(e)=>{
+  handleChange =(e,d)=>{
       
-      const {name,value}=e.target
+      const {name,value}=d
       this.setState({data:{...this.state.data,[name]:value}})
   } 
   handleSubmit=()=>{
     // this.props.createAddress(this.state.data)
     
     Axios.post('http://127.0.0.1:8080/api/Address',JSON.stringify(this.state.data),{headers: { "Content-Type": "application/json" }})
+    .then(res=>swal('Done','succses'))
+    .catch()
 }
  
    render(){

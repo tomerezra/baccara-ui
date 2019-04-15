@@ -21,12 +21,12 @@ class HistoryForm extends Component{
    componentDidMount(){
       
 
-        Axios.get('http://localhost:49699/api/Address')
-          .then(res=>this.setState({addresses:res.data}))
-        // Axios.get('http://localhost:49699/api/Item')
-        //   .then(res=>this.setState({items:res.data}))
-        // Axios.get('http://localhost:49699/api/Order')
-        //   .then(res=>this.setState({orders:res.data}))
+        Axios.get('http://127.0.0.1:8080/api/Address/5?email='+this.props.auth.email)
+          .then(res=>this.setState({addresses:res.data}) )
+        Axios.get('http://127.0.0.1:8080/api/ItemsCustomer?email='+this.props.auth.email)
+          .then(res=>console.log('items',res.data))
+        Axios.get('http://127.0.0.1:8080/api/Order?email='+this.props.auth.email)
+          .then(res=>console.log('orders',res.data))
         const name= this.props.pagename
         // tree.map((item)=>{this.props.standard(item)})
         if (name==='orders') {
@@ -58,10 +58,10 @@ class HistoryForm extends Component{
     const {auth,data} = this.props
     const {items,addresses,orders}=this.state
       if (this.props.pagename==='orders') {
-        var tmp = data.orders.filter(order=>auth.email===order.Email)
-        if (tmp.length>0) {
+        
+        if (orders.length>0) {
           return(
-            tmp.map(order => <CardComponent order={order}/>)
+            orders.map(order => <CardComponent order={order}/>)
           )  
         } else {
           return(<div style={{textAlign:'center'}}>You don't have orders</div>)
@@ -69,10 +69,10 @@ class HistoryForm extends Component{
         
       }
       else if (this.props.pagename==='items') {
-        var tmp = data.items.filter(item=>auth.email===item.Email)
-        if (tmp.length>0) {
+        
+        if (items.length>0) {
           return(
-            tmp.map(item => <CardComponent item={item} delete={this.props.deleteItem}/>)
+            items.map(item => <CardComponent item={item} delete={this.props.deleteItem}/>)
           )  
         } else {
           return(<div style={{textAlign:'center'}}>You don't have items</div>)
@@ -80,11 +80,11 @@ class HistoryForm extends Component{
        
       }
       else if (this.props.pagename==='shipping') {
-        var tmp = addresses.filter(address=>auth.email===address.Email)
         
-        if (tmp.length>0) {
+        
+        if (addresses.length>0) {
           return(
-            tmp.map(address => <CardComponent address={address} delete={this.props.deleteAddress}/>)
+            addresses.map(address => <CardComponent address={address} delete={this.props.deleteAddress}/>)
           )  
         } else {
           return(<div style={{textAlign:'center'}}>You don't have addresses</div>)
