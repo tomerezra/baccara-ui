@@ -187,7 +187,7 @@ handleClick=(e)=>{
     else {this.makeQuestions()}          
 }
 isInvalid=(id,value)=>{
-    console.log(id,value)
+    
     var stage = this.state.invalid.filter(s=>s.stage==id)
     
     var val = stage[0].value.filter(x=>Object.getOwnPropertyNames(x)==value)
@@ -506,7 +506,7 @@ const mapStateToProps = (state) => {
     return{
       auth:state.firebase.auth,
       guest:state.auth.guest,
-      data:state.firestore.ordered
+    //   data:state.firestore.ordered
 
     }
      

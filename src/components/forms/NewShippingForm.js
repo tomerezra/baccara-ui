@@ -24,7 +24,7 @@ class NewShippingForm extends Component {
     }
     componentDidMount = () => {
       Axios.get('http://127.0.0.1:8080/api/City')
-      .then(resp=>this.setState({citys:resp.data}))
+      .then(res=>this.setState({citys:res.data}))
     }
     
   handleChange =(e,d)=>{
@@ -102,7 +102,7 @@ class NewShippingForm extends Component {
             placeholder='Select your City' 
             options={citylist} 
             onChange={this.handleChange}
-            
+            value={data.City}
             />
           
           <Form.Input 

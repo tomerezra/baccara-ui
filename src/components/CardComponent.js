@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Card, Button} from 'semantic-ui-react'
 import {withRouter} from 'react-router-dom'
-import moment from 'moment'
+
 export class CardComponent extends Component {
   state={
     data:this.props.order
@@ -77,6 +77,7 @@ export class CardComponent extends Component {
     }
   }
     render() {
+      
     return (
         
           this.itemorcard()
@@ -84,5 +85,6 @@ export class CardComponent extends Component {
     )
   }
 }
+
 
 export default withRouter(CardComponent)

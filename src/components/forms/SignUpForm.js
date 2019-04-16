@@ -6,7 +6,7 @@ import {createUser,updateUser} from '../../store/actions/authAction'
 import {withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {Redirect} from 'react-router-dom'
-import Axios from 'axios';
+
 import firebase from 'firebase/app'
 class SignUpForm extends Component {
     state={

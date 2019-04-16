@@ -8,6 +8,7 @@ export const getAddresses = ()=>{
           .then(res=>addresses=res.data)
         
         .then(()=>{
+            
             dispatch({type: 'GET_ADDRESSES',addresses})
             
         })
@@ -89,11 +90,18 @@ export const deleteItem = (item)=>{
     return (dispatch, getState,{firebase})=>{
         // const firestore=firebase.firestore()
         // firestore.collection('items').doc(item.id).delete()
+        const userid =firebase.auth().currentUser.email
+        var items=[]
         
         Axios.delete('http://127.0.0.1:8080/api/Items?id='+item.ItemID)
         .then(()=>{
+            return Axios.get('http://127.0.0.1:8080/api/Items?email='+userid)
             
-            dispatch({type: 'DELETE_ITEM',item})
+        })
+        .then(res=>items=res.data)
+        .then(()=>{
+            
+            dispatch({type: 'DELETE_ITEM',items})
         })
         .catch((err)=>{
             dispatch({type: 'DELETE_ITEM_ERROR',err})
@@ -112,7 +120,7 @@ export const createOrder = (order,addressid)=>{
         //     createdAt:new Date(),
         //     status:'Send to sales man'
         // })
-        console.log(order,addressid)
+        
         Axios.post('http://127.0.0.1:8080/api/Order?address='+addressid,JSON.stringify(order),{headers: { "Content-Type": "application/json" }})
         .then(()=>{
             dispatch({type: 'CREATE_ORDER',order})
@@ -147,12 +155,21 @@ export const createAddress = (address)=>{
 }
 export const deleteAddress = (address)=>{
     return (dispatch, getState,{firebase})=>{
-        const firestore=firebase.firestore()
+        // const firestore=firebase.firestore()
+        var addresses=[]
+        const userid =firebase.auth().currentUser.email
         // firestore.collection('addresses').doc(address.id).delete()
         Axios.delete('http://127.0.0.1:8080/api/Address?id='+address.ID)
         .then(()=>{
-            dispatch({type: 'DELETE_ADDRESS',address})
+            return Axios.get('http://127.0.0.1:8080/api/Address/5?email='+userid)
+            
         })
+        .then(res=>addresses=res.data)
+            
+        .then(()=>{
+            dispatch({type: 'DELETE_ADDRESS',addresses})
+        })
+           
         .catch((err)=>{
             dispatch({type: 'DELETE_ADDRESS_ERROR',err})
         })

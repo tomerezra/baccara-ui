@@ -5,10 +5,11 @@ import {withRouter} from "react-router-dom";
 import Validator from 'validator'
 // import InlineError from '../messages/InlineError'
 import logo from '../../images/logo.png'
-import swal from 'sweetalert';
+import swal from '@sweetalert/with-react';
 import { connect } from 'react-redux'
 import {signIn,logasguest} from '../../store/actions/authAction'
 import {Redirect} from 'react-router-dom'
+import firebase from 'firebase/app'
 class LoginForm extends Component {
     state={
         data:{
@@ -116,8 +117,16 @@ class LoginForm extends Component {
                     content: "input",
                 })
                 .then((value) => {
-                  swal(`The Password Send To ${value}`);
-                  });}}>Forget Your Password</a>
+                  firebase.auth().sendPasswordResetEmail(value)
+                  .then(function() {
+                    swal(`Password Reset Email Send To ${value}`);
+                  })
+                  .catch(function(error) {
+                    
+                    swal('',error.message,'error')
+                  });
+                  
+                  });}}>Forget Your Password?</a>
           
         </Form>
         <Message>

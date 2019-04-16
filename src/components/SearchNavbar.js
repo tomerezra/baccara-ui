@@ -13,6 +13,7 @@ import swal from '@sweetalert/with-react'
 import {signOut} from '../store/actions/authAction'
 import {Redirect} from 'react-router-dom'
 import moment from 'moment'
+
 const styles = {
   root: {
     width: '100%',
@@ -44,42 +45,47 @@ class SearchNavbar extends React.Component {
 componentWillMount() {
   this.resetComponent()
 }
-getResults = result=>{
-  const tmp = result.map(obj=>{return {obj,title:obj.id}})
-  return tmp
+getResults = (result,name)=>{
+  return result.map(obj=>{
+    if (name==='Orders') {
+      return {obj,title:obj.OrderId}
+    } else {
+      return {obj,title:obj.ItemName}
+    }
+    })
 }
 
 resetComponent = () => this.setState({ isLoading: false, results: [], value: '' })
 
 handleResultSelect = (e, {result}) => {
   const tmp = []
-  
+  console.log(result)
   for (const key in result.obj) {
-        if (key==='orderitems'||key==='agree') {
+        if (key==='Address'||key==='Part'||key==='Quantity') {
           
         }
         else{
-          if (key==='standard') {
+          if (key==='IsStandard') {
             
             tmp.push(
               <Table.Row>
-                <Table.Cell>{key.charAt(0).toUpperCase()+key.slice(1)}</Table.Cell>
+                <Table.Cell>{key}</Table.Cell>
                 <Table.Cell>{(key,result.obj[key])?'Yes':'No'}</Table.Cell>
               </Table.Row>
             )
           }
-          else if (key==='createdAt') {
-            tmp.push(
-              <Table.Row>
-                <Table.Cell>{key.charAt(0).toUpperCase()+key.slice(1)}</Table.Cell>
-                <Table.Cell>{(key,moment(result.obj[key].toDate()).calendar())}</Table.Cell>
-              </Table.Row>
+          // else if (key==='createdAt') {
+          //   tmp.push(
+          //     <Table.Row>
+          //       <Table.Cell>{key}</Table.Cell>
+          //       <Table.Cell>{(key,moment(result.obj[key].toDate()).calendar())}</Table.Cell>
+          //     </Table.Row>
               
-            )
-          }
+          //   )
+          // }
           else tmp.push(
             <Table.Row>
-              <Table.Cell>{key.charAt(0).toUpperCase()+key.slice(1)}</Table.Cell>
+              <Table.Cell>{key}</Table.Cell>
               <Table.Cell>{(key,result.obj[key])}</Table.Cell>
             </Table.Row>
           )
@@ -95,6 +101,7 @@ swal(
           {tmp}
         </Table.Body>
       </Table>
+      
     </div>
     )
   this.setState({value:result.title})}
@@ -110,41 +117,41 @@ handleSearchChange = (e, { value }) => {
     
     const tmp=[]
     
-    for (let i = 1; i < 4; i++) {
+    for (let i = 1; i < 3; i++) {
       if (i===1) {
-        const result = data.items.filter(item=>(re.test(item.partname)))
+        const result = data.items.filter(item=>(re.test(item.ItemName)))
         if (result.length>0) {
           tmp.push(
             {
             name:'Items',
-            results:this.getResults(result)
+            results:this.getResults(result,'Items')
             }
           )
         }
       }
       else if (i===2) {
-        const result = data.orders.filter(order=>(re.test(order.id)))
+        const result = data.orders.filter(order=>(re.test(order.OrderId)))
         if (result.length>0) {
           tmp.push(
             {
             name:'Orders',
-            results:this.getResults(result)
+            results:this.getResults(result,'Orders')
             }
           )
         }
       }
-      else{
-        const result = data.addresses.filter(address=>(re.test(address.address)))
-        if (result.length>0) {
-          tmp.push(
-            {
-            name:'Addresses',
-            results:this.getResults(result)
-            }
-          )
-        }
+      // else{
+      //   const result = data.addresses.filter(address=>(re.test(address.address)))
+      //   if (result.length>0) {
+      //     tmp.push(
+      //       {
+      //       name:'Addresses',
+      //       results:this.getResults(result)
+      //       }
+      //     )
+      //   }
         
-      }
+      // }
       }
 
       
@@ -222,7 +229,8 @@ const mapStateToProps = (state) => {
   return{
         
         auth:state.firebase.auth,
-        data:state.firestore.ordered
+        // data:state.firestore.ordered
+        data:state.data
     }
     
   }

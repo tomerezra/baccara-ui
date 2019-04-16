@@ -1,14 +1,14 @@
 
 import React, { Component } from 'react'
 import {withRouter,Redirect} from 'react-router-dom'
-import {Grid,Header,Loader,Segment} from 'semantic-ui-react'
+import {Grid,Header,Segment} from 'semantic-ui-react'
 import {createAddress,createItem,createOrder,deleteAddress,deleteItem,getAddresses,getItems,getOrders} from '../../store/actions/dataActions'
 import { connect } from 'react-redux'
 import CardComponent from '../CardComponent';
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
-import Axios from 'axios';
-import firebase from 'firebase/app'
+
+
 class HistoryForm extends Component{
    state={
        pagename:'',
@@ -49,8 +49,8 @@ class HistoryForm extends Component{
   }
 
   cards =()=>{
-    const {auth,data} = this.props
-    const {items,addresses,orders}=data
+    
+    const {items,addresses,orders}=this.props.data
       if (this.props.pagename==='orders') {
         
         if (orders.length>0) {

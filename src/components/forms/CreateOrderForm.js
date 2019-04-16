@@ -7,7 +7,7 @@ import {createOrder,getItems,getAddresses} from '../../store/actions/dataActions
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
 import swal from '@sweetalert/with-react'
-
+import Axios from 'axios'
 export class CreateOrderForm extends Component {
   state={
         pagename:'Create New Order',
@@ -32,13 +32,14 @@ export class CreateOrderForm extends Component {
                         
         },
         step:1,
-        clone:false
-        
+        clone:false,
+        citys:[]
 
   }
 componentDidMount(){
     const {auth}=this.props
-    
+    Axios.get('http://127.0.0.1:8080/api/City')
+      .then(res=>this.setState({citys:res.data}))
     if (this.props.match.params.id!=='0') {
         this.setState({step:3,clone:true})
     }
@@ -62,8 +63,9 @@ clone=()=>{
 }
 
 handleChange=(e,data)=>{
-    const {value,name,id,type}=e.target
-    const {guest} =this.props
+    const {value,name,id,type}=data
+    
+    
     if (type==='checkbox') {
         var itemtopush={id:id,serial:name,quantity:value}
         if (e.target.checked) {
@@ -71,7 +73,7 @@ handleChange=(e,data)=>{
             
         }
         else {
-            var tmp=this.state.orderitems.filter(item=>!(guest?item.serial:item.id===id))
+            var tmp=this.state.orderitems.filter(item=>!(item.id===id))
             
             this.setState({orderitems:tmp})
             
@@ -79,11 +81,11 @@ handleChange=(e,data)=>{
         
     }
     else if (name==='quantity' && this.state.orderitems.length>0) {
-        var tmp=this.state.orderitems.filter(item=>(guest?item.serial:item.id===id))
-        
+        var tmp=this.state.orderitems.filter(item=>(item.id===id))
+        console.log(tmp[0])
         tmp[0].quantity=value
     }
-    else if (data.name==='select') {
+    else if (data.name==='selectaddress') {
         var tmp = this.props.data.addresses.filter(adr=>adr.ID===data.value)
         
           this.setState({Address:{...this.state.data.Address,
@@ -99,7 +101,8 @@ handleChange=(e,data)=>{
         
     }
     else {
-        this.setState({data:{...this.state.data,[name]:value}})   
+        
+        this.setState({Address:{...this.state.Address,[name]:value}})   
     }
     
     
@@ -213,21 +216,24 @@ nextstep=(e)=>{
     }
   }
 billing=()=>{
-    this.props.getAddresses()
+    if (!this.props.guest) {
+        this.props.getAddresses()
+    }
+    var citylist = this.state.citys.map(city=>{return{text:city.Name,value:city.Name}})
     // var tmp = this.props.data.addresses.filter(adr=>adr.userid===this.props.auth.uid)
     var tmp = this.props.data.addresses.map(adr=>{return{text:adr.FirstName+' '+ adr.LastName,value:adr.ID}})
-    const {Address}=this.state
+    
     return(
     <>
     <Select 
         
-        name='select'
+        name='selectaddress'
         placeholder='Select your address' 
         options={tmp} 
         onChange={this.handleChange}
         disabled={this.props.guest}
         />
-    
+    <Divider></Divider>
     <Grid textAlign='center'>
                 <Grid.Column>
                 
@@ -235,8 +241,8 @@ billing=()=>{
                     
                     <Form.Input 
                             type="text"
-                            id="firstname"
-                            name="firstname"
+                            id="FirstName"
+                            name="FirstName"
                             
                             fluid icon='user' 
                             iconPosition='left' 
@@ -246,8 +252,8 @@ billing=()=>{
                         </Form.Input>
                     <Form.Input 
                             type="text"
-                            id="lastname"
-                            name="lastname"
+                            id="LastName"
+                            name="LastName"
                             
                             fluid icon='user' 
                             iconPosition='left' 
@@ -266,21 +272,18 @@ billing=()=>{
                             value={this.state.data.country}
                             onChange={this.handleChange}>
                         </Form.Input> */}
+                    <Form.Select 
+                        name='City'
+                        placeholder='Select your City' 
+                        options={citylist} 
+                        onChange={this.handleChange}
+                        value={this.state.Address.City}
+                    />
+                    
                     <Form.Input 
                             type="text"
-                            id="city"
-                            name="city"
-                            
-                            fluid icon='address card' 
-                            iconPosition='left' 
-                            placeholder='City'
-                            value={this.state.Address.City}
-                            onChange={this.handleChange}>
-                        </Form.Input>
-                    <Form.Input 
-                            type="text"
-                            id="address"
-                            name="address"
+                            id="Adress"
+                            name="Adress"
                             
                             fluid icon='envelope' 
                             iconPosition='left' 
@@ -290,8 +293,8 @@ billing=()=>{
                         </Form.Input>
                     <Form.Input 
                             type="text"
-                            id="phone"
-                            name="phone"
+                            id="PhoneNumber"
+                            name="PhoneNumber"
                             
                             fluid icon='phone' 
                             iconPosition='left' 
@@ -301,8 +304,8 @@ billing=()=>{
                         </Form.Input>
                         <Form.Input 
                             type="text"
-                            id="company"
-                            name="company"
+                            id="CompanyName"
+                            name="CompanyName"
                             
                             fluid icon='suitcase' 
                             iconPosition='left' 
@@ -312,8 +315,8 @@ billing=()=>{
                         </Form.Input>
                         <Form.Input 
                             type="email"
-                            id="email"
-                            name="email"
+                            id="Email"
+                            name="Email"
                             
                             fluid icon='at' 
                             iconPosition='left' 
@@ -329,9 +332,9 @@ billing=()=>{
     )
     }
 itemlist=()=>{
-    const {auth,data,guest}=this.props
+    const {data,guest}=this.props
     if (guest) {
-        var items = data.guestdata.items
+        var items = data.gitems
     } else {
         this.props.getItems()
         var items = this.props.data.items
@@ -339,7 +342,7 @@ itemlist=()=>{
        
     return(
             <Grid columns='2' verticalAlign='middle'>
-            {items.map(item=>{
+            {items.map((item,i)=>{
                 
                 return(
                    
@@ -348,7 +351,7 @@ itemlist=()=>{
                     <Grid.Column>
                     <Form.Checkbox
                         
-                        id={guest?item.serial:item.ItemID}
+                        id={guest?i:item.ItemID}
                         name={item.ItemSerial}
                         label={item.ItemName}
                         onChange={this.handleChange}
@@ -363,7 +366,7 @@ itemlist=()=>{
                         size='mini'
                         type='number'
                         min='1'
-                        id={item.ItemID}
+                        id={guest?i:item.ItemID}
                         name='quantity'
                         // value={this.state.tmp[item.id-1].quantity}
                         onChange={this.handleChange}
