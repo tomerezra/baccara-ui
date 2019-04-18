@@ -1,11 +1,35 @@
 import React, { Component } from 'react'
-import {Card, Button} from 'semantic-ui-react'
+import {Card, Button,Table} from 'semantic-ui-react'
 import {withRouter} from 'react-router-dom'
-
+import swal from '@sweetalert/with-react'
 export class CardComponent extends Component {
   state={
     data:this.props.order
   }
+  swaladdress=()=>{
+    const {address}= this.props
+    var tmp=[]
+      for (const key in address) {
+        if (key=='ID'||key==='Email') {
+          
+        }    
+        else tmp.push(
+              
+              <Table.Row>
+                <Table.Cell>{key}</Table.Cell>
+                <Table.Cell>{(key,address[key])}</Table.Cell>
+              </Table.Row>
+            )
+      }
+    swal(
+      <Table celled unstackable compact fixed size='small'>
+        <Table.Body>
+          {tmp}
+        </Table.Body>
+      </Table>
+    )
+  }
+  
   itemorcard=()=>{
     
     if (this.props.location.pathname==='/orders') {
@@ -19,7 +43,7 @@ export class CardComponent extends Component {
               <Card.Content>
                 <Card.Header>{OrderId}</Card.Header>
                 <Card.Meta>{OrderDate}</Card.Meta>
-                <Card.Description>{Status}</Card.Description>
+                <Card.Meta>Status : {Status}</Card.Meta>
                 
               </Card.Content>
           </Card>
@@ -32,7 +56,7 @@ export class CardComponent extends Component {
               centered 
               fluid>
               <Card.Content>
-                <Card.Header>Name : {ItemName}</Card.Header>
+                <Card.Header>{ItemName}</Card.Header>
                 <Card.Meta>Type : {Type}</Card.Meta>
                 <Card.Meta>Serial : {ItemSerial}
                 <Button
@@ -45,7 +69,7 @@ export class CardComponent extends Component {
                   
                   
                     </Card.Meta>
-                <Card.Description>Standard : {IsStandard?'Yes':'No'}</Card.Description>
+                <Card.Meta>Standard : {IsStandard?'Yes':'No'}</Card.Meta>
               </Card.Content>
           </Card>
       )
@@ -53,13 +77,17 @@ export class CardComponent extends Component {
     }
     else if(this.props.location.pathname==='/shipping'){
       const {FirstName,LastName,Adress,City}=this.props.address
+      
+      
+      
       return(
           <Card
+              onClick={this.swaladdress}
               centered 
               fluid>
               <Card.Content>
                 <Card.Header>{FirstName} {LastName}</Card.Header>
-                <Card.Meta>{City}
+                <Card.Meta>City : {City}
                 <Button
                     onClick={()=>{this.props.delete(this.props.address)}}
                     floated='right'
@@ -70,7 +98,7 @@ export class CardComponent extends Component {
                   
                   
                     </Card.Meta>
-                <Card.Description>{Adress}</Card.Description>
+                <Card.Meta>Address : {Adress}</Card.Meta>
               </Card.Content>
           </Card>
       )

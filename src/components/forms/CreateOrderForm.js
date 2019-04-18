@@ -82,7 +82,6 @@ handleChange=(e,data)=>{
     }
     else if (name==='quantity' && this.state.orderitems.length>0) {
         var tmp=this.state.orderitems.filter(item=>(item.id===id))
-        console.log(tmp[0])
         tmp[0].quantity=value
     }
     else if (data.name==='selectaddress') {
