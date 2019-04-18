@@ -26,14 +26,15 @@ export class CardComponent extends Component {
       )
       
     } else if(this.props.location.pathname==='/items'){
-      const {ItemName,ItemSerial,IsStandard} = this.props.item
+      const {ItemName,ItemSerial,IsStandard,Type} = this.props.item
       return(
           <Card
               centered 
               fluid>
               <Card.Content>
-                <Card.Header>{ItemName}</Card.Header>
-                <Card.Meta>{ItemSerial}
+                <Card.Header>Name : {ItemName}</Card.Header>
+                <Card.Meta>Type : {Type}</Card.Meta>
+                <Card.Meta>Serial : {ItemSerial}
                 <Button
                     onClick={()=>{this.props.delete(this.props.item)}}
                     floated='right'

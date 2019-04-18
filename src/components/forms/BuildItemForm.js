@@ -30,6 +30,7 @@ class BuildItemForm extends Component {
         ItemSerial:'',
         ItemName:'',
         IsStandard:true,
+        Type:'',
         Email:this.props.auth.email
       },
       progress:0,
@@ -44,27 +45,28 @@ class BuildItemForm extends Component {
       orderbutton:true,
       partdata:{},
       questions:[],
-      invalid:[]
+      invalid:[],
+      categories:[],
+      start:false,
+      Type:{}
   }
 
 componentDidMount(){
     
     
-    var db =firebase.firestore()
-    var tree=[]
-    var invalid=[]
+    
     this.setState({datatmp:this.state.data})
-    Axios.get('http://127.0.0.1:8080/api/AllItem')
-    .then(res=>this.setState({partdata:res.data}))
-      
-    Axios.get('http://127.0.0.1:8080/api/Question')
-    .then(res=>this.setState({questions:res.data}))
+    
+
+    Axios.get('http://127.0.0.1:8080/api/Categories')
+    .then(res=>this.setState({categories:res.data}))
+
     // Add invalid to firebase
     // Parts.map(part=>{
         
     //     var options = part.options.map(x=>x.value)
     //     options.forEach(opt => {
-    //         db.collection('invalid'+part.id).doc(opt).set({
+    //         db.collection('Ainvalid'+part.id).doc(opt).set({
     //             module:"",  
     //             body:"",
     //             port:"",
@@ -79,32 +81,7 @@ componentDidMount(){
     //     });
         
     // })
-    var invtmp=[]
-    for (let i = 1; i < 11; i++) {
-        
-        
-        db.collection('invalid'+i.toString()).get().then(function (querySnapshot) {
-            querySnapshot.forEach(function (doc) {    
-                invtmp.push({[doc.id]:doc.data()}); 
-            });
-           
-            
-        })
-        .then(()=>invalid.push({stage:i,value:invtmp}))
-        .then(()=>{
-            
-            invtmp=[]})
-        
-    }
-    this.setState({invalid})
-   
-    db.collection("standard").orderBy('id', 'asc').get().then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {    
-            tree.push({id:doc.data().id,parent:new RegExp(doc.data().parent,'i'),value:new RegExp(doc.data().value,'i')});
-        });
-
-    })
-    this.setState({tree})
+    
     // swal({
     //     content:(
     //     <div>
@@ -131,7 +108,7 @@ handleSubmit=(e)=>{
     })
     .then((value)=>{
         
-        this.setState({add:{...this.state.add,ItemName:value}})
+        this.setState({add:{...this.state.add,ItemName:value,Type:this.state.Type.Type}})
         if (this.props.guest) {
            this.props.createitemguest(this.state.add) 
         }
@@ -146,7 +123,7 @@ handleSubmit=(e)=>{
 startOver=()=>{
     this.setState({progress:0});
     this.setState({data:this.state.datatmp})
-    this.setState({add:{...this.state.add,ItemSerial:'',IsStandard:true}})
+    this.setState({add:{...this.state.add,ItemSerial:'',IsStandard:true,Type:''}})
     var tmp =this.state.change.map((i)=>i=null)
     this.setState({change:tmp,first:false})
     
@@ -191,6 +168,7 @@ isInvalid=(id,value)=>{
     var stage = this.state.invalid.filter(s=>s.stage==id)
     
     var val = stage[0].value.filter(x=>Object.getOwnPropertyNames(x)==value)
+    
     if (id===1) {
         
     } else {
@@ -201,7 +179,7 @@ isInvalid=(id,value)=>{
             
         }
         else if (RegExp(val[0][value][name]).test(this.state.data[name])) {
-            
+            console.log(val[0][value][name])
             return true
         }
     }
@@ -245,8 +223,46 @@ isStandard=(id,value)=>{
 
     
 }
+getAllData=()=>{
+    const{Type}=this.state
+    
+    var db =firebase.firestore()
+    var tree=[]
+    var invalid=[]
+    var invtmp=[]
+    for (let i = 1; i <= Type.Stages; i++) {
+        db.collection(Type.Type+'invalid'+i.toString()).get().then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {    
+                invtmp.push({[doc.id]:doc.data()}); 
+            });
+        })
+        .then(()=>invalid.push({stage:i,value:invtmp}))
+        .then(()=>{
+            
+            invtmp=[]
+        })
+        
+    }
+    
+    this.setState({invalid})
+   
+    db.collection(Type.Type+"tmp").orderBy('id', 'asc').get().then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {    
+            tree.push({id:doc.data().id,parent:new RegExp(doc.data().parent,'i'),value:new RegExp(doc.data().value,'i')});
+        });
+
+    })
+    this.setState({tree})
+    Axios.get('http://127.0.0.1:8080/api/AllItem?type='+Type.Type+'&stages='+Type.Stages)
+    .then(res=>this.setState({partdata:res.data}))
+    
+      
+    Axios.get('http://127.0.0.1:8080/api/Question?type='+Type.Type)
+    .then(res=>this.setState({questions:res.data}))
+    
+}
 makeQuestions=()=>{
-    const {partdata,questions,progress} =this.state
+    const {partdata,questions,progress,categories,start} =this.state
     this.setState({cancel:false})
     var part = partdata[progress+1]
     var question = questions.filter(q=>q.QID===progress+1)
@@ -254,80 +270,148 @@ makeQuestions=()=>{
     
     // const tmp = Parts.filter(part=>part.id===this.state.progress+1)
     // const part=tmp[0]
+    var buttons
+    if (!start) {
+        buttons=categories.map(c=>
+            <Grid.Column
+            style={{width:'30%'}}>
+            <Button 
+                size='mini'
+                fluid
+                content={c.Type}
+                value={c.Type} 
+                color='green'
+                
+                onClick={(event,data)=>{
+                    var Type =categories.filter(t=>t.Type===data.value)
+                    this.setState({Type:Type[0]})
+                                                                
+                    swal.close()
+                    
+                       
+            }}/>
+            
+            </Grid.Column>
+            
+            )
+    } else {
+        buttons =part.map(opt=>
+            <Grid.Column
+            style={{width:'30%'}}>
+            <Button 
+                size='mini'
+                fluid
+                content={opt.Description}
+                value={opt.ID} 
+                color={this.isStandard(progress+1,opt.ID)}
+                disabled={this.isInvalid(progress+1,opt.ID)}
+                onClick={(event,data)=>{
+                    this.setState({data:{...this.state.data,[question.Name.toLowerCase()]:data.value}})
+                    this.setState(prev=>{return{add:{...this.state.add,ItemSerial:prev.add.ItemSerial+data.value,IsStandard:data.color==='yellow'?false:true}}})
+                    
+                    this.setState({value:data.value})
+                                                                
+                    swal.close()
+                    
+                       
+            }}/>
+            
+            </Grid.Column>
+            
+            )
+    }
     
-    
-    const buttons =part.map(opt=>
-                                    <Grid.Column
-                                    style={{width:'30%'}}>
-                                    <Button 
-                                        size='mini'
-                                        fluid
-                                        content={opt.Description}
-                                        value={opt.ID} 
-                                        color={this.isStandard(progress+1,opt.ID)}
-                                        disabled={this.isInvalid(progress+1,opt.ID)}
-                                        onClick={(event,data)=>{
-                                            this.setState({data:{...this.state.data,[question.Name.toLowerCase()]:data.value}})
-                                            this.setState(prev=>{return{add:{...this.state.add,ItemSerial:prev.add.ItemSerial+data.value,IsStandard:data.color==='yellow'?false:true}}})
-                                            
-                                            this.setState({value:data.value})
-                                                                                        
-                                            swal.close()
-                                            
-                                               
-                                    }}/>
-                                    
-                                    </Grid.Column>
-                                    
-                                    )
+    if (!start) {
+        swal({
+        
+            content:(
+            <div>
+                <h1>Type</h1>
+                <p>Choose Type</p>
+                <Grid columns='3' centered>
+                    {buttons}
+                </Grid>
+                
+                <br/>
+                <br/>
+                <Button 
+                    negative
+                    floated='right'
+                    value='cancel'
+                    size='mini'
+                    content='Cancel'
+                    onClick={()=>{swal.close(); this.setState({cancel:true})}}></Button>
+                <br/>
+            </div>
+            ),
+            button:{visible:false},
+            closeOnClickOutside: false,
+
+        })
+        .then(()=>{ 
+            if (this.state.cancel) {
+                
+            }
+            else {
+                this.setState({start:true})
+                this.getAllData()
+                setTimeout(()=>{
+                    this.makeQuestions()
+                },1500)
+                }
+  
+    })
+    } else {
+        swal({
+        
+            content:(
+            <div>
+                <h1>{question.Name}</h1>
+                <p>{question.Question}</p>
+                <Grid columns='3' centered>
+                    {buttons}
+                </Grid>
+                
+                <br/>
+                <br/>
+                <Button 
+                    negative
+                    floated='right'
+                    value='cancel'
+                    size='mini'
+                    content='Cancel'
+                    onClick={()=>{swal.close(); this.setState({cancel:true})}}></Button>
+                <br/>
+            </div>
+            ),
+            button:{visible:false},
+            closeOnClickOutside: false,
+            
+            
+          
+        })
+        .then(()=>{
+            
+            if (this.state.cancel) {
+                
+            }
+            else if (this.state.progress<10)
+                {
+                    this.setState({progress:this.state.progress+1})
+                    
+                    if (this.state.progress<10)
+                    {
+                        
+                        this.makeQuestions()
+                    }
+                }
+         
+        
+    }) 
+    } 
 
     
-    swal({
-        
-        content:(
-        <div>
-            <h1>{question.Name}</h1>
-            <p>{question.Question}</p>
-            <Grid columns='3' centered>
-                {buttons}
-            </Grid>
-            
-            <br/>
-            <br/>
-            <Button 
-                negative
-                floated='right'
-                value='cancel'
-                size='mini'
-                content='Cancel'
-                onClick={()=>{swal.close(); this.setState({cancel:true})}}></Button>
-            <br/>
-        </div>
-        ),
-        button:{visible:false},
-        closeOnClickOutside: false,
-        
-        
-      
-    })
-    .then(()=>{
-        
-        if (this.state.cancel) {
-            
-        }
-        else if (this.state.progress<10)
-            {
-                this.setState({progress:this.state.progress+1})
-                
-                if (this.state.progress<10)
-                {
-                    
-                    this.makeQuestions()
-                }
-            }
-     
-    
-})}
+    }
 
 
 buttonChange=()=>{
