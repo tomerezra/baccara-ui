@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import { Button, Form, Grid, Header, Image, Message, Segment} from 'semantic-ui-react'
 import PropTypes from 'prop-types'
 import {withRouter} from "react-router-dom";
-import Validator from 'validator'
-// import InlineError from '../messages/InlineError'
+import Axios from 'axios'
 import logo from '../../images/logo.png'
 import swal from '@sweetalert/with-react';
 import { connect } from 'react-redux'
@@ -19,7 +18,7 @@ class LoginForm extends Component {
         },
         loading:true,
         pagename:'Log In To Your Account',
-        error:false
+        
     }
     
     HandleChange=(e)=>{
@@ -34,23 +33,24 @@ class LoginForm extends Component {
         this.props.logasguest()
         this.props.history.push('/builditem')
       } 
-      else if (this.Validate(this.state.data)) {
+      else {
         
         this.props.signIn(this.state.data)
         
       } 
       
     }
-    Validate=(data)=>{
-      
-      // if (!Validator.isEmail(data.email)||!data.password) {
-      //     this.setState({error:true})
-      //     return false
-      // }
-      return true
-    }
-  
     
+  
+    handleInvalid=(e)=>{
+      const {value,name}=e.target
+      if (value==='') {
+        e.target.setCustomValidity(name+' is required')
+      } else {
+        e.target.setCustomValidity('worng pattern')
+      }
+      
+    }
   
   render() {
     const {data}=this.state
@@ -66,7 +66,7 @@ class LoginForm extends Component {
         <Grid textAlign='center' >
           <Grid.Column >
         
-             <Form onSubmit={this.HandleSubmit} error={this.state.error}>
+             <Form onSubmit={this.HandleSubmit}>
                
           
                   <Form.Input 
@@ -74,13 +74,17 @@ class LoginForm extends Component {
                     type="text"
                     id="email"
                     name="email"
-                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                    pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}"
+                    onInvalid ={this.handleInvalid}
+                    onInput={(e)=>{e.target.setCustomValidity('')}}
+                    required
                     fluid icon='user' 
                     iconPosition='left' 
                     placeholder='E-mail address'
                     value={data.email}
                     onChange={this.HandleChange}
                     >
+                    
                   </Form.Input>
                   
                   <Form.Input 
@@ -91,14 +95,14 @@ class LoginForm extends Component {
                     fluid icon='lock'
                     iconPosition='left'
                     placeholder='Password'
-                    // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                    // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
+                    onInvalid ={this.handleInvalid}
+                    onInput={(e)=>{e.target.setCustomValidity('')}}
+                    required
                     value={data.password}
                     onChange={this.HandleChange}>
             </Form.Input>
-            <Message
-                error
-                content='Your Email or Password not match'
-                ></Message>
+            {this.props.authError?<Message color='red'>{this.props.authError}</Message>:null}
             <Form.Checkbox
                 id="guest"
                 name="guest"
@@ -107,9 +111,32 @@ class LoginForm extends Component {
                 onChange={this.HandleChange}>>
             </Form.Checkbox>
             
-            <Button color='linkedin' fluid size='large'>
+            <Button color='linkedin'>
               Login
             </Button>
+            <Button icon='google' style={{display:auth.uid?'none':''}} color='google plus' onClick={(e)=>{
+            e.preventDefault()
+            var provider = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithPopup(provider).then(function(result) {
+              var user = result.user;
+              Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Customer','='+user.email)
+              
+            }).catch(function(error) {
+              var errorMessage = error.message;
+              alert(errorMessage)
+            });
+          }}></Button>
+          <Button icon='facebook' style={{display:auth.uid?'none':''}} color='facebook' onClick={(e)=>{
+            e.preventDefault()
+            var provider = new firebase.auth.FacebookAuthProvider();
+            firebase.auth().signInWithPopup(provider).then(function(result) {
+              var user = result.user;
+              Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Customer','='+user.email)
+            }).catch(function(error) {
+              var errorMessage = error.message;
+              alert(errorMessage)
+            });
+          }}></Button>
             
             <br/>
             <a style={{cursor: 'pointer'}} onClick={()=>{

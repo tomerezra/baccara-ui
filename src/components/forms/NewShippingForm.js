@@ -3,12 +3,13 @@ import {withRouter} from 'react-router-dom'
 import {Button,Grid,Header,Segment,Form} from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import {Redirect} from 'react-router-dom'
-import {createAddress} from '../../store/actions/dataActions'
+import {createAddress,updateAddress} from '../../store/actions/dataActions'
 import Axios from 'axios';
 import swal from 'sweetalert';
 
 class NewShippingForm extends Component {
     state={
+      
       citys:[],  
       pagename:'New Shipping Address',
         data:{
@@ -23,8 +24,29 @@ class NewShippingForm extends Component {
         }
     }
     componentDidMount = () => {
-      Axios.get('http://127.0.0.1:8080/api/City')
+      
+      const {id} = this.props.match.params
+        if (id!=0) {
+          const tmp=this.props.data.addresses.filter(a=>id==a.ID)
+          this.setState({
+          data:{...this.state.data,
+          FirstName:tmp[0].FirstName,
+          LastName:tmp[0].LastName,
+          PhoneNumber:tmp[0].PhoneNumber,
+          CompanyName:tmp[0].CompanyName,
+          Adress:tmp[0].Adress,
+          City:tmp[0].City
+          },
+          pagename:'Update Address'
+        })
+        }
+        
+      Axios.get('http://proj.ruppin.ac.il/bgroup71/prod/api/City')
       .then(res=>this.setState({citys:res.data}))
+      .catch(()=>{
+        swal('','something worng, try again','error');
+        this.props.history.goBack()}
+        )
     }
     
   handleChange =(e,d)=>{
@@ -33,7 +55,7 @@ class NewShippingForm extends Component {
       this.setState({data:{...this.state.data,[name]:value}})
   } 
   handleSubmit=()=>{
-    // this.props.createAddress(this.state.data)
+    
     this.props.createAddress(this.state.data)
     
     
@@ -129,14 +151,14 @@ class NewShippingForm extends Component {
             </Form.Input>
             <Button 
                 color='linkedin'
-                content='Add'
+                content={this.props.match.params!=0?'Update':'Add'}
                 onClick={()=>{this.handleSubmit()}}
                 >
             </Button>
             <Button 
                 color='grey' 
                 content='Cancel'
-                onClick={()=>{this.props.history.goBack()}}>
+                onClick={()=>{this.props.history.push('/acount')}}>
             </Button>
         </Form>
       </Grid.Column>
@@ -149,9 +171,9 @@ class NewShippingForm extends Component {
 const mapStateToProps = (state) => {
   
   return{
-        authError:state.auth.authError,
+        
         auth:state.firebase.auth,
-        profile:state.firebase.profile
+        data:state.data
     }
     
   }
@@ -159,7 +181,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) =>{
     return{
         createAddress:(address)=>dispatch(createAddress(address)),
-        
+        updateAddress:(address)=>dispatch(updateAddress(address))
     }
   }
 export default withRouter(connect(mapStateToProps,mapDispatchToProps)(NewShippingForm))

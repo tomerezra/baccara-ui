@@ -57,7 +57,7 @@ getResults = (result,name)=>{
 
 resetComponent = () => this.setState({ isLoading: false, results: [], value: '' })
 
-handleResultSelect = (e, {result}) => {
+handleResultSelect = (e,{result,results}) => {
   const tmp = []
   console.log(result)
   for (const key in result.obj) {
@@ -96,7 +96,12 @@ handleResultSelect = (e, {result}) => {
   
 swal(
     <div>
-      <Table celled unstackable compact fixed size='small'>
+      <Table celled unstackable compact fixed size='small' >
+      <Table.Header >
+        <Table.Row textAlign='center'>
+          <Table.HeaderCell  colSpan='2'>{results[0].name.substr(0,results[0].name.length-1)}</Table.HeaderCell>
+        </Table.Row>
+      </Table.Header>
         <Table.Body>
           {tmp}
         </Table.Body>

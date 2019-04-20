@@ -39,7 +39,7 @@ class HomePageForm extends Component{
                     </Card>
                   </Grid.Column>
                   <Grid.Column>
-                  <Card onClick={()=>{this.props.history.push('/signup')}}>
+                  <Card onClick={()=>{this.handleClick('/signup')}}>
                     <Icon name='user' size='huge' color='grey' fitted></Icon>
                     <Card.Header textAlign='center'>Profile</Card.Header>
                     </Card>
@@ -55,7 +55,7 @@ class HomePageForm extends Component{
                     </Card>
                   </Grid.Column>
                   <Grid.Column>
-                  <Card onClick={()=>{this.props.history.push('/shipping')}}>
+                  <Card onClick={()=>{this.handleClick('/shipping')}}>
                     <Icon name='shipping' size='huge' color='grey' fitted></Icon>
                     <Card.Header textAlign='center'>Shipping</Card.Header>
                     </Card>

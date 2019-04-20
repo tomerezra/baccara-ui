@@ -37,7 +37,7 @@ export class CardComponent extends Component {
       const {OrderId,Status,OrderDate}=this.props.order
       return(
         <Card
-              onClick={()=>{this.props.history.push('/orderdetails/' + this.props.order.OrderId)}}
+              onClick={()=>{this.props.history.push('/orderdetails/' + OrderId)}}
               centered 
               fluid>
               <Card.Content>
@@ -76,13 +76,13 @@ export class CardComponent extends Component {
       
     }
     else if(this.props.location.pathname==='/shipping'){
-      const {FirstName,LastName,Adress,City}=this.props.address
+      const {FirstName,LastName,Adress,City,ID}=this.props.address
       
       
       
       return(
           <Card
-              onClick={this.swaladdress}
+              onClick={()=>this.props.history.push('/newaddress/'+ID)}
               centered 
               fluid>
               <Card.Content>

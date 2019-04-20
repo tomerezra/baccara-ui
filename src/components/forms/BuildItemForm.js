@@ -52,15 +52,14 @@ class BuildItemForm extends Component {
   }
 
 componentDidMount(){
-    
-    
-    
+
     this.setState({datatmp:this.state.data})
-    
-
-    Axios.get('http://127.0.0.1:8080/api/Categories')
+    Axios.get('http://proj.ruppin.ac.il/bgroup71/prod/api/Categories')
     .then(res=>this.setState({categories:res.data}))
-
+    .catch(()=>{
+        swal('','something worng, try again','error');
+        this.props.history.goBack()}
+        )
     // Add invalid to firebase
     // Parts.map(part=>{
         
@@ -92,13 +91,7 @@ componentDidMount(){
     // })
     
 }
-// getdata=()=>{
-//     const {data} =this.props
-//     var tree = data.standard.map(x=>{return{id:x.id,parent:new RegExp(x.parent,'i'),value:new RegExp(x.value,'i')}})
-//     this.setState({tree})
-        
-          
-// }
+
 handleSubmit=(e)=>{
     e.preventDefault()
     swal({
@@ -121,16 +114,20 @@ handleSubmit=(e)=>{
 
 }
 startOver=()=>{
-    this.setState({progress:0});
-    this.setState({data:this.state.datatmp})
-    this.setState({add:{...this.state.add,ItemSerial:'',IsStandard:true,Type:''}})
     var tmp =this.state.change.map((i)=>i=null)
-    this.setState({change:tmp,first:false})
+    this.setState({
+        progress:0,
+        start:false,
+        data:this.state.datatmp,
+        add:{...this.state.add,ItemSerial:'',IsStandard:true,Type:''},
+        change:tmp,
+        first:false
+    });
+    
     
 }
 handleClick=(e)=>{
-    
-    // this.getdata()
+ 
     const {name}=e.target
     if (name==='order') {
         this.props.history.push('/createorder/0')
@@ -138,7 +135,7 @@ handleClick=(e)=>{
     else if(name==='Add'){
         this.handleSubmit(e)
     }
-    else if (this.state.progress>0) {
+    else if (this.state.start) {
           
         swal({
             content:(
@@ -179,7 +176,7 @@ isInvalid=(id,value)=>{
             
         }
         else if (RegExp(val[0][value][name]).test(this.state.data[name])) {
-            console.log(val[0][value][name])
+            
             return true
         }
     }
@@ -253,13 +250,20 @@ getAllData=()=>{
 
     })
     this.setState({tree})
-    Axios.get('http://127.0.0.1:8080/api/AllItem?type='+Type.Type+'&stages='+Type.Stages)
+
+    Axios.get('http://proj.ruppin.ac.il/bgroup71/prod/api/AllItem?type='+Type.Type+'&stages='+Type.Stages)
     .then(res=>this.setState({partdata:res.data}))
-    
+    .catch(()=>{
+        swal('','something worng, try again','error');
+        this.startOver()
+    })
       
-    Axios.get('http://127.0.0.1:8080/api/Question?type='+Type.Type)
+    Axios.get('http://proj.ruppin.ac.il/bgroup71/prod/api/Question?type='+Type.Type)
     .then(res=>this.setState({questions:res.data}))
-    
+    .catch(()=>{
+        swal('','something worng, try again','error');
+        this.startOver()
+    })
 }
 makeQuestions=()=>{
     const {partdata,questions,progress,categories,start} =this.state
@@ -281,14 +285,12 @@ makeQuestions=()=>{
                 content={c.Type}
                 value={c.Type} 
                 color='green'
-                
                 onClick={(event,data)=>{
                     var Type =categories.filter(t=>t.Type===data.value)
                     this.setState({Type:Type[0]})
                                                                 
                     swal.close()
-                    
-                       
+       
             }}/>
             
             </Grid.Column>

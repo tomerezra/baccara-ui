@@ -31,10 +31,10 @@ const initState = {
             guest:false
     }
       case 'LOGIN_ERROR':
-          console.log('log in error')  
+          console.log('login error')  
           return {
               ...state,
-              authError:'Login faild'
+              authError:action.err.message
           }
       case 'UPDATE_EMAIL_SUCCESS':
         console.log('update email success')  

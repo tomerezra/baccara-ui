@@ -38,9 +38,10 @@ class App extends Component{
             <Route path='/orders' exact component={OrdersPage}/>
             <Route path='/items' exact component={ItemsPage}/>
             <Route path='/shipping' exact component={ShippingPage}/>
+            <Route path='/newaddress/:id' exact component={NewShippingPage}/>  
             <Route path='/orderdetails/:id' exact component={OrderDetailsPage}/> 
             <Route path='/createorder/:id' exact component={MakeOrderPage}/>
-            <Route path='/newshipping' exact component={NewShippingPage}/>  
+            
           </Switch>
         </div>
         

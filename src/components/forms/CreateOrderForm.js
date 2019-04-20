@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Table,Select,Loader,Button,Step,Icon, Form, Grid, Header,Segment,Container, Divider } from 'semantic-ui-react'
-import Validator from 'validator'
 import {withRouter,Redirect} from 'react-router-dom'
 import { connect } from 'react-redux'
 import {createOrder,getItems,getAddresses} from '../../store/actions/dataActions'
@@ -38,8 +37,12 @@ export class CreateOrderForm extends Component {
   }
 componentDidMount(){
     const {auth}=this.props
-    Axios.get('http://127.0.0.1:8080/api/City')
+    Axios.get('http://proj.ruppin.ac.il/bgroup71/prod/api/City')
       .then(res=>this.setState({citys:res.data}))
+      .catch(()=>{
+        swal('','something worng, try again','error');
+        this.props.history.goBack()}
+        )
     if (this.props.match.params.id!=='0') {
         this.setState({step:3,clone:true})
     }

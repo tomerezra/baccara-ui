@@ -47,6 +47,7 @@ const dataReducer=(state=initState,action)=>{
             return state ;
         case 'CREATE_ITEM_ERROR':
             console.log('create item error',action.err)
+            swal('','something worng, try again','error');
             return state;
         case 'CREATE_ORDER':
             
@@ -54,6 +55,7 @@ const dataReducer=(state=initState,action)=>{
             return state;
         case 'CREATE_ORDER_ERROR':
             console.log('create order error',action.err)
+            swal('','something worng, try again','error');
             return state;
         case 'CREATE_ADDRESS':
             
@@ -61,6 +63,14 @@ const dataReducer=(state=initState,action)=>{
             return state;
         case 'CREATE_ADDRESS_ERROR':
             console.log('create address error',action.err)
+            swal('','something worng, try again','error');
+            return state;
+        case 'UPDATE_ADDRESS':
+            swal("Success", "The address has been update", "success");
+            return state;
+        case 'UPDATE_ADDRESS_ERROR':
+            console.log('update address error',action.err)
+            swal('','something worng, try again','error');
             return state;
         case 'DELETE_ITEM':
             
@@ -71,8 +81,8 @@ const dataReducer=(state=initState,action)=>{
                 
             };
         case 'DELETE_ITEM_ERROR':
-            swal("something worng, try again", "error")
             console.log('delete item error',action.err)
+            swal('','something worng, try again','error');
             return state;
         case 'DELETE_ADDRESS':
             
@@ -84,6 +94,7 @@ const dataReducer=(state=initState,action)=>{
             };
         case 'DELETE_ADDRESS_ERROR':
             console.log('delete address error',action.err)
+            swal('','something worng, try again','error');
             return state;
         default:
             return state

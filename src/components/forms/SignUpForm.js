@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
-import {Button, Form, Grid, Header,Segment} from 'semantic-ui-react'
-import Validator from 'validator'
-// import InlineError from '../messages/InlineError'
+import {Button, Form, Grid, Header,Segment,Message} from 'semantic-ui-react'
 import {createUser,updateUser} from '../../store/actions/authAction'
 import {withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {Redirect} from 'react-router-dom'
-
+import Axios from 'axios'
 import firebase from 'firebase/app'
 class SignUpForm extends Component {
     state={
@@ -53,18 +51,24 @@ class SignUpForm extends Component {
         if (this.props.auth.uid) {
             this.props.updateUser(this.state.data)
         }
-        else if(this.validate())
+        else
         {
           this.props.createUser(this.state.data)
            
           
         }
-        
-        
+       
    }
-   validate=()=>{
-     return true
-   }
+   handleInvalid=(e)=>{
+    const {value,name}=e.target
+    if (value==='') {
+      e.target.setCustomValidity(name+' is required')
+    } else {
+      e.target.setCustomValidity('worng pattern')
+    }
+    
+  }
+   
   
   render() {
     const {data}=this.state
@@ -79,7 +83,7 @@ class SignUpForm extends Component {
     <Grid textAlign='center' >
       <Grid.Column>
        
-        <Form >
+        <Form onSubmit={this.handleSubmit}>
           
           {/* <Form.Input 
                 type="text"
@@ -162,7 +166,10 @@ class SignUpForm extends Component {
                 type="email"
                 id="email"
                 name="email"
-                
+                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}"
+                onInvalid ={this.handleInvalid}
+                onInput={(e)=>{e.target.setCustomValidity('')}}
+                required
                 fluid icon='at' 
                 iconPosition='left' 
                 placeholder='Email'
@@ -173,6 +180,10 @@ class SignUpForm extends Component {
                 type='password'
                 id="password"
                 name="password"
+                // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
+                onInvalid ={this.handleInvalid}
+                onInput={(e)=>{e.target.setCustomValidity('')}}
+                required
                 fluid icon='lock'
                 iconPosition='left'
                 placeholder='Password'
@@ -190,50 +201,35 @@ class SignUpForm extends Component {
                 onChange={this.handleChange}>>
             </Form.Checkbox>
             
-            <Button color='linkedin' onClick={this.handleSubmit}>
+            <Button color='linkedin' >
                 {auth.uid? 'Update' : 'Sign Up'}
             </Button>
             
             
-          <Button icon='google' style={{display:auth.uid?'none':''}} color='google plus' onClick={()=>{
+          <Button icon='google' style={{display:auth.uid?'none':''}} color='google plus' onClick={(e)=>{
+            e.preventDefault()
             var provider = new firebase.auth.GoogleAuthProvider();
             firebase.auth().signInWithPopup(provider).then(function(result) {
-              // This gives you a Google Access Token. You can use it to access the Google API.
-              var token = result.credential.accessToken;
-              // The signed-in user info.
               var user = result.user;
-              // ...
+              Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Customer','='+user.email)
+              
             }).catch(function(error) {
-              // Handle Errors here.
-              var errorCode = error.code;
               var errorMessage = error.message;
-              // The email of the user's account used.
-              var email = error.email;
-              // The firebase.auth.AuthCredential type that was used.
-              var credential = error.credential;
-              // ...
+              alert(errorMessage)
             });
           }}></Button>
-          <Button icon='facebook' style={{display:auth.uid?'none':''}} color='facebook' onClick={()=>{
+          <Button icon='facebook' style={{display:auth.uid?'none':''}} color='facebook' onClick={(e)=>{
+            e.preventDefault()
             var provider = new firebase.auth.FacebookAuthProvider();
             firebase.auth().signInWithPopup(provider).then(function(result) {
-              // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-              var token = result.credential.accessToken;
-              // The signed-in user info.
               var user = result.user;
-              // ...
+              Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Customer','='+user.email)
             }).catch(function(error) {
-              // Handle Errors here.
-              var errorCode = error.code;
               var errorMessage = error.message;
-              // The email of the user's account used.
-              var email = error.email;
-              // The firebase.auth.AuthCredential type that was used.
-              var credential = error.credential;
-              // ...
+              alert(errorMessage)
             });
           }}></Button>
-          <Button color='grey' onClick={()=>{this.props.history.goBack()}}>
+          <Button color='grey' onClick={()=>{this.props.history.push('/acount')}}>
               Cancel
             </Button>
         </Form>
@@ -241,7 +237,7 @@ class SignUpForm extends Component {
       </Grid.Column>
     </Grid>
     
-    {authError?<p style={{color:'red',textAlign:'center'}}>{authError}</p>:null} 
+    {this.props.authError?<Message color='red'>{this.props.authError}</Message>:null}
     
     </Segment>
   </div>

@@ -74,7 +74,7 @@ export const createUser = (user)=>{
         )
         .then(()=>{
             
-            Axios.post('http://127.0.0.1:8080/api/Customer','='+user.email)
+            Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Customer','='+user.email)
             // return firestore.collection('addresses').add({
             //     userid:resp.user.uid,
             //     country:user.country,

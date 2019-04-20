@@ -38,15 +38,15 @@ handleClickAdd=()=>{
     
     if (this.props.location.pathname==='/orders') {
         this.props.history.push('/createorder/0')
-        this.setState({pagename:'orders'})
+        
     }
     else if (this.props.location.pathname==='/items') {
         this.props.history.push('/builditem')
-        this.setState({pagename:'items'})
+        
     }
     else if (this.props.location.pathname==='/shipping') {
-        this.props.history.push('/newshipping')
-        this.setState({pagename:'shipping'})
+        this.props.history.push('/newaddress/0')
+        
     }
     
   }

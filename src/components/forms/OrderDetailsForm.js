@@ -16,7 +16,7 @@ class OrderDetailsForm extends Component {
     }
     
     reload=()=>{
-        const id = this.props.match.params.id
+        const {id} = this.props.match.params
         
         const tmp=this.props.data.orders.filter(order=>id==order.OrderId)
         const data = tmp[0]

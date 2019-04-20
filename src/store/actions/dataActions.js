@@ -4,7 +4,7 @@ export const getAddresses = ()=>{
         var addresses=[]
         
         const userid =firebase.auth().currentUser.email
-        Axios.get('http://127.0.0.1:8080/api/Address/5?email='+userid)
+        Axios.get('http://proj.ruppin.ac.il/bgroup71/prod/api/Address/5?email='+userid)
           .then(res=>addresses=res.data)
         
         .then(()=>{
@@ -25,7 +25,7 @@ export const getOrders = ()=>{
         
         const userid =firebase.auth().currentUser.email
         
-        Axios.get('http://127.0.0.1:8080/api/Order?email='+userid)
+        Axios.get('http://proj.ruppin.ac.il/bgroup71/prod/api/Order?email='+userid)
           .then(res=>orders=res.data)
         .then(()=>{
             dispatch({type: 'GET_ORDERS',orders})
@@ -44,7 +44,7 @@ export const getItems = ()=>{
         
         const userid =firebase.auth().currentUser.email
         
-        Axios.get('http://127.0.0.1:8080/api/Items?email='+userid)
+        Axios.get('http://proj.ruppin.ac.il/bgroup71/prod/api/Items?email='+userid)
           .then(res=>items=res.data)
         
         .then(()=>{
@@ -63,7 +63,7 @@ export const createItem = (item)=>{
     return (dispatch, getState,{firebase})=>{
         // const firestore = firebase.firestore()
         
-        Axios.post('http://127.0.0.1:8080/api/Items',JSON.stringify(item),{headers: { "Content-Type": "application/json" }})
+        Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Items',JSON.stringify(item),{headers: { "Content-Type": "application/json" }})
         // const userid = getState().firebase.auth.uid
         // firestore.collection('items').add({
         //     ...item,
@@ -93,9 +93,9 @@ export const deleteItem = (item)=>{
         const userid =firebase.auth().currentUser.email
         var items=[]
         
-        Axios.delete('http://127.0.0.1:8080/api/Items?id='+item.ItemID)
+        Axios.delete('http://proj.ruppin.ac.il/bgroup71/prod/api/Items?id='+item.ItemID)
         .then(()=>{
-            return Axios.get('http://127.0.0.1:8080/api/Items?email='+userid)
+            return Axios.get('http://proj.ruppin.ac.il/bgroup71/prod/api/Items?email='+userid)
             
         })
         .then(res=>items=res.data)
@@ -121,7 +121,7 @@ export const createOrder = (order,addressid)=>{
         //     status:'Send to sales man'
         // })
         
-        Axios.post('http://127.0.0.1:8080/api/Order?address='+addressid,JSON.stringify(order),{headers: { "Content-Type": "application/json" }})
+        Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Order?address='+addressid,JSON.stringify(order),{headers: { "Content-Type": "application/json" }})
         .then(()=>{
             dispatch({type: 'CREATE_ORDER',order})
         })
@@ -141,7 +141,7 @@ export const createAddress = (address)=>{
         //     userid,
         //     createdAt:new Date()
         // })
-        Axios.post('http://127.0.0.1:8080/api/Address',JSON.stringify(address),{headers: { "Content-Type": "application/json" }})
+        Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Address',JSON.stringify(address),{headers: { "Content-Type": "application/json" }})
         .then(()=>{
             dispatch({type: 'CREATE_ADDRESS',address})
             
@@ -153,15 +153,30 @@ export const createAddress = (address)=>{
         
     }
 }
+export const updateAddress = (address)=>{
+    return (dispatch, getState,{firebase})=>{
+        
+        Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Address',JSON.stringify(address),{headers: { "Content-Type": "application/json" }})
+        .then(()=>{
+            dispatch({type: 'UPDATE_ADDRESS',address})
+            
+        })
+        .catch((err)=>{
+            dispatch({type: 'UPDATE_ADDRESS_ERROR',err})
+           
+        })
+        
+    }
+}
 export const deleteAddress = (address)=>{
     return (dispatch, getState,{firebase})=>{
         // const firestore=firebase.firestore()
         var addresses=[]
         const userid =firebase.auth().currentUser.email
         // firestore.collection('addresses').doc(address.id).delete()
-        Axios.delete('http://127.0.0.1:8080/api/Address?id='+address.ID)
+        Axios.delete('http://proj.ruppin.ac.il/bgroup71/prod/api/Address?id='+address.ID)
         .then(()=>{
-            return Axios.get('http://127.0.0.1:8080/api/Address/5?email='+userid)
+            return Axios.get('http://proj.ruppin.ac.il/bgroup71/prod/api/Address/5?email='+userid)
             
         })
         .then(res=>addresses=res.data)
