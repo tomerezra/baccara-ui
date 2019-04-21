@@ -120,7 +120,7 @@ export const createOrder = (order)=>{
         //     createdAt:new Date(),
         //     status:'Send to sales man'
         // })
-        console.log(order)
+        
         Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Order',JSON.stringify(order),{headers: { "Content-Type": "application/json" }})
         .then(()=>{
             dispatch({type: 'CREATE_ORDER',order})
