@@ -110,7 +110,7 @@ export const deleteItem = (item)=>{
     }
 }
 
-export const createOrder = (order,addressid)=>{
+export const createOrder = (order)=>{
     return (dispatch, getState,{firebase})=>{
         // const firestore=firebase.firestore()
         // const userid =firebase.auth().currentUser.email
@@ -120,8 +120,8 @@ export const createOrder = (order,addressid)=>{
         //     createdAt:new Date(),
         //     status:'Send to sales man'
         // })
-        
-        Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Order?address='+addressid,JSON.stringify(order),{headers: { "Content-Type": "application/json" }})
+        console.log(order)
+        Axios.post('http://127.0.0.1:8080/api/Order',JSON.stringify(order),{headers: { "Content-Type": "application/json" }})
         .then(()=>{
             dispatch({type: 'CREATE_ORDER',order})
         })

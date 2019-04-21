@@ -12,23 +12,23 @@ export class CreateOrderForm extends Component {
         pagename:'Create New Order',
         orderitems:[],
         agree:false, 
-        Address:{
-            ID:null,
-            FirstName:'',
-            LastName:'',
-            PhoneNumber:'',
-            CompanyName:'',
-            Adress:'',
-            City:'',
-            Email:'',
-            
-        },
+        
         
         data:{
             Email:'',
             Part:[],
             Quantity:[],
-                        
+            Address:{
+                ID:null,
+                FirstName:'',
+                LastName:'',
+                PhoneNumber:'',
+                CompanyName:'',
+                Adress:'',
+                City:'',
+                Email:'',
+                
+            },       
         },
         step:1,
         clone:false,
@@ -59,7 +59,7 @@ clone=()=>{
         this.setState({clone:false})     
         var tmp = this.props.data.orders.filter(order=>order.OrderId==this.props.match.params.id)
         
-        this.state.Address=tmp[0].Address
+        this.state.data.Address=tmp[0].Address
         tmp[0].Part.map((p,i)=>{
             this.state.orderitems.push({serial:p,quantity:tmp[0].Quantity[i]})
         })
@@ -92,7 +92,7 @@ handleChange=(e,data)=>{
     else if (data.name==='selectaddress') {
         var tmp = this.props.data.addresses.filter(adr=>adr.ID===data.value)
         
-          this.setState({Address:{...this.state.data.Address,
+          this.setState({data:{...this.state.data,Address:{...this.state.data.Address,
             FirstName:tmp[0].FirstName,
             LastName:tmp[0].LastName,
             PhoneNumber:tmp[0].PhoneNumber,
@@ -101,12 +101,12 @@ handleChange=(e,data)=>{
             City:tmp[0].City,
             Email:tmp[0].Email,
             ID:tmp[0].ID
-        }})
+        }}})
         
     }
     else {
         
-        this.setState({Address:{...this.state.Address,[name]:value}})   
+        this.setState({data:{...this.state.data,Address:{...this.state.data.Address,[name]:value}}})   
     }
     
     
@@ -123,7 +123,8 @@ handleInvalid=(e)=>{
   }
 orderdetails=()=>{
     
-    const {orderitems,Address} =this.state
+    const {orderitems} =this.state
+    const {Address}=this.state.data
     
     var items = orderitems.map(item=>{
         return(
@@ -208,7 +209,7 @@ handleSubmit=(e)=>{
         })
         if (this.Validate()) {
             
-            this.props.createOrder(this.state.data,this.state.Address.ID)
+            this.props.createOrder(this.state.data)
         }  
     }
     
@@ -221,7 +222,7 @@ Validate=()=>{
         swal('',"You don't choose any item",'error')
         return false
     }
-    else if (this.state.Address.FirstName==='') {
+    else if (this.state.data.Address.FirstName==='') {
         swal('',"You don't choose any address",'error')
         return false
     }
@@ -274,7 +275,7 @@ billing=()=>{
                             fluid icon='user' 
                             iconPosition='left' 
                             placeholder='First Name'
-                            value={this.state.Address.FirstName}
+                            value={this.state.data.Address.FirstName}
                             onChange={this.handleChange}>
                         </Form.Input>
                     <Form.Input 
@@ -288,7 +289,7 @@ billing=()=>{
                             fluid icon='user' 
                             iconPosition='left' 
                             placeholder='Last Name'
-                            value={this.state.Address.LastName}
+                            value={this.state.data.Address.LastName}
                             onChange={this.handleChange}>
                         </Form.Input>
                     {/* <Form.Input 
@@ -308,7 +309,7 @@ billing=()=>{
                         placeholder='Select your City' 
                         options={citylist} 
                         onChange={this.handleChange}
-                        value={this.state.Address.City}
+                        value={this.state.data.Address.City}
                         required
                     />
                     
@@ -323,7 +324,7 @@ billing=()=>{
                             fluid icon='envelope' 
                             iconPosition='left' 
                             placeholder='Address'
-                            value={this.state.Address.Adress}
+                            value={this.state.data.Address.Adress}
                             onChange={this.handleChange}>
                         </Form.Input>
                     <Form.Input 
@@ -337,7 +338,7 @@ billing=()=>{
                             fluid icon='phone' 
                             iconPosition='left' 
                             placeholder='Phone Number'
-                            value={this.state.Address.PhoneNumber}
+                            value={this.state.data.Address.PhoneNumber}
                             onChange={this.handleChange}>
                         </Form.Input>
                         <Form.Input 
@@ -351,7 +352,7 @@ billing=()=>{
                             fluid icon='suitcase' 
                             iconPosition='left' 
                             placeholder='Company'
-                            value={this.state.Address.CompanyName}
+                            value={this.state.data.Address.CompanyName}
                             onChange={this.handleChange}>
                         </Form.Input>
                         <Form.Input 
@@ -365,7 +366,7 @@ billing=()=>{
                             fluid icon='at' 
                             iconPosition='left' 
                             placeholder='Email'
-                            value={this.state.Address.Email}
+                            value={this.state.data.Address.Email}
                             onChange={this.handleChange}>
                         </Form.Input>
                         
@@ -586,7 +587,7 @@ const mapStateToProps = (state) => {
     }
 const mapDispatchToProps = (dispatch) =>{
     return{
-        createOrder:(order,addressid)=>dispatch(createOrder(order,addressid)),
+        createOrder:(order)=>dispatch(createOrder(order)),
         getItems:()=>dispatch(getItems()),
         getAddresses:()=>dispatch(getAddresses())
     }
