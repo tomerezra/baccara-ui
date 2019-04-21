@@ -180,6 +180,7 @@ class SignUpForm extends Component {
                 iconPosition='left' 
                 placeholder='Email'
                 value={data.email}
+                disabled={auth.uid? true : false}
                 onChange={this.handleChange}>
             </Form.Input>
             <Form.Input 

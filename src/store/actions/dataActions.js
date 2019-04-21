@@ -153,10 +153,10 @@ export const createAddress = (address)=>{
         
     }
 }
-export const updateAddress = (address)=>{
+export const updateAddress = (address,id)=>{
     return (dispatch, getState,{firebase})=>{
-        
-        Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Address',JSON.stringify(address),{headers: { "Content-Type": "application/json" }})
+        console.log(address,id)
+        Axios.put('http://proj.ruppin.ac.il/bgroup71/prod/api/Address?id='+id,JSON.stringify(address),{headers: { "Content-Type": "application/json" }})
         .then(()=>{
             dispatch({type: 'UPDATE_ADDRESS',address})
             

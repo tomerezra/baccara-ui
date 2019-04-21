@@ -57,7 +57,7 @@ class NewShippingForm extends Component {
   handleSubmit=(e)=>{
     e.preventDefault()
     if (this.props.match.params.id!=='0') {
-      this.props.updateAddress(this.state.data)
+      this.props.updateAddress(this.state.data,this.props.match.params.id)
     } 
     else {
       this.props.createAddress(this.state.data)
@@ -215,7 +215,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) =>{
     return{
         createAddress:(address)=>dispatch(createAddress(address)),
-        updateAddress:(address)=>dispatch(updateAddress(address))
+        updateAddress:(address,id)=>dispatch(updateAddress(address,id))
     }
   }
 export default withRouter(connect(mapStateToProps,mapDispatchToProps)(NewShippingForm))
