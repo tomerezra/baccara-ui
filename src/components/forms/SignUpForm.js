@@ -236,7 +236,7 @@ class SignUpForm extends Component {
               alert(errorMessage)
             });
           }}></Button>
-          <Button color='grey' onClick={()=>{this.props.history.push('/acount')}}>
+          <Button color='grey' onClick={()=>{this.props.history.goBack()}}>
               Cancel
             </Button>
         </Form>
