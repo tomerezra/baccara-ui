@@ -374,15 +374,14 @@ billing=()=>{
             </Grid>
             <br/>
             <Button
-                      disabled={this.state.step===1}
-                    //   onClick={this.nextstep}
+                      
+                      onClick={(e)=>{e.preventDefault();this.nextstep(e)}}
                       name='back'
                       color='linkedin'
                       content='Back'>
                   </Button>
                   <Button
-                      disabled={this.state.step===3}
-                    //   onClick={this.nextstep}
+                    
                       name='next'
                       floated='right'
                       color='linkedin'
@@ -441,21 +440,16 @@ itemlist=()=>{
             })}
             </Grid>
             <br/>
-            <Button
-            disabled={this.state.step===1}
-            onClick={this.nextstep}
-            name='back'
-            color='linkedin'
-            content='Back'>
-        </Button>
+            
         <Button
-            disabled={this.state.step===3}
+            
             onClick={this.nextstep}
             name='next'
             floated='right'
             color='linkedin'
             content='Next'>
         </Button>
+        <br/>
         </>
         )
         
@@ -497,20 +491,13 @@ confirm=()=>{
             </Container>
         </Form>
         <Button
-        disabled={this.state.step===1}
+        
         onClick={this.nextstep}
         name='back'
         color='linkedin'
         content='Back'>
     </Button>
-    <Button
-        disabled={this.state.step===3}
-        onClick={this.nextstep}
-        name='next'
-        floated='right'
-        color='linkedin'
-        content='Next'>
-    </Button>
+    
     </>
         )
     }
