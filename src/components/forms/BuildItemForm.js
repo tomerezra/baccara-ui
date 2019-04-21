@@ -414,14 +414,12 @@ makeQuestions=()=>{
 
     
     }
-
-
 buttonChange=()=>{
     
     if (this.state.progress===10) {
         return 'Add'
     }
-    else if (this.state.progress>0) {
+    else if (this.state.start) {
         return 'Continue'
     }
     else return 'Start'

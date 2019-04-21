@@ -26,7 +26,7 @@ class NewShippingForm extends Component {
     componentDidMount = () => {
       
       const {id} = this.props.match.params
-        if (id!=0) {
+        if (id!=='0') {
           const tmp=this.props.data.addresses.filter(a=>id==a.ID)
           this.setState({
           data:{...this.state.data,
@@ -54,13 +54,27 @@ class NewShippingForm extends Component {
       const {name,value}=d
       this.setState({data:{...this.state.data,[name]:value}})
   } 
-  handleSubmit=()=>{
+  handleSubmit=(e)=>{
+    e.preventDefault()
+    if (this.props.match.params.id!=='0') {
+      this.props.updateAddress(this.state.data)
+    } 
+    else {
+      this.props.createAddress(this.state.data)
+    }
     
-    this.props.createAddress(this.state.data)
     
     
 }
- 
+handleInvalid=(e)=>{
+  const {value,name}=e.target
+  if (value==='') {
+    e.target.setCustomValidity(name+' is required')
+  } else {
+    e.target.setCustomValidity('wrong pattern')
+  }
+  
+}
    render(){
     const {data}=this.state
     const {auth}=this.props
@@ -70,16 +84,19 @@ class NewShippingForm extends Component {
     <div style={{maxWidth: 450}}>
                
     <Segment>
-    <Grid textAlign='center' >
+    <Grid textAlign='center'>
       <Grid.Column>
        
-        <Form>
+        <Form onSubmit={this.handleSubmit}>
         <Header textAlign='center'>{this.state.pagename}</Header>
           <Form.Input 
                 type="text"
                 id="FirstName"
                 name="FirstName"
-                
+                pattern="[a-zA-Z]{2,}"
+                onInvalid ={this.handleInvalid}
+                onInput={(e)=>{e.target.setCustomValidity('')}}
+                required
                 fluid icon='user' 
                 iconPosition='left' 
                 placeholder='First Name'
@@ -90,7 +107,10 @@ class NewShippingForm extends Component {
                 type="text"
                 id="LastName"
                 name="LastName"
-                
+                pattern="[a-zA-Z]{2,}"
+                onInvalid ={this.handleInvalid}
+                onInput={(e)=>{e.target.setCustomValidity('')}}
+                required
                 fluid icon='user' 
                 iconPosition='left' 
                 placeholder='Last Name'
@@ -101,7 +121,10 @@ class NewShippingForm extends Component {
                 type="text"
                 id="CompanyName"
                 name="CompanyName"
-                
+                pattern="[a-zA-Z0-9]{2,}"
+                onInvalid ={this.handleInvalid}
+                onInput={(e)=>{e.target.setCustomValidity('')}}
+                required
                 fluid icon='suitcase' 
                 iconPosition='left' 
                 placeholder='Company'
@@ -119,19 +142,26 @@ class NewShippingForm extends Component {
                 value={data.Country}
                 onChange={this.handleChange}>
             </Form.Input> */}
-          <Form.Select 
+          <Form.Select
+            
+            search
             name='City'
             placeholder='Select your City' 
             options={citylist} 
             onChange={this.handleChange}
             value={data.City}
+            required
+            
             />
           
           <Form.Input 
                 type="text"
                 id="Adress"
                 name="Adress"
-                
+                pattern="[a-zA-Z]{2,}"
+                onInvalid ={this.handleInvalid}
+                onInput={(e)=>{e.target.setCustomValidity('')}}
+                required
                 fluid icon='envelope' 
                 iconPosition='left' 
                 placeholder='Address'
@@ -139,10 +169,13 @@ class NewShippingForm extends Component {
                 onChange={this.handleChange}>
             </Form.Input>
           <Form.Input 
-                type="text"
+                type="tel"
                 id="PhoneNumber"
                 name="PhoneNumber"
-                
+                pattern="[0-9]{10,}"
+                onInvalid ={this.handleInvalid}
+                onInput={(e)=>{e.target.setCustomValidity('')}}
+                required
                 fluid icon='phone' 
                 iconPosition='left' 
                 placeholder='Phone Number'
@@ -151,14 +184,14 @@ class NewShippingForm extends Component {
             </Form.Input>
             <Button 
                 color='linkedin'
-                content={this.props.match.params!=0?'Update':'Add'}
-                onClick={()=>{this.handleSubmit()}}
+                content={this.props.match.params.id!=='0'?'Update':'Add'}
+                
                 >
             </Button>
             <Button 
                 color='grey' 
                 content='Cancel'
-                onClick={()=>{this.props.history.push('/acount')}}>
+                onClick={(e)=>{e.preventDefault(); this.props.history.push('/acount')}}>
             </Button>
         </Form>
       </Grid.Column>
@@ -168,6 +201,7 @@ class NewShippingForm extends Component {
        )
     }
 }
+
 const mapStateToProps = (state) => {
   
   return{

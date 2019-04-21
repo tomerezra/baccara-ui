@@ -24,43 +24,48 @@ const initState = {
             guest:true
     }
       case 'LOGIN_SUCCESS':
-        console.log('log in success')  
+        console.log('log in success')
+        
         return {
             ...state,
             authError:null,
             guest:false
     }
       case 'LOGIN_ERROR':
-          console.log('login error')  
+          console.log('login error')
+          
           return {
               ...state,
-              authError:action.err.message
+              authError:'Error: '+ action.err.message
           }
-      case 'UPDATE_EMAIL_SUCCESS':
-        console.log('update email success')  
-        return {
-            ...state,
-            authError:null
+      // case 'UPDATE_EMAIL_SUCCESS':
+      //   console.log('update email success')
+      //   swal("Success", "The email has been update", "success");
+      //   return {
+      //       ...state,
+      //       authError:null
             
-    }
-      case 'UPDATE_EMAIL_ERROR':
-          console.log(action.err.message)  
-          return {
-              ...state,
-              authError:'Update email faild'
-          }
-          case 'UPDATE_PASS_SUCCESS':
+      //   }
+      // case 'UPDATE_EMAIL_ERROR':
+      //     console.log(action.err.message)  
+      //     return {
+      //         ...state,
+      //         authError:'Update email faild'
+      //     }
+      case 'UPDATE_PASS_SUCCESS':
         console.log('update pass success')  
+        swal("Success", "The password has been update", "success");
         return {
             ...state,
             authError:null
             
     }
       case 'UPDATE_PASS_ERROR':
-          console.log(action.err.message)  
+          console.log('update pass error')
+          
           return {
               ...state,
-              authError:'Update pass faild'
+              authError:'Error: '+ action.err.message
           }
       case 'SIGNOUT_SUCCESS':
           console.log('signout success')
@@ -69,7 +74,7 @@ const initState = {
           }
       case 'CREATE_USER':
           console.log('create user success')
-          swal('Sign Up Sucsess','sucsess')
+          swal('Welcome','Sign Up Sucsess','sucsess')
           
 
           return{
@@ -81,7 +86,7 @@ const initState = {
           console.log('create user error')
           return{
             ...state,
-            authError: action.err.message
+            authError:'Error: '+  action.err.message
           }
       default:
           return state

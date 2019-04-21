@@ -48,6 +48,8 @@ componentDidMount(){
     }
     if (!auth.isEmpty) {
         this.setState({data:{...this.state.data,Email:auth.email}})
+        this.props.getItems()
+        this.props.getAddresses()
         
     }
     
@@ -110,6 +112,15 @@ handleChange=(e,data)=>{
     
     
 }
+handleInvalid=(e)=>{
+    const {value,name}=e.target
+    if (value==='') {
+      e.target.setCustomValidity(name+' is required')
+    } else {
+      e.target.setCustomValidity('worng pattern')
+    }
+    
+  }
 orderdetails=()=>{
     
     const {orderitems,Address} =this.state
@@ -186,66 +197,80 @@ orderdetails=()=>{
 }
 handleSubmit=(e)=>{
     e.preventDefault()
-    this.state.orderitems.map((item)=>{
-        this.state.data.Part.push(item.serial)
-        this.state.data.Quantity.push(item.quantity)
-    })
-    if (this.Validate(this.state.data)) {
-        
-        this.props.createOrder(this.state.data,this.state.Address.ID)
-} 
+    
+    if (this.state.step===2) {
+        this.nextstep('next')
+    } 
+    else {
+        this.state.orderitems.map((item)=>{
+            this.state.data.Part.push(item.serial)
+            this.state.data.Quantity.push(item.quantity)
+        })
+        if (this.Validate()) {
+            
+            this.props.createOrder(this.state.data,this.state.Address.ID)
+        }  
+    }
+    
+    
     
 }
-Validate=(data)=>{
+Validate=()=>{
      
-    // if (!Validator.isEmail(data.email)||!data.password) {
-    //     this.setState({error:true})
-    //     return false
-    // }
-    return true
+    if (this.state.orderitems.length===0) {
+        swal('',"You don't choose any item",'error')
+        return false
+    }
+    else if (this.state.Address.FirstName==='') {
+        swal('',"You don't choose any address",'error')
+        return false
+    }
+    else if (!this.state.agree) {
+        swal('','You must to agree the terms','error')
+        return false
+    }
+    else return true
   }
 nextstep=(e)=>{
-    
-    const {name}=e.target  
-    
-    if (name==='next') {
-        //add validation
+    if (e==='next') {
         this.setState({step:this.state.step+1})
-
     }
-    if (name==='back')  {
+    
+    else if (e.target.name==='next') {
+        this.setState({step:this.state.step+1})
+    }
+    else if (e.target.name==='back')  {
         this.setState({step:this.state.step-1})
     }
   }
 billing=()=>{
-    if (!this.props.guest) {
-        this.props.getAddresses()
-    }
+    
     var citylist = this.state.citys.map(city=>{return{text:city.Name,value:city.Name}})
     // var tmp = this.props.data.addresses.filter(adr=>adr.userid===this.props.auth.uid)
     var tmp = this.props.data.addresses.map(adr=>{return{text:adr.FirstName+' '+ adr.LastName,value:adr.ID}})
     
     return(
-    <>
-    <Select 
-        
-        name='selectaddress'
-        placeholder='Select your address' 
-        options={tmp} 
-        onChange={this.handleChange}
-        disabled={this.props.guest}
-        />
-    <Divider></Divider>
-    <Grid textAlign='center'>
+        <Form onSubmit={this.handleSubmit}>
+        <Select 
+            
+            name='selectaddress'
+            placeholder='Select your address' 
+            options={tmp} 
+            onChange={this.handleChange}
+            disabled={this.props.guest}
+            />
+        <Divider></Divider>
+        <Grid textAlign='center'>
                 <Grid.Column>
-                
-                    <Form onSubmit={this.handleSubmit} size='large'>
-                    
+
                     <Form.Input 
                             type="text"
                             id="FirstName"
                             name="FirstName"
-                            
+                            pattern="[a-zA-Z]{2,}"
+                            onInvalid ={this.handleInvalid}
+                            onInput={(e)=>{e.target.setCustomValidity('')}}
+                            required
                             fluid icon='user' 
                             iconPosition='left' 
                             placeholder='First Name'
@@ -256,7 +281,10 @@ billing=()=>{
                             type="text"
                             id="LastName"
                             name="LastName"
-                            
+                            pattern="[a-zA-Z]{2,}"
+                            onInvalid ={this.handleInvalid}
+                            onInput={(e)=>{e.target.setCustomValidity('')}}
+                            required
                             fluid icon='user' 
                             iconPosition='left' 
                             placeholder='Last Name'
@@ -274,19 +302,24 @@ billing=()=>{
                             value={this.state.data.country}
                             onChange={this.handleChange}>
                         </Form.Input> */}
-                    <Form.Select 
+                    <Form.Select
+                        search 
                         name='City'
                         placeholder='Select your City' 
                         options={citylist} 
                         onChange={this.handleChange}
                         value={this.state.Address.City}
+                        required
                     />
                     
                     <Form.Input 
                             type="text"
                             id="Adress"
                             name="Adress"
-                            
+                            pattern="[a-zA-Z]{2,}"
+                            onInvalid ={this.handleInvalid}
+                            onInput={(e)=>{e.target.setCustomValidity('')}}
+                            required
                             fluid icon='envelope' 
                             iconPosition='left' 
                             placeholder='Address'
@@ -294,10 +327,13 @@ billing=()=>{
                             onChange={this.handleChange}>
                         </Form.Input>
                     <Form.Input 
-                            type="text"
+                            type="tel"
                             id="PhoneNumber"
                             name="PhoneNumber"
-                            
+                            pattern="[0-9]{10,}"
+                            onInvalid ={this.handleInvalid}
+                            onInput={(e)=>{e.target.setCustomValidity('')}}
+                            required
                             fluid icon='phone' 
                             iconPosition='left' 
                             placeholder='Phone Number'
@@ -308,7 +344,10 @@ billing=()=>{
                             type="text"
                             id="CompanyName"
                             name="CompanyName"
-                            
+                            pattern="[a-zA-Z]{2,}"
+                            onInvalid ={this.handleInvalid}
+                            onInput={(e)=>{e.target.setCustomValidity('')}}
+                            required
                             fluid icon='suitcase' 
                             iconPosition='left' 
                             placeholder='Company'
@@ -319,7 +358,10 @@ billing=()=>{
                             type="email"
                             id="Email"
                             name="Email"
-                            
+                            pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}"
+                            onInvalid ={this.handleInvalid}
+                            onInput={(e)=>{e.target.setCustomValidity('')}}
+                            required
                             fluid icon='at' 
                             iconPosition='left' 
                             placeholder='Email'
@@ -327,22 +369,38 @@ billing=()=>{
                             onChange={this.handleChange}>
                         </Form.Input>
                         
-                    </Form>
+                    
                 </Grid.Column>
             </Grid>
-            </>
+            <br/>
+            <Button
+                      disabled={this.state.step===1}
+                    //   onClick={this.nextstep}
+                      name='back'
+                      color='linkedin'
+                      content='Back'>
+                  </Button>
+                  <Button
+                      disabled={this.state.step===3}
+                    //   onClick={this.nextstep}
+                      name='next'
+                      floated='right'
+                      color='linkedin'
+                      content='Next'>
+                  </Button>
+                  </Form>
     )
     }
 itemlist=()=>{
     const {data,guest}=this.props
     if (guest) {
         var items = data.gitems
-    } else {
-        this.props.getItems()
-        var items = this.props.data.items
+    } else { 
+        var items = data.items
     }
        
     return(
+        <>
             <Grid columns='2' verticalAlign='middle'>
             {items.map((item,i)=>{
                 
@@ -366,7 +424,8 @@ itemlist=()=>{
                         
                         placeholder='Quantity'
                         size='mini'
-                        type='number'
+                        type='tel'
+                        pattern="[0-9]*"
                         min='1'
                         id={guest?i:item.ItemID}
                         name='quantity'
@@ -381,6 +440,23 @@ itemlist=()=>{
                 )
             })}
             </Grid>
+            <br/>
+            <Button
+            disabled={this.state.step===1}
+            onClick={this.nextstep}
+            name='back'
+            color='linkedin'
+            content='Back'>
+        </Button>
+        <Button
+            disabled={this.state.step===3}
+            onClick={this.nextstep}
+            name='next'
+            floated='right'
+            color='linkedin'
+            content='Next'>
+        </Button>
+        </>
         )
         
     }
@@ -389,31 +465,59 @@ confirm=()=>{
     
     
     return(
-           <Container textAlign='center'>
+        <>
+        <Form onSubmit={this.handleSubmit} >
            
-            <Button onClick={()=>{
-                this.clone();this.orderdetails()}}>Order Details</Button>
+           <Container textAlign='center'>
+           <Button onClick={(e)=>{
+                e.preventDefault()
+                this.clone();
+                this.orderdetails()}}>Order Details</Button>
+           
+            
           <Divider></Divider>
             <Form.Checkbox
                 id="agree"
                 name="agree"
                 label="I agree to the Terms and Conditions"
                 value={this.state.agree}
-                onChange={()=>{this.setState({agree:!this.state.data.agree})}}>>
+                onChange={()=>{this.setState({agree:!this.state.data.agree})}}
+                required
+                >
             </Form.Checkbox>
             <br/>
-            <Button color='linkedin' onClick={this.handleSubmit}>
+            <Button color='linkedin' >
             Submit
             </Button>
-            <Button color='grey' onClick={()=>{this.props.history.goBack()}}>
+            <Button color='grey' onClick={(e)=>{
+                e.preventDefault()
+                this.props.history.goBack()}}>
             Cancel
             </Button>
-        </Container> 
+            </Container>
+        </Form>
+        <Button
+        disabled={this.state.step===1}
+        onClick={this.nextstep}
+        name='back'
+        color='linkedin'
+        content='Back'>
+    </Button>
+    <Button
+        disabled={this.state.step===3}
+        onClick={this.nextstep}
+        name='next'
+        floated='right'
+        color='linkedin'
+        content='Next'>
+    </Button>
+    </>
         )
     }
     
       
     render() {
+        console.log('1')
         const {auth,guest}=this.props
         
         if (!auth.uid) {
@@ -456,9 +560,8 @@ confirm=()=>{
                   {this.state.step===1?this.itemlist():null}
                   {this.state.step===2?this.billing():null}
                   {this.state.step===3?this.confirm():null}
-                  
                   <br/>
-                  <Button
+                  {/* <Button
                       disabled={this.state.step===1}
                       onClick={this.nextstep}
                       name='back'
@@ -472,7 +575,9 @@ confirm=()=>{
                       floated='right'
                       color='linkedin'
                       content='Next'>
-                  </Button>
+                  </Button> */}
+                  
+                                   
                   </Segment>
               </div>
               )

@@ -6,31 +6,31 @@ export class CardComponent extends Component {
   state={
     data:this.props.order
   }
-  swaladdress=()=>{
-    const {address}= this.props
-    var tmp=[]
-      for (const key in address) {
-        if (key=='ID'||key==='Email') {
+  // swaladdress=()=>{
+  //   const {address}= this.props
+  //   var tmp=[]
+  //     for (const key in address) {
+  //       if (key=='ID'||key==='Email') {
           
-        }    
-        else tmp.push(
+  //       }    
+  //       else tmp.push(
               
-              <Table.Row>
-                <Table.Cell>{key}</Table.Cell>
-                <Table.Cell>{(key,address[key])}</Table.Cell>
-              </Table.Row>
-            )
-      }
-    swal(
-      <Table celled unstackable compact fixed size='small'>
-        <Table.Body>
-          {tmp}
-        </Table.Body>
-      </Table>
-    )
-  }
+  //             <Table.Row>
+  //               <Table.Cell>{key}</Table.Cell>
+  //               <Table.Cell>{(key,address[key])}</Table.Cell>
+  //             </Table.Row>
+  //           )
+  //     }
+  //   swal(
+  //     <Table celled unstackable compact fixed size='small'>
+  //       <Table.Body>
+  //         {tmp}
+  //       </Table.Body>
+  //     </Table>
+  //   )
+  // }
   
-  itemorcard=()=>{
+  whichCard=()=>{
     
     if (this.props.location.pathname==='/orders') {
       
@@ -76,7 +76,7 @@ export class CardComponent extends Component {
       
     }
     else if(this.props.location.pathname==='/shipping'){
-      const {FirstName,LastName,Adress,City,ID}=this.props.address
+      const {FirstName,LastName,Adress,City,ID,PhoneNumber}=this.props.address
       
       
       
@@ -89,7 +89,7 @@ export class CardComponent extends Component {
                 <Card.Header>{FirstName} {LastName}</Card.Header>
                 <Card.Meta>City : {City}
                 <Button
-                    onClick={()=>{this.props.delete(this.props.address)}}
+                    onClick={(e)=>{e.stopPropagation(); this.props.delete(this.props.address)}}
                     floated='right'
                     content='Delete'
                     color='youtube'
@@ -99,6 +99,7 @@ export class CardComponent extends Component {
                   
                     </Card.Meta>
                 <Card.Meta>Address : {Adress}</Card.Meta>
+                <Card.Meta>Phone : {PhoneNumber}</Card.Meta>
               </Card.Content>
           </Card>
       )
@@ -109,7 +110,7 @@ export class CardComponent extends Component {
       
     return (
         
-          this.itemorcard()
+          this.whichCard()
         
     )
   }

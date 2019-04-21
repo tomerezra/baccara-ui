@@ -6,6 +6,7 @@ import {connect} from 'react-redux'
 import {Redirect} from 'react-router-dom'
 import Axios from 'axios'
 import firebase from 'firebase/app'
+import swal from 'sweetalert';
 class SignUpForm extends Component {
     state={
         data:{
@@ -23,7 +24,7 @@ class SignUpForm extends Component {
         },
         apidata:{},
         errors:{},
-        
+        agree:false
     }
     componentDidMount = () => {
       
@@ -42,7 +43,7 @@ class SignUpForm extends Component {
    }
     handleChange=(e)=>{
         const {value,name}=e.target
-        name==="agree" ? this.setState({data:{...this.state.data,[name]:!this.state.data.agree}}) :
+        name==="agree" ? this.setState({agree:!this.state.agree}) :
         this.setState({data:{...this.state.data,[name]:value}})
         
     }
@@ -53,7 +54,12 @@ class SignUpForm extends Component {
         }
         else
         {
-          this.props.createUser(this.state.data)
+          if (this.state.agree) {
+            this.props.createUser(this.state.data)
+          } else {
+            swal('','You must to agree the terms','error')
+          }
+          
            
           
         }
@@ -64,7 +70,7 @@ class SignUpForm extends Component {
     if (value==='') {
       e.target.setCustomValidity(name+' is required')
     } else {
-      e.target.setCustomValidity('worng pattern')
+      e.target.setCustomValidity('wrong pattern')
     }
     
   }
@@ -196,11 +202,12 @@ class SignUpForm extends Component {
                 id="agree"
                 name="agree"
                 required
+                
                 label="I agree to the Terms and Conditions"
-                checked={data.agree}
+                checked={this.state.agree}
                 onChange={this.handleChange}>>
             </Form.Checkbox>
-            
+            {this.props.authError?<Message color='red'>{this.props.authError}</Message>:null}
             <Button color='linkedin' >
                 {auth.uid? 'Update' : 'Sign Up'}
             </Button>
@@ -237,7 +244,7 @@ class SignUpForm extends Component {
       </Grid.Column>
     </Grid>
     
-    {this.props.authError?<Message color='red'>{this.props.authError}</Message>:null}
+    
     
     </Segment>
   </div>
