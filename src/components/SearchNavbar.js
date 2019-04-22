@@ -2,16 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-
 import { withStyles } from '@material-ui/core/styles';
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
-import {Search ,Button,Table} from 'semantic-ui-react';
+import {Search ,Button,Table,Icon} from 'semantic-ui-react';
 import {withRouter} from 'react-router-dom';
 import { connect } from 'react-redux'
 import swal from '@sweetalert/with-react'
 import {signOut} from '../store/actions/authAction'
-
 // import moment from 'moment'
 
 const styles = {
@@ -19,9 +17,6 @@ const styles = {
     width: '100%',
     position:'fixed',
     zIndex:10,
-    
-    
-    
   },
   grow: {
     flexGrow: 1,
@@ -34,8 +29,6 @@ const styles = {
 
 }
 
-
-  
 class SearchNavbar extends React.Component {
   state = {
     isLoading: false,
@@ -68,7 +61,7 @@ handleResultSelect = (e,{result,results}) => {
   const tmp = []
   
   for (const key in result.obj) {
-        if (key==='Address'||key==='Part'||key==='Quantity') {
+        if (key==='Address'||key==='Quantity') {
           
         }
         else{
@@ -80,6 +73,15 @@ handleResultSelect = (e,{result,results}) => {
                 <Table.Cell>{(key,result.obj[key])?'Yes':'No'}</Table.Cell>
               </Table.Row>
             )
+          }
+          else if (key==='Part') {
+            tmp.push(
+              <Table.Row>
+              <Table.Cell>Items</Table.Cell>
+              <Table.Cell>{(key,result.obj[key].length)}</Table.Cell>
+            </Table.Row>
+            )
+            
           }
           // else if (key==='createdAt') {
           //   tmp.push(
@@ -188,16 +190,17 @@ handleSearchChange = (e, { value }) => {
       
         <AppBar className={classes.appbar} style={{display:this.props.location.pathname==='/'?'none':''}}>
           <Toolbar>
-            <Button
-              inverted 
-              circular icon='arrow circle left' 
-              style={{display:auth.uid?'':'none'}} 
-              onClick={()=>{
-                if (this.props.location.pathname==='/acount') {  
-                }
-                else this.props.history.goBack()}}>
-              
-            </Button>
+            <Icon
+            name='arrow circle left'
+            size='large'
+            style={{display:auth.uid?'':'none'}} 
+            onClick={()=>{
+              if (this.props.location.pathname==='/acount') {  
+              }
+              else this.props.history.goBack()}}>
+
+            </Icon>
+
             <div className={classes.grow} />
             <Search 
                 className={classes.search}
