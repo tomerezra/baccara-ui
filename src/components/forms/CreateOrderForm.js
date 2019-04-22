@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Table,Select,Loader,Button,Step,Icon, Form, Grid, Header,Segment,Container, Divider } from 'semantic-ui-react'
+import { Table,Select,Button,Step,Icon, Form, Grid, Header,Segment,Container, Divider } from 'semantic-ui-react'
 import {withRouter,Redirect} from 'react-router-dom'
 import { connect } from 'react-redux'
 import {createOrder,getItems,getAddresses} from '../../store/actions/dataActions'
@@ -15,7 +15,7 @@ export class CreateOrderForm extends Component {
         
         
         data:{
-            Email:'',
+            
             Part:[],
             Quantity:[],
             Address:{
@@ -47,7 +47,7 @@ componentDidMount(){
         this.setState({step:3,clone:true})
     }
     if (!auth.isEmpty) {
-        this.setState({data:{...this.state.data,Email:auth.email}})
+        
         this.props.getItems()
         this.props.getAddresses()
         
@@ -117,7 +117,7 @@ handleInvalid=(e)=>{
     if (value==='') {
       e.target.setCustomValidity(name+' is required')
     } else {
-      e.target.setCustomValidity('worng pattern')
+      e.target.setCustomValidity('Worng pattern')
     }
     
   }
@@ -158,10 +158,7 @@ orderdetails=()=>{
                         <Table.Cell>City</Table.Cell>
                         <Table.Cell>{Address.City}</Table.Cell>
                     </Table.Row>
-                    {/* <Table.Row>
-                        <Table.Cell>Country</Table.Cell>
-                        <Table.Cell>{data.country}</Table.Cell>
-                    </Table.Row> */}
+                    
                     <Table.Row>
                         <Table.Cell>Company</Table.Cell>
                         <Table.Cell>{Address.CompanyName}</Table.Cell>
@@ -292,17 +289,7 @@ billing=()=>{
                             value={this.state.data.Address.LastName}
                             onChange={this.handleChange}>
                         </Form.Input>
-                    {/* <Form.Input 
-                            type="text"
-                            id="country"
-                            name="country"
-                            
-                            fluid icon='globe' 
-                            iconPosition='left' 
-                            placeholder='Country'
-                            value={this.state.data.country}
-                            onChange={this.handleChange}>
-                        </Form.Input> */}
+                    
                     <Form.Select
                         search 
                         name='City'
@@ -393,10 +380,11 @@ billing=()=>{
     }
 itemlist=()=>{
     const {data,guest}=this.props
+    var items
     if (guest) {
-        var items = data.gitems
+        items = data.gitems
     } else { 
-        var items = data.items
+        items = data.items
     }
        
     return(
@@ -505,17 +493,14 @@ confirm=()=>{
     
       
     render() {
-        console.log('1')
+        
         const {auth,guest}=this.props
         
-        if (!auth.uid) {
+        if (auth.isEmpty) {
             if (!guest) {
                 return <Redirect to='/'/>
             } 
         }
-
-        
-            
             return (
                 <div style={{ maxWidth: 450 }}>
                  
@@ -549,23 +534,7 @@ confirm=()=>{
                   {this.state.step===2?this.billing():null}
                   {this.state.step===3?this.confirm():null}
                   <br/>
-                  {/* <Button
-                      disabled={this.state.step===1}
-                      onClick={this.nextstep}
-                      name='back'
-                      color='linkedin'
-                      content='Back'>
-                  </Button>
-                  <Button
-                      disabled={this.state.step===3}
-                      onClick={this.nextstep}
-                      name='next'
-                      floated='right'
-                      color='linkedin'
-                      content='Next'>
-                  </Button> */}
                   
-                                   
                   </Segment>
               </div>
               )

@@ -2,27 +2,34 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
+
 import { withStyles } from '@material-ui/core/styles';
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
-import { Icon, Search ,Button,Table} from 'semantic-ui-react';
+import {Search ,Button,Table} from 'semantic-ui-react';
 import {withRouter} from 'react-router-dom';
 import { connect } from 'react-redux'
 import swal from '@sweetalert/with-react'
 import {signOut} from '../store/actions/authAction'
-import {Redirect} from 'react-router-dom'
-import moment from 'moment'
+
+// import moment from 'moment'
 
 const styles = {
   root: {
     width: '100%',
     position:'fixed',
-    zIndex:10
+    zIndex:10,
+    
+    
     
   },
   grow: {
     flexGrow: 1,
+  },
+  appbar:{
+    backgroundColor:'grey',
+    position:'static'
+    
   },
 
 }
@@ -59,7 +66,7 @@ resetComponent = () => this.setState({ isLoading: false, results: [], value: '' 
 
 handleResultSelect = (e,{result,results}) => {
   const tmp = []
-  console.log(result)
+  
   for (const key in result.obj) {
         if (key==='Address'||key==='Part'||key==='Quantity') {
           
@@ -168,37 +175,32 @@ handleSearchChange = (e, { value }) => {
 }
   render() {
     const {auth}=this.props
-    
     const { classes } = this.props;
-    if (!auth.uid) {
-      if (!this.props.location.pathname==='/')
-      {
-        return <Redirect to='/'/>
-      }
-    }
-     
-    
-    
-        return (
+    // if (auth.isEmpty) {
+    //   if (!this.props.location.pathname==='/')
+    //   {
+    //     return <Redirect to='/'/>
+    //   }
+    // }
+
+    return (
       <div className={classes.root}>
-        <AppBar position="static" style={{backgroundColor:'grey',display:this.props.location.pathname==='/'?'none':''}}>
+      
+        <AppBar className={classes.appbar} style={{display:this.props.location.pathname==='/'?'none':''}}>
           <Toolbar>
-            <IconButton 
-              className={classes.menuButton} 
-              color="inherit" 
-              aria-label="Open drawer"
+            <Button
+              inverted 
+              circular icon='arrow circle left' 
+              style={{display:auth.uid?'':'none'}} 
               onClick={()=>{
                 if (this.props.location.pathname==='/acount') {  
                 }
-                else this.props.history.goBack()}}
-              >
-              <Icon 
-                name='arrow circle left' 
-                style={{display:auth.uid?'':'none'}}/>
-            </IconButton>
-            
-            <div>
-              <Search 
+                else this.props.history.goBack()}}>
+              
+            </Button>
+            <div className={classes.grow} />
+            <Search 
+                className={classes.search}
                 placeholder='Search...' 
                 style={{display:auth.uid?'':'none'}}
                 category
@@ -208,15 +210,13 @@ handleSearchChange = (e, { value }) => {
                 results={this.state.results}
                 value={this.state.value}
                 {...this.props}
-                ></Search>
-            </div>
+                >
+            </Search>
             
             <div className={classes.grow} />
-            
-            <div className={classes.sectionMobile}>
+
             <Button content='Log Out' circular size='mini' onClick={this.logOut} style={{display:auth.uid?'':'none'}}></Button>
             
-            </div>
           </Toolbar>
         </AppBar>
 

@@ -1,34 +1,12 @@
 import React, { Component } from 'react'
-import {Card, Button,Table} from 'semantic-ui-react'
+import {Card, Button} from 'semantic-ui-react'
 import {withRouter} from 'react-router-dom'
-import swal from '@sweetalert/with-react'
+
 export class CardComponent extends Component {
   state={
     data:this.props.order
   }
-  // swaladdress=()=>{
-  //   const {address}= this.props
-  //   var tmp=[]
-  //     for (const key in address) {
-  //       if (key=='ID'||key==='Email') {
-          
-  //       }    
-  //       else tmp.push(
-              
-  //             <Table.Row>
-  //               <Table.Cell>{key}</Table.Cell>
-  //               <Table.Cell>{(key,address[key])}</Table.Cell>
-  //             </Table.Row>
-  //           )
-  //     }
-  //   swal(
-  //     <Table celled unstackable compact fixed size='small'>
-  //       <Table.Body>
-  //         {tmp}
-  //       </Table.Body>
-  //     </Table>
-  //   )
-  // }
+  
   
   whichCard=()=>{
     

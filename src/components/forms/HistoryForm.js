@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react'
 import {withRouter,Redirect} from 'react-router-dom'
 import {Grid,Header,Segment} from 'semantic-ui-react'
@@ -12,9 +11,7 @@ import {compose} from 'redux'
 class HistoryForm extends Component{
    state={
        pagename:'',
-       
-       
-       
+
    }
    componentDidMount(){
              
@@ -33,20 +30,6 @@ class HistoryForm extends Component{
           this.props.getAddresses()
         }
     }
-    
-    
-  
-  handleClick=()=>{
-    if (this.state.pagename==='My Orders') {
-        this.props.history.push('/createorder/0')
-    }
-    if (this.state.pagename==='My Items') {
-        this.props.history.push('/builditem')
-    }
-    if (this.state.pagename==='My Addresses') {
-        this.props.history.push('/newshipping')
-    }
-  }
 
   cards =()=>{
     
@@ -91,7 +74,7 @@ class HistoryForm extends Component{
   render(){
     const {auth}=this.props
     
-    if (!auth.uid) {return <Redirect to='/'/>}
+    if (auth.isEmpty) {return <Redirect to='/'/>}
     
       return(
         <div style={{maxWidth: 450}}>

@@ -192,21 +192,3 @@ export const deleteAddress = (address)=>{
     }
 }
 
-export const getstandard = ()=>{
-    return (dispatch, getState,{firebase})=>{
-        const firestore = firebase.firestore()
-        
-        
-        firestore.collection('standard').get()
-        
-        .then(snapshot => {
-            snapshot.forEach(doc => {
-              console.log(new RegExp (doc.data().value),'i');
-            });
-          })
-          .catch(err => {
-            console.log('Error getting documents', err);
-          });
-        
-    }
-}

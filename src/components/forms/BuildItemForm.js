@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import {Button,Progress, Grid, Header, Segment} from 'semantic-ui-react'
 import { connect } from 'react-redux'
-import {createItem,getstandard,createitemguest} from '../../store/actions/dataActions'
+import {createItem,createitemguest} from '../../store/actions/dataActions'
 import swal from '@sweetalert/with-react'
 import {withRouter,Redirect} from 'react-router-dom'
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
-import Parts from '../../data/parts'
+// import Parts from '../../data/parts'
 import Axios from 'axios';
 import firebase from 'firebase/app'
 
@@ -35,7 +35,7 @@ class BuildItemForm extends Component {
       },
       progress:0,
       pagename:"Build New Item",
-      child:null,
+      
       value:'',
       cancel:false,
       datatmp:{},
@@ -214,11 +214,7 @@ isStandard=(id,value)=>{
         }
         
         return 'yellow'
-    }
-    
-    
-
-    
+    } 
 }
 getAllData=()=>{
     const{Type}=this.state
@@ -272,8 +268,6 @@ makeQuestions=()=>{
     var question = questions.filter(q=>q.QID===progress+1)
     question=question[0]
     
-    // const tmp = Parts.filter(part=>part.id===this.state.progress+1)
-    // const part=tmp[0]
     var buttons
     if (!start) {
         buttons=categories.map(c=>
@@ -359,7 +353,7 @@ makeQuestions=()=>{
                 this.getAllData()
                 setTimeout(()=>{
                     this.makeQuestions()
-                },1500)
+                },1000)
                 }
   
     })
@@ -427,15 +421,15 @@ buttonChange=()=>{
     render() {
     const data=this.state.data
     const {auth,guest}=this.props
-    // console.log(this.state.partdata)
+    
     if (!auth.uid) {
         if (!guest) {
             return <Redirect to='/'/>
         } 
     }
-        return (
+    return (
             
-            <div style={{width:'100%',maxWidth: 450}} >
+        <div style={{width:'100%',maxWidth: 450}} >
             <Header textAlign='center'>{this.state.pagename}</Header>
             <Segment style={{display:this.state.progress>0?'block':'none'}} compact>
                 {/* <Grid columns={10}  divided style={{fontSize:'8px'}}>
@@ -598,7 +592,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) =>{
     return{
         createItem:(item)=>dispatch(createItem(item)),
-        getstandard:()=>dispatch(getstandard()),
+        
         createitemguest:(item)=>dispatch(createitemguest(item))
     }
   }

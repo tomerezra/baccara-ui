@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {withRouter} from 'react-router-dom'
-import {Loader,Button,Grid, Header,Segment,Table } from 'semantic-ui-react'
-import moment from 'moment'
+import {Button,Grid, Header,Segment,Table } from 'semantic-ui-react'
+// import moment from 'moment'
 import swal from '@sweetalert/with-react';
 import {Redirect} from 'react-router-dom'
 import { firestoreConnect } from 'react-redux-firebase';
@@ -10,9 +10,7 @@ import { connect } from 'react-redux'
 class OrderDetailsForm extends Component {
     state={
         pagename:'Order Detiles',
-        data:{},
-        view:{},
-        id:""
+        
     }
     
     reload=()=>{
@@ -133,11 +131,9 @@ class OrderDetailsForm extends Component {
     
     render() {
     const {auth}=this.props
-    
-    
-    if (!auth.uid) {return <Redirect to='/'/>}
-    
-        
+       
+    if (auth.isEmpty) {return <Redirect to='/'/>}
+            
     return (
       <div style={{maxWidth: 450}}>
         

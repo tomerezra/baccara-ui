@@ -15,7 +15,6 @@ class NewShippingForm extends Component {
         data:{
             FirstName:'',
             LastName:'',
-            // Country:'',
             PhoneNumber:'',
             CompanyName:'',
             Adress:'',
@@ -78,7 +77,7 @@ handleInvalid=(e)=>{
    render(){
     const {data}=this.state
     const {auth}=this.props
-    if (!auth.uid) {return <Redirect to='/'/>}
+    if (auth.isEmpty) {return <Redirect to='/'/>}
     var citylist = this.state.citys.map(city=>{return{text:city.Name,value:city.Name}})
     return(
     <div style={{maxWidth: 450}}>
@@ -131,17 +130,7 @@ handleInvalid=(e)=>{
                 value={data.CompanyName}
                 onChange={this.handleChange}>
             </Form.Input>
-          {/* <Form.Input 
-                type="text"
-                id="Country"
-                name="Country"
-                
-                fluid icon='globe' 
-                iconPosition='left' 
-                placeholder='Country'
-                value={data.Country}
-                onChange={this.handleChange}>
-            </Form.Input> */}
+          
           <Form.Select
             
             search

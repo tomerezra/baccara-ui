@@ -9,8 +9,18 @@ import { connect } from 'react-redux'
 import {signIn,logasguest} from '../../store/actions/authAction'
 import {Redirect} from 'react-router-dom'
 import firebase from 'firebase/app'
+const styles = {
+  
+  click:{
+    cursor: 'pointer',
+    color:'#1E90FF'
+    
+  },
+
+}
 class LoginForm extends Component {
-    state={
+    
+  state={
         data:{
             email:"",
             password:"",
@@ -139,25 +149,25 @@ class LoginForm extends Component {
           }}></Button>
             
             <br/>
-            <a style={{cursor: 'pointer'}} onClick={()=>{
+            <p style={{cursor: 'pointer',color:'#1E90FF'}} onClick={()=>{
                 swal("Enter Your Email Address", {
                     content: "input",
                 })
                 .then((value) => {
                   firebase.auth().sendPasswordResetEmail(value)
                   .then(function() {
-                    swal(`Password Reset Email Send To ${value}`);
+                    swal(`Password reset, Email send to ${value}`);
                   })
                   .catch(function(error) {
                     
                     swal('',error.message,'error')
                   });
                   
-                  });}}>Forget Your Password?</a>
+                  });}}>Forget Your Password?</p>
           
         </Form>
         <Message>
-          New to us? <a style={{cursor: 'pointer'}} onClick={()=>{this.props.history.push('/signup')}}>Sign Up</a>
+          New to us? <span style={{cursor: 'pointer',color:'#1E90FF'}} onClick={()=>{this.props.history.push('/signup')}}>Sign Up</span>
         </Message>
       </Grid.Column>
     </Grid>

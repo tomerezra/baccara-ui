@@ -6,7 +6,7 @@ import SignUpPage from "./pages/SignUpPage";
 import AcountPage from "./pages/AcountPage";
 import BuildItemPage from "./pages/BuildItemPage";
 import OrderDetailsPage from "./pages/OrderDetailsPage";
-import MakeOrderPage from './pages/CreateOrderPage';
+import CreateOrderPage from './pages/CreateOrderPage';
 import NewShippingPage from './pages/NewShippingPage';
 
 import Footer from './components/Footer';
@@ -31,16 +31,17 @@ class App extends Component{
           
           
           <Switch>
-            <Route path='/' exact component={LoginPage}/> 
-            <Route path='/signup' exact component={SignUpPage}/>
-            <Route path='/acount' exact component={AcountPage}/>
+            <Route path='/createorder/:id' exact component={CreateOrderPage}/>
+            <Route path='/newaddress/:id' exact component={NewShippingPage}/>  
+            <Route path='/orderdetails/:id' exact component={OrderDetailsPage}/> 
             <Route path='/builditem' exact component={BuildItemPage}/>
             <Route path='/orders' exact component={OrdersPage}/>
             <Route path='/items' exact component={ItemsPage}/>
             <Route path='/shipping' exact component={ShippingPage}/>
-            <Route path='/newaddress/:id' exact component={NewShippingPage}/>  
-            <Route path='/orderdetails/:id' exact component={OrderDetailsPage}/> 
-            <Route path='/createorder/:id' exact component={MakeOrderPage}/>
+            <Route path='/signup' exact component={SignUpPage}/>
+            <Route path='/acount' exact component={AcountPage}/>
+            <Route path='/' exact component={LoginPage}/>
+            
             
           </Switch>
         </div>

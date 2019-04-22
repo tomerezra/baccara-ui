@@ -23,7 +23,7 @@ class HomePageForm extends Component{
    }
     render(){
       const {auth}=this.props
-      if (!auth.uid) {return <Redirect to='/'/>}
+      if (auth.isEmpty) {return <Redirect to='/'/>}
        return(
            <div style={{maxWidth: 450}}>
             
@@ -63,22 +63,7 @@ class HomePageForm extends Component{
                   </Grid.Column>
                   
                 </Grid.Row>
-                {/* <Grid.Row>
                 
-                  <Grid.Column>
-                  <Card>
-                    <Icon name='setting' size='huge' color='grey' fitted></Icon>
-                    <Card.Header textAlign='center'>Setting</Card.Header>
-                    </Card>
-                  </Grid.Column>
-                  <Grid.Column>
-                  <Card>
-                    <Icon name='help' size='huge' color='grey' fitted></Icon>
-                    <Card.Header textAlign='center'>Help</Card.Header>
-                    </Card>
-                  </Grid.Column>
-                  
-                </Grid.Row> */}
               </Grid>
               <br/>
               <Button.Group>
