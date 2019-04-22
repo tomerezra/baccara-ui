@@ -47,7 +47,12 @@ class NewShippingForm extends Component {
         this.props.history.goBack()}
         )
     }
-    
+    componentDidUpdate(prevProps, prevState) {
+      
+      if(prevProps.data.success !== this.props.data.success){
+          this.props.history.push('/shipping')
+        }
+    }
   handleChange =(e,d)=>{
       
       const {name,value}=d

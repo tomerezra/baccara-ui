@@ -65,7 +65,7 @@ class LoginForm extends Component {
   render() {
     const {data}=this.state
     const {auth} = this.props
-    if (auth.uid) {return <Redirect to='/acount'/>}
+    if (!auth.isEmpty) {return <Redirect to='/acount'/>}
     return (
       <div style={{maxWidth: 450,marginTop:'-20%'}}>
         

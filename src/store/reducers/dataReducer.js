@@ -2,7 +2,7 @@ import swal from "sweetalert";
 
 
 const initState={
-    
+        success:0,
         gitems:[],
         gorders:[],
         
@@ -44,7 +44,10 @@ const dataReducer=(state=initState,action)=>{
             }   
         case 'CREATE_ITEM':
             swal("Success", "The item has been added", "success");
-            return state ;
+            return {
+                ...state,
+                success:state.success+1
+            };
         case 'CREATE_ITEM_ERROR':
             console.log('create item error',action.err)
             swal('','something worng, try again','error');
@@ -52,7 +55,10 @@ const dataReducer=(state=initState,action)=>{
         case 'CREATE_ORDER':
             
             swal("Success", "The order has been sent", "success")
-            return state;
+            return {
+                ...state,
+                success:state.success+1
+            };
         case 'CREATE_ORDER_ERROR':
             console.log('create order error',action.err)
             swal('','something worng, try again','error');
@@ -60,14 +66,20 @@ const dataReducer=(state=initState,action)=>{
         case 'CREATE_ADDRESS':
             
             swal("Success", "The address has been added", "success");
-            return state;
+            return {
+                ...state,
+                success:state.success+1
+            };
         case 'CREATE_ADDRESS_ERROR':
             console.log('create address error',action.err)
             swal('','something worng, try again','error');
             return state;
         case 'UPDATE_ADDRESS':
             swal("Success", "The address has been update", "success");
-            return state;
+            return {
+                ...state,
+                success:state.success+1
+            };
         case 'UPDATE_ADDRESS_ERROR':
             console.log('update address error',action.err)
             swal('','something worng, try again','error');

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Table,Select,Button,Step,Icon, Form, Grid, Header,Segment,Container, Divider } from 'semantic-ui-react'
+import { Table,Select,Button,Step,Icon, Form, Grid, Header,Segment,Container, Divider, Label } from 'semantic-ui-react'
 import {withRouter,Redirect} from 'react-router-dom'
 import { connect } from 'react-redux'
 import {createOrder,getItems,getAddresses} from '../../store/actions/dataActions'
@@ -12,7 +12,7 @@ export class CreateOrderForm extends Component {
         pagename:'Create New Order',
         orderitems:[],
         agree:false, 
-        
+        submit:false,
         
         data:{
             
@@ -54,6 +54,19 @@ componentDidMount(){
     }
     
   }
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.guest) {
+        if(prevProps.data.success !== this.props.data.success){
+            this.props.history.push('/builditem')
+          }
+    } else {
+        if(prevProps.data.success !== this.props.data.success){
+            this.props.history.push('/orders')
+          }
+    }  
+    
+  }
+  
 clone=()=>{
     if (this.state.clone) {
         this.setState({clone:false})     
@@ -125,7 +138,7 @@ orderdetails=()=>{
     
     const {orderitems} =this.state
     const {Address}=this.state.data
-    
+    this.setState({submit:true})
     var items = orderitems.map(item=>{
         return(
             <Table.Row>
@@ -207,6 +220,7 @@ handleSubmit=(e)=>{
         if (this.Validate()) {
             
             this.props.createOrder(this.state.data)
+            
         }  
     }
     
@@ -452,10 +466,23 @@ confirm=()=>{
         <Form onSubmit={this.handleSubmit} >
            
            <Container textAlign='center'>
+           <Label 
+                pointing='below' 
+                style={{display:this.state.submit?'none':''}}
+                
+                content='Check your order before you submit'
+                ></Label>
+           <br/>
            <Button onClick={(e)=>{
                 e.preventDefault()
                 this.clone();
-                this.orderdetails()}}>Order Details</Button>
+                this.orderdetails()}}
+                content='Order Details'
+                circular
+                color='linkedin'
+                >
+                
+                </Button>
            
             
           <Divider></Divider>
@@ -464,12 +491,12 @@ confirm=()=>{
                 name="agree"
                 label="I agree to the Terms and Conditions"
                 value={this.state.agree}
-                onChange={()=>{this.setState({agree:!this.state.data.agree})}}
+                onChange={()=>{this.setState({agree:!this.state.agree})}}
                 required
                 >
             </Form.Checkbox>
             <br/>
-            <Button color='linkedin' >
+            <Button color='green' disabled={!this.state.submit}>
             Submit
             </Button>
             <Button color='grey' onClick={(e)=>{
@@ -481,7 +508,7 @@ confirm=()=>{
         </Form>
         <Button
         
-        onClick={this.nextstep}
+        onClick={(e)=>{this.nextstep(e) ;this.setState({submit:false})}}
         name='back'
         color='linkedin'
         content='Back'>
@@ -550,7 +577,8 @@ const mapStateToProps = (state) => {
         //   profile:state.firebase.profile,
         //   data:state.firestore.ordered,
           guest:state.auth.guest,
-          data:state.data
+          data:state.data,
+          
       }
       
     }

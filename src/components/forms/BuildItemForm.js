@@ -91,7 +91,12 @@ componentDidMount(){
     // })
     
 }
-
+componentDidUpdate(prevProps, prevState) {
+      
+    if(prevProps.success !== this.props.success){
+        this.props.history.push('/items')
+      }
+  }
 handleSubmit=(e)=>{
     e.preventDefault()
     swal({
@@ -584,6 +589,7 @@ const mapStateToProps = (state) => {
     return{
       auth:state.firebase.auth,
       guest:state.auth.guest,
+      success:state.data.success
     //   data:state.firestore.ordered
 
     }

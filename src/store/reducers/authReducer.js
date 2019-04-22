@@ -1,11 +1,6 @@
 import swal from '@sweetalert/with-react';
 
 
-
-
-  
-
-
 const initState = {
     guest:false,
     authError:null,
@@ -74,7 +69,7 @@ const initState = {
           }
       case 'CREATE_USER':
           console.log('create user success')
-          swal('Welcome','Sign Up Sucsess','sucsess')
+          swal("Welcome","Sign Up Sucsess","success")
           
 
           return{
