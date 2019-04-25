@@ -35,7 +35,7 @@ class HomePageForm extends Component{
                   
                   <Grid.Column >
                     <Card onClick={()=>{this.handleClick('/orders')}}>
-                    <Icon name='table' size='huge' color='grey' fitted></Icon>
+                    <Icon name='clipboard list' size='huge' color='grey' fitted></Icon>
                     <Card.Header textAlign='center'>My Orders</Card.Header>
                     </Card>
                   </Grid.Column>

@@ -12,15 +12,21 @@ const initState = {
   const authReducer = (state=initState , action) => {
     
     switch (action.type) {
+      case 'ERRORCLEAR':
+        
+        return {
+            ...state,
+            authError:null
+      }
       case 'GUEST':
         console.log('log in guest')  
         return {
             ...state,
             guest:true
-    }
+      }
       case 'LOGIN_SUCCESS':
         console.log('log in success')
-        
+        swal("Welcome","","success")
         return {
             ...state,
             authError:null,
@@ -30,23 +36,10 @@ const initState = {
           console.log('login error')
           
           return {
-              ...state,
-              authError:'Error: '+ action.err.message
+            ...state,
+            authError:'Error: '+ action.err.message
           }
-      // case 'UPDATE_EMAIL_SUCCESS':
-      //   console.log('update email success')
-      //   swal("Success", "The email has been update", "success");
-      //   return {
-      //       ...state,
-      //       authError:null
-            
-      //   }
-      // case 'UPDATE_EMAIL_ERROR':
-      //     console.log(action.err.message)  
-      //     return {
-      //         ...state,
-      //         authError:'Update email faild'
-      //     }
+      
       case 'UPDATE_PASS_SUCCESS':
         console.log('update pass success')  
         swal("Success", "The password has been update", "success");
@@ -54,7 +47,7 @@ const initState = {
             ...state,
             authError:null
             
-    }
+        }
       case 'UPDATE_PASS_ERROR':
           console.log('update pass error')
           

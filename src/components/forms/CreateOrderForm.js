@@ -10,7 +10,7 @@ import Axios from 'axios'
 export class CreateOrderForm extends Component {
   state={
         pagename:'Create New Order',
-        orderitems:[],
+        billing:false,
         agree:false, 
         submit:false,
         p:[],
@@ -160,14 +160,15 @@ handleInvalid=(e)=>{
   }
 orderdetails=()=>{
     
-    const {p,q,s} =this.state
+    const {p,q} =this.state
     const {Address}=this.state.data
     const {items}=this.props.data
     this.setState({submit:true})
+    var orderitems
     if (!this.state.clone) {
         var Part=[]
         var Quantity=[]
-        var orderitems=p.map((part,i)=>{
+        orderitems=p.map((part,i)=>{
             
             if (part==='checked') {
                Part.push(items[i].ItemSerial)
@@ -184,7 +185,7 @@ orderdetails=()=>{
         this.setState({data:{...this.state.data,Part:Part,Quantity:Quantity}})
         
     } else {
-        var orderitems= this.state.data.Part.map((part,i)=>{
+        orderitems= this.state.data.Part.map((part,i)=>{
             return(
                 <Table.Row>
                 <Table.Cell>{part}</Table.Cell>
@@ -261,12 +262,9 @@ handleSubmit=(e)=>{
     
     if (this.state.step===2) {
         this.nextstep('next')
+        this.setState({billing:true})
     } 
     else {
-        this.state.orderitems.map((item)=>{
-            this.state.data.Part.push(item.serial)
-            this.state.data.Quantity.push(item.quantity)
-        })
         if (this.Validate()) {
             
             this.props.createOrder(this.state.data)
@@ -283,8 +281,8 @@ Validate=()=>{
         swal('',"You don't choose any item",'error')
         return false
     }
-    else if (this.state.data.Address.FirstName==='') {
-        swal('',"You don't choose any address",'error')
+    else if (this.state.data.Address.City==='') {
+        swal('','You must to choose city','error')
         return false
     }
     else if (!this.state.agree) {
@@ -606,8 +604,9 @@ confirm=()=>{
                       </Step>
                       <Step 
                           active={this.state.step===3?true:false}
-                          disabled={this.state.step===3?false:true}
-                      >
+                          disabled={this.state.billing?false:true}
+                          onClick={()=>{this.setState({step:3})}}>
+                      
                       <Icon name='info' />
                       <Step.Content>
                           <Step.Title>Confirm</Step.Title>

@@ -24,14 +24,12 @@ const dataReducer=(state=initState,action)=>{
                             
             return {
                 ...state,
-                
                 addresses:action.addresses,
             }               
         case 'GET_ORDERS':
                          
             return {
                 ...state,
-                
                 orders:action.orders,
                 
             }   
@@ -43,6 +41,7 @@ const dataReducer=(state=initState,action)=>{
                 
             }   
         case 'CREATE_ITEM':
+            console.log(action.item)
             swal("Success", "The item has been added", "success");
             return {
                 ...state,
@@ -53,7 +52,7 @@ const dataReducer=(state=initState,action)=>{
             swal('','something worng, try again','error');
             return state;
         case 'CREATE_ORDER':
-            
+            console.log(action.order)
             swal("Success", "The order has been sent", "success")
             return {
                 ...state,
@@ -64,7 +63,7 @@ const dataReducer=(state=initState,action)=>{
             swal('','something worng, try again','error');
             return state;
         case 'CREATE_ADDRESS':
-            
+            console.log(action.address)
             swal("Success", "The address has been added", "success");
             return {
                 ...state,

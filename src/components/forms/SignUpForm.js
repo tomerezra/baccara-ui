@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {Button, Form, Grid, Header,Segment,Message} from 'semantic-ui-react'
-import {createUser,updateUser} from '../../store/actions/authAction'
+import {createUser,updateUser, errorClear} from '../../store/actions/authAction'
 import {withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 import Axios from 'axios'
@@ -17,7 +17,7 @@ class SignUpForm extends Component {
         agree:false
     }
     componentDidMount = () => {
-      
+        this.props.errorClear()
         const {auth}=this.props
         if (auth.uid) {
           
@@ -178,7 +178,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) =>{
   return{
       createUser:(user)=>dispatch(createUser(user)),
-      updateUser:(data)=>dispatch(updateUser(data))
+      updateUser:(data)=>dispatch(updateUser(data)),
+      errorClear:()=>dispatch(errorClear())
   }
 }
 

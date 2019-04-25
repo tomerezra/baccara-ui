@@ -35,18 +35,16 @@ export class CardComponent extends Component {
               fluid>
               <Card.Content>
                 <Card.Header>{ItemName}</Card.Header>
-                <Card.Meta>Type : {Type}</Card.Meta>
-                <Card.Meta>Serial : {ItemSerial}
-                <Button
-                    onClick={()=>{this.props.delete(this.props.item)}}
-                    floated='right'
-                    content='Delete'
-                    color='youtube'
-                    size='small'>
+                <Card.Meta>Type : {Type}
+                  <Button
+                      onClick={(e)=>{e.stopPropagation(); this.props.delete(this.props.item)}}
+                      floated='right'
+                      content='Delete'
+                      color='youtube'
+                      size='small'>
                   </Button>
-                  
-                  
-                    </Card.Meta>
+                </Card.Meta>
+                <Card.Meta>Serial : {ItemSerial}</Card.Meta>
                 <Card.Meta>Standard : {IsStandard?'Yes':'No'}</Card.Meta>
               </Card.Content>
           </Card>

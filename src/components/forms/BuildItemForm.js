@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Button,Progress, Grid, Header, Segment} from 'semantic-ui-react'
+import {Button,Progress, Grid, Header, Segment, Table} from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import {createItem,createitemguest} from '../../store/actions/dataActions'
 import swal from '@sweetalert/with-react'
@@ -9,23 +9,12 @@ import {compose} from 'redux'
 // import Parts from '../../data/parts'
 import Axios from 'axios';
 import firebase from 'firebase/app'
+import TableComponent from '../TableComponent';
 
 
 class BuildItemForm extends Component {
   state={
-      data:{
-        module:"-",  
-        body:"-",
-        port:"-",
-        function:"-",
-        orifice:"-",
-        seals:"-",
-        override:"-",
-        voltage:"-",
-        power:"-",
-        connector:"-",
-        
-      },
+      data:{},
       add:{
         ItemSerial:'',
         ItemName:'',
@@ -38,8 +27,7 @@ class BuildItemForm extends Component {
       
       value:'',
       cancel:false,
-      datatmp:{},
-      change:[null,null,null,null,null,null,null,null,null,null],
+      negative:[],
       first:false,
       tree:[],
       orderbutton:true,
@@ -53,7 +41,7 @@ class BuildItemForm extends Component {
 
 componentDidMount(){
 
-    this.setState({datatmp:this.state.data})
+    
     Axios.get('http://proj.ruppin.ac.il/bgroup71/prod/api/Categories')
     .then(res=>this.setState({categories:res.data}))
     .catch(()=>{
@@ -119,13 +107,13 @@ handleSubmit=(e)=>{
 
 }
 startOver=()=>{
-    var tmp =this.state.change.map((i)=>i=null)
+    
     this.setState({
         progress:0,
         start:false,
-        data:this.state.datatmp,
+        data:{},
         add:{...this.state.add,ItemSerial:'',IsStandard:true,Type:''},
-        change:tmp,
+        negative:[],
         first:false
     });
     
@@ -214,7 +202,10 @@ isStandard=(id,value)=>{
     }
     else {
         if (!this.state.first) {
-            this.state.change[id-2]=true
+            var negative=this.state.negative.slice()
+            negative[id-1]=true
+            this.setState({negative})
+            
             this.setState({first:true})
         }
         
@@ -424,7 +415,7 @@ buttonChange=()=>{
     else return 'Start'
 }
     render() {
-    const data=this.state.data
+    
     const {auth,guest}=this.props
     
     if (!auth.uid) {
@@ -437,74 +428,23 @@ buttonChange=()=>{
         <div style={{width:'100%',maxWidth: 450}} >
             <Header textAlign='center'>{this.state.pagename}</Header>
             <Segment style={{display:this.state.progress>0?'block':'none'}} compact>
-                {/* <Grid columns={10}  divided style={{fontSize:'8px'}}>
-                    <Grid.Row textAlign='center' columns='equal'>
-                    <Grid.Column textAlign='center' >
-                        {data.module}
-                    </Grid.Column>
-                    <Grid.Column  >
-                        {data.body}
-                    </Grid.Column>
-                    <Grid.Column  >
-                        {data.port}
-                    </Grid.Column>
-                    <Grid.Column  >
-                        {data.function}
-                    </Grid.Column>
-                    <Grid.Column  >
-                        {data.orifice}
-                    </Grid.Column>
-                    <Grid.Column  >
-                        {data.seals}
-                    </Grid.Column>
-                    <Grid.Column  >
-                        {data.override}
-                    </Grid.Column>
-                    <Grid.Column  >
-                        {data.voltage}
-                    </Grid.Column>
-                    <Grid.Column  >
-                        {data.power}
-                    </Grid.Column>
-                    <Grid.Column  >
-                        {data.connector}
-                    </Grid.Column>
-                    
-                    </Grid.Row>
-                  
-              </Grid> */}
               <Progress
                         style={{marginTop:'5%'}}
-                        // attached='top'
                         value={this.state.progress} 
                         total='10' 
                         progress='ratio'
                         active
                         success={this.state.progress===10?true:false}
                         warning={this.state.add.IsStandard?false:true}
-                        // color='green'
                         >
-                    </Progress>
-              {/* <Progress
-                        style={{display:this.state.progress>0?'block':'none'}}
-                        attached='bottom'
-                        value={this.state.progress}
-                        total='10' 
-                        
-                        active
-                        color='green'>
-                    </Progress> */}
-              </Segment>
-              <Segment 
-              textAlign='center'
-              >
-               
+                </Progress>
+            </Segment>
+            <Segment textAlign='center'>
                 <Button 
                     color='youtube'
                     name={this.buttonChange()}
                     onClick={this.handleClick}
-                    content={this.buttonChange()}
-                    
+                    content={this.buttonChange()}  
                     >
                 </Button>
                 <Button 
@@ -523,64 +463,15 @@ buttonChange=()=>{
                     content='Cancel'
                     >
                 </Button>
-              </Segment>
-              <Segment size='mini' style={{paddingTop:0, paddingBottom:0}}>
-                  <Grid columns={3} celled>
-                    <Grid.Row color={this.state.change[0]?'yellow':''}>
-                        <Grid.Column textAlign='center' mobile='2'>1</Grid.Column>
-                        <Grid.Column textAlign='center' mobile='7'>Module</Grid.Column>  
-                        <Grid.Column textAlign='center' mobile='7'>{data.module}</Grid.Column> 
-                    </Grid.Row>
-                    <Grid.Row color={this.state.change[1]?'yellow':''}>
-                        <Grid.Column textAlign='center' mobile='2'>2</Grid.Column>
-                        <Grid.Column textAlign='center' mobile='7'>Body</Grid.Column>  
-                        <Grid.Column textAlign='center' mobile='7'>{data.body}</Grid.Column> 
-                    </Grid.Row>
-                    <Grid.Row color={this.state.change[2]?'yellow':''}>
-                        <Grid.Column textAlign='center' mobile='2'>3</Grid.Column>
-                        <Grid.Column textAlign='center' mobile='7'>Port</Grid.Column>  
-                        <Grid.Column textAlign='center' mobile='7'>{data.port}</Grid.Column> 
-                    </Grid.Row>
-                    <Grid.Row color={this.state.change[3]?'yellow':''}>
-                        <Grid.Column textAlign='center' mobile='2'>4</Grid.Column>
-                        <Grid.Column textAlign='center' mobile='7'>Function</Grid.Column>  
-                        <Grid.Column textAlign='center' mobile='7'>{data.function}</Grid.Column> 
-                    </Grid.Row>
-                    <Grid.Row color={this.state.change[4]?'yellow':''}>
-                        <Grid.Column textAlign='center' mobile='2'>5</Grid.Column>
-                        <Grid.Column textAlign='center' mobile='7'>Orifice</Grid.Column>  
-                        <Grid.Column textAlign='center' mobile='7'>{data.orifice}</Grid.Column> 
-                    </Grid.Row>
-                    <Grid.Row color={this.state.change[5]?'yellow':''}>
-                        <Grid.Column textAlign='center' mobile='2'>6</Grid.Column>
-                        <Grid.Column textAlign='center' mobile='7'>Seals</Grid.Column>  
-                        <Grid.Column textAlign='center' mobile='7'>{data.seals}</Grid.Column> 
-                    </Grid.Row>
-                    <Grid.Row color={this.state.change[6]?'yellow':''}>
-                        <Grid.Column textAlign='center' mobile='2'>7</Grid.Column>
-                        <Grid.Column textAlign='center' mobile='7'>Override</Grid.Column>  
-                        <Grid.Column textAlign='center' mobile='7'>{data.override}</Grid.Column> 
-                    </Grid.Row>
-                    <Grid.Row color={this.state.change[7]?'yellow':''}>
-                        <Grid.Column textAlign='center' mobile='2'>8</Grid.Column>
-                        <Grid.Column textAlign='center' mobile='7'>Voltage</Grid.Column>  
-                        <Grid.Column textAlign='center' mobile='7'>{data.voltage}</Grid.Column> 
-                    </Grid.Row>
-                    <Grid.Row color={this.state.change[8]?'yellow':''}>
-                        <Grid.Column textAlign='center' mobile='2'>9</Grid.Column>
-                        <Grid.Column textAlign='center' mobile='7'>Power</Grid.Column>  
-                        <Grid.Column textAlign='center' mobile='7'>{data.power}</Grid.Column> 
-                    </Grid.Row>
-                    <Grid.Row color={this.state.change[9]?'yellow':''}>
-                        <Grid.Column textAlign='center' mobile='2'>10</Grid.Column>
-                        <Grid.Column textAlign='center' mobile='7'>Connector</Grid.Column>  
-                        <Grid.Column textAlign='center' mobile='7'>{data.connector}</Grid.Column> 
-                    </Grid.Row>
-                  </Grid>
-                  
-              </Segment>
-            
-              </div>
+            </Segment>
+            <Table celled unstackable compact fixed striped style={{display:this.state.start?'':'none'}}>
+                <Table.Body>
+                    {this.state.questions.map(stage=>{
+                        return <TableComponent stage={stage} data={this.state.data} negative={this.state.negative}/>
+                    })}
+                </Table.Body>
+            </Table>
+        </div>
     )
   }
 }

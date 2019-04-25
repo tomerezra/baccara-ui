@@ -6,18 +6,10 @@ import Axios from 'axios'
 import logo from '../../images/logo.png'
 import swal from '@sweetalert/with-react';
 import { connect } from 'react-redux'
-import {signIn,logasguest} from '../../store/actions/authAction'
+import {signIn,logasguest,errorClear} from '../../store/actions/authAction'
 import {Redirect} from 'react-router-dom'
 import firebase from 'firebase/app'
-const styles = {
-  
-  click:{
-    cursor: 'pointer',
-    color:'#1E90FF'
-    
-  },
 
-}
 class LoginForm extends Component {
     
   state={
@@ -29,6 +21,9 @@ class LoginForm extends Component {
         loading:true,
         pagename:'Log In To Your Account',
         
+    }
+    componentDidMount() {
+      this.props.errorClear()
     }
     
     HandleChange=(e)=>{
@@ -130,7 +125,7 @@ class LoginForm extends Component {
             firebase.auth().signInWithPopup(provider).then(function(result) {
               var user = result.user;
               Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Customer','='+user.email)
-              
+              swal("Welcome","","success")
             }).catch(function(error) {
               var errorMessage = error.message;
               alert(errorMessage)
@@ -142,6 +137,7 @@ class LoginForm extends Component {
             firebase.auth().signInWithPopup(provider).then(function(result) {
               var user = result.user;
               Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Customer','='+user.email)
+              swal("Welcome","","success")
             }).catch(function(error) {
               var errorMessage = error.message;
               alert(errorMessage)
@@ -194,7 +190,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch)=> {
   return{
     logasguest:()=>dispatch(logasguest()),
-    signIn:(creds)=>dispatch(signIn(creds))
+    signIn:(creds)=>dispatch(signIn(creds)),
+    errorClear:()=>dispatch(errorClear()),
+    
   }
   
 }

@@ -16,7 +16,8 @@ const styles = {
     borderTopWidth:2,
     borderWidth:0,
     borderStyle:'solid',
-    zIndex:10
+    zIndex:10,
+    color:'red'
     
     
   },
@@ -63,10 +64,12 @@ handleClickAdd=()=>{
     
     return (
       <BottomNavigation value={this.props.location.pathname} onChange={this.handleChange} className={classes.root} style={{display:this.props.auth.uid?'':'none'}}>
+        <BottomNavigationAction label="Orders" value="/orders" icon={<Icon name='clipboard list' size='large'/>}/>
         <BottomNavigationAction label="Items" value="/items" icon={<Icon name='barcode' size='large' />} />
-        <BottomNavigationAction label="Acount" value="/acount" icon={<Icon name='user' size='large'/>} />
-        <BottomNavigationAction label="Orders" value="/orders" icon={<Icon name='clipboard list' size='large'/>} />
         <BottomNavigationAction label="Shipping" value="/shipping" icon={<Icon name='shipping' size='large'/>} />
+        <BottomNavigationAction label="Acount" value="/acount" icon={<Icon name='user' size='large'/>} />
+        
+        
         <Button 
                 circular 
                 size='large'

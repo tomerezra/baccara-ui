@@ -5,7 +5,11 @@ export const logasguest =()=>{
         dispatch({type:'GUEST'})
     }
 }
-
+export const errorClear =()=>{
+    return(dispatch, getState)=>{
+        dispatch({type:'ERRORCLEAR'})
+    }
+}
 export const signIn = (credentials)=>{
     return (dispatch, getState,{firebase})=>{
         
