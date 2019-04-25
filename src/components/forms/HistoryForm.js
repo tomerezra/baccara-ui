@@ -37,6 +37,7 @@ class HistoryForm extends Component{
       if (this.props.pagename==='orders') {
         
         if (orders.length>0) {
+          
           return(
             orders.map(order => <CardComponent order={order}/>)
           )  

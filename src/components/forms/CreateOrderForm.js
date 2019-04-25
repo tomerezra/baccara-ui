@@ -13,6 +13,8 @@ export class CreateOrderForm extends Component {
         orderitems:[],
         agree:false, 
         submit:false,
+        p:[],
+        q:[],
         
         data:{
             
@@ -71,37 +73,59 @@ clone=()=>{
     if (this.state.clone) {
         this.setState({clone:false})     
         var tmp = this.props.data.orders.filter(order=>order.OrderId==this.props.match.params.id)
+        this.state.data.Part = tmp[0].Part
+        this.state.data.Quantity = tmp[0].Quantity
+        this.state.data.Address = tmp[0].Address
         
-        this.state.data.Address=tmp[0].Address
-        tmp[0].Part.map((p,i)=>{
-            this.state.orderitems.push({serial:p,quantity:tmp[0].Quantity[i]})
-        })
         
     }
+    
+
 }
 
 handleChange=(e,data)=>{
     const {value,name,id,type}=data
     
-    
     if (type==='checkbox') {
-        var itemtopush={id:id,serial:name,quantity:value}
+        var p=this.state.p.slice()
+        
         if (e.target.checked) {
-            this.state.orderitems.push(itemtopush)
             
+            p[id]='checked'
+            this.setState({p})
         }
         else {
-            var tmp=this.state.orderitems.filter(item=>!(item.id===id))
+            p[id]=false
+            this.setState({p})
             
-            this.setState({orderitems:tmp})
             
         }
         
     }
-    else if (name==='quantity' && this.state.orderitems.length>0) {
-        var tmp=this.state.orderitems.filter(item=>(item.id===id))
-        tmp[0].quantity=value
+    else if (name==='quantity') {
+        var q=this.state.q.slice()
+        q[id]=value
+        this.setState({q})
     }
+    
+    // if (type==='checkbox') {
+    //     var itemtopush={id:id,serial:name,quantity:value}
+    //     if (e.target.checked) {
+    //         this.state.orderitems.push(itemtopush)
+            
+    //     }
+    //     else {
+    //         var tmp=this.state.orderitems.filter(item=>!(item.id===id))
+            
+    //         this.setState({orderitems:tmp})
+            
+    //     }
+        
+    // }
+    // else if (name==='quantity' && this.state.orderitems.length>0) {
+    //     var tmp=this.state.orderitems.filter(item=>(item.id===id))
+    //     tmp[0].quantity=value
+    // }
     else if (data.name==='selectaddress') {
         var tmp = this.props.data.addresses.filter(adr=>adr.ID===data.value)
         
@@ -136,17 +160,43 @@ handleInvalid=(e)=>{
   }
 orderdetails=()=>{
     
-    const {orderitems} =this.state
+    const {p,q,s} =this.state
     const {Address}=this.state.data
+    const {items}=this.props.data
     this.setState({submit:true})
-    var items = orderitems.map(item=>{
-        return(
-            <Table.Row>
-            <Table.Cell>{item.serial}</Table.Cell>
-            <Table.Cell>{item.quantity}</Table.Cell>
-            </Table.Row>
-        )
-    })
+    if (!this.state.clone) {
+        var Part=[]
+        var Quantity=[]
+        var orderitems=p.map((part,i)=>{
+            
+            if (part==='checked') {
+               Part.push(items[i].ItemSerial)
+               Quantity.push(q[i])
+               return(
+                <Table.Row>
+                <Table.Cell>{items[i].ItemSerial}</Table.Cell>
+                <Table.Cell>{q[i]}</Table.Cell>
+                </Table.Row>
+            )
+               
+            } 
+        })
+        this.setState({data:{...this.state.data,Part:Part,Quantity:Quantity}})
+        
+    } else {
+        var orderitems= this.state.data.Part.map((part,i)=>{
+            return(
+                <Table.Row>
+                <Table.Cell>{part}</Table.Cell>
+                <Table.Cell>{this.state.data.Quantity[i]}</Table.Cell>
+                </Table.Row>
+            )
+           }
+            
+           ) 
+    }
+    
+    
     swal({
         content:(
         <div>
@@ -194,7 +244,7 @@ orderdetails=()=>{
                 <Table.HeaderCell>Quantity</Table.HeaderCell>
             </Table.Header>
             <Table.Body>
-                {items}
+                {orderitems}
             </Table.Body>
             </Table>
         </div>
@@ -229,7 +279,7 @@ handleSubmit=(e)=>{
 }
 Validate=()=>{
      
-    if (this.state.orderitems.length===0) {
+    if (this.state.data.Part.length===0) {
         swal('',"You don't choose any item",'error')
         return false
     }
@@ -393,70 +443,73 @@ billing=()=>{
     )
     }
 itemlist=()=>{
-    const {data,guest}=this.props
-    var items
-    if (guest) {
-        items = data.gitems
-    } else { 
-        items = data.items
-    }
-       
-    return(
-        <>
-            <Grid columns='2' verticalAlign='middle'>
-            {items.map((item,i)=>{
-                
-                return(
-                   
-                   <Grid.Row>
+        const {data,guest}=this.props
+        var items
+        if (guest) {
+            items = data.gitems
+        } else { 
+            items = data.items
+        }
+           
+        return(
+            <>
+                <Grid columns='2' verticalAlign='middle'>
+                {items.map((item,i)=>{
+                    
+                    return(
                        
-                    <Grid.Column>
-                    <Form.Checkbox
-                        
-                        id={guest?i:item.ItemID}
-                        name={item.ItemSerial}
-                        label={item.ItemName}
-                        onChange={this.handleChange}
-    
-                        >
-                    </Form.Checkbox>
-                    </Grid.Column>
-                    <Grid.Column>
-                    <Form.Input
-                        
-                        placeholder='Quantity'
-                        size='mini'
-                        type='tel'
-                        pattern="[0-9]*"
-                        min='1'
-                        id={guest?i:item.ItemID}
-                        name='quantity'
-                        // value={this.state.tmp[item.id-1].quantity}
-                        onChange={this.handleChange}
-                        
-                        >
-                     
-                    </Form.Input>  
-                    </Grid.Column>
-                </Grid.Row>
-                )
-            })}
-            </Grid>
-            <br/>
-            
-        <Button
-            
-            onClick={this.nextstep}
-            name='next'
-            floated='right'
-            color='linkedin'
-            content='Next'>
-        </Button>
-        <br/>
-        </>
-        )
+                       <Grid.Row>
+                           
+                        <Grid.Column>
+                        <Form.Checkbox
+                            
+                            id={i}
+                            name={item.ItemSerial}
+                            label={item.ItemName}
+                            checked={this.state.p[i]}
+                            onChange={this.handleChange}
         
-    }
+                            >
+                        </Form.Checkbox>
+                        </Grid.Column>
+                        <Grid.Column>
+                        <Form.Input
+                            
+                            placeholder='Quantity'
+                            size='mini'
+                            type='tel'
+                            pattern="[0-9]*"
+                            min='1'
+                            id={i}
+                            disabled={this.state.p[i]==='checked'?false:true}
+                            name='quantity'
+                            value={this.state.q[i]}
+                            onChange={this.handleChange}
+                            
+                            >
+                         
+                        </Form.Input>  
+                        </Grid.Column>
+                    </Grid.Row>
+                    )
+                })}
+                </Grid>
+                <br/>
+                
+            <Button
+                
+                onClick={this.nextstep}
+                name='next'
+                floated='right'
+                color='linkedin'
+                content='Next'>
+            </Button>
+            <br/>
+            </>
+            )
+            
+        }
+
 
 confirm=()=>{
     
@@ -507,12 +560,12 @@ confirm=()=>{
             </Container>
         </Form>
         <Button
-        
-        onClick={(e)=>{this.nextstep(e) ;this.setState({submit:false})}}
-        name='back'
-        color='linkedin'
-        content='Back'>
-    </Button>
+            disabled={this.props.match.params.id!=='0'?true:false}
+            onClick={(e)=>{this.nextstep(e) ;this.setState({submit:false})}}
+            name='back'
+            color='linkedin'
+            content='Back'>
+        </Button>
     
     </>
         )
@@ -533,13 +586,19 @@ confirm=()=>{
                  
                   <Header textAlign='center'>{this.state.pagename}</Header>
                   <Step.Group size='mini' unstackable fluid>
-                      <Step active={this.state.step===1?true:false} onClick={()=>{this.setState({step:1})}}>
+                      <Step
+                        active={this.state.step===1?true:false} 
+                        disabled={this.props.match.params.id!=='0'?true:false}
+                        onClick={()=>{this.setState({step:1,submit:false})}}>
                       <Icon name='truck' />
                       <Step.Content>
                           <Step.Title>Items</Step.Title>
                       </Step.Content>
                       </Step>
-                      <Step active={this.state.step===2?true:false} onClick={()=>{this.setState({step:2})}}>
+                      <Step 
+                        active={this.state.step===2?true:false} 
+                        disabled={this.props.match.params.id!=='0'?true:false}
+                        onClick={()=>{this.setState({step:2,submit:false})}}>
                       <Icon name='payment' />
                       <Step.Content>
                           <Step.Title>Billing</Step.Title>
