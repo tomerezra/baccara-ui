@@ -227,12 +227,9 @@ handleSubmit=(e)=>{
     
     
 }
-getSum(total, num) {
-    return total + num;
-}
 Validate=()=>{
     
-    if (this.state.data.Part.length===0 || this.state.data.Quantity.reduce(this.getSum)===undefined) {
+    if (this.state.data.Part.length===0 || this.state.data.Quantity.reduce((a,b)=>a+b)===undefined) {
         swal('',"You don't choose any item or quantity",'error')
         return false
     }
