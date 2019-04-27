@@ -105,6 +105,7 @@ class SignUpForm extends Component {
                 onInvalid ={this.handleInvalid}
                 onInput={(e)=>{e.target.setCustomValidity('')}}
                 required
+                disabled={auth.providerData[0].providerId!=='password'?true:false}
                 fluid icon='lock'
                 iconPosition='left'
                 placeholder='Password'
@@ -122,7 +123,9 @@ class SignUpForm extends Component {
                 onChange={this.handleChange}>>
             </Form.Checkbox>
             {authError?<Message color='red'>{authError}</Message>:null}
-            <Button color='linkedin' >
+            <Button 
+              color='linkedin'
+              disabled={auth.providerData[0].providerId!=='password'?true:false} >
                 {auth.uid? 'Update' : 'Sign Up'}
             </Button>
             
@@ -150,7 +153,7 @@ class SignUpForm extends Component {
               alert(errorMessage)
             });
           }}></Button>
-          <Button color='grey' onClick={()=>{this.props.history.goBack()}}>
+          <Button color='grey' onClick={(e)=>{e.preventDefault(); this.props.history.goBack()}}>
               Cancel
             </Button>
         </Form>

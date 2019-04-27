@@ -16,7 +16,6 @@ class HomePageForm extends Component{
   
    }
    componentDidMount=()=>{
-    
     this.props.getAddresses()
     this.props.getItems()
     this.props.getOrders()
