@@ -10,14 +10,10 @@ import Axios from 'axios'
 export class CreateOrderForm extends Component {
   state={
         pagename:'Create New Order',
-        billing:false,
         agree:false, 
-        submit:false,
         p:[],
         q:[],
-        
         data:{
-            
             Part:[],
             Quantity:[],
             Address:{
@@ -29,11 +25,9 @@ export class CreateOrderForm extends Component {
                 Adress:'',
                 City:'',
                 Email:'',
-                
             },       
         },
         step:1,
-        clone:false,
         citys:[]
 
   }
@@ -46,7 +40,8 @@ componentDidMount(){
         this.props.history.goBack()}
         )
     if (this.props.match.params.id!=='0') {
-        this.setState({step:3,clone:true})
+        
+        this.clone()
     }
     if (!auth.isEmpty) {
         
@@ -55,8 +50,8 @@ componentDidMount(){
         
     }
     
-  }
-  componentDidUpdate(prevProps, prevState) {
+}
+componentDidUpdate(prevProps, prevState) {
     if (this.props.guest) {
         if(prevProps.data.success !== this.props.data.success){
             this.props.history.push('/builditem')
@@ -67,22 +62,12 @@ componentDidMount(){
           }
     }  
     
-  }
-  
-clone=()=>{
-    if (this.state.clone) {
-        this.setState({clone:false})     
-        var tmp = this.props.data.orders.filter(order=>order.OrderId==this.props.match.params.id)
-        this.state.data.Part = tmp[0].Part
-        this.state.data.Quantity = tmp[0].Quantity
-        this.state.data.Address = tmp[0].Address
-        
-        
-    }
-    
-
 }
-
+clone=()=>{
+    this.setState({step:3,confirm:true})   
+    var tmp = this.props.data.orders.filter(order=>order.OrderId==this.props.match.params.id)
+    this.setState({p:tmp[0].Part,q:tmp[0].Quantity,data:{...this.state.data,Address:tmp[0].Address}})
+}
 handleChange=(e,data)=>{
     const {value,name,id,type}=data
     
@@ -90,12 +75,13 @@ handleChange=(e,data)=>{
         var p=this.state.p.slice()
         
         if (e.target.checked) {
-            
-            p[id]='checked'
+            p[id]=name
+            // p[id]='checked'
             this.setState({p})
         }
         else {
-            p[id]=false
+            p[id]=undefined
+            // p[id]=false
             this.setState({p})
             
             
@@ -108,24 +94,6 @@ handleChange=(e,data)=>{
         this.setState({q})
     }
     
-    // if (type==='checkbox') {
-    //     var itemtopush={id:id,serial:name,quantity:value}
-    //     if (e.target.checked) {
-    //         this.state.orderitems.push(itemtopush)
-            
-    //     }
-    //     else {
-    //         var tmp=this.state.orderitems.filter(item=>!(item.id===id))
-            
-    //         this.setState({orderitems:tmp})
-            
-    //     }
-        
-    // }
-    // else if (name==='quantity' && this.state.orderitems.length>0) {
-    //     var tmp=this.state.orderitems.filter(item=>(item.id===id))
-    //     tmp[0].quantity=value
-    // }
     else if (data.name==='selectaddress') {
         var tmp = this.props.data.addresses.filter(adr=>adr.ID===data.value)
         
@@ -157,46 +125,30 @@ handleInvalid=(e)=>{
       e.target.setCustomValidity('Worng pattern')
     }
     
-  }
+}
 orderdetails=()=>{
     
     const {p,q} =this.state
     const {Address}=this.state.data
-    const {items}=this.props.data
     this.setState({submit:true})
     var orderitems
-    if (!this.state.clone) {
-        var Part=[]
-        var Quantity=[]
-        orderitems=p.map((part,i)=>{
+    var Part=[]
+    var Quantity=[]
+    orderitems=p.map((part,i)=>{
             
-            if (part==='checked') {
-               Part.push(items[i].ItemSerial)
-               Quantity.push(q[i])
-               return(
-                <Table.Row>
-                <Table.Cell>{items[i].ItemSerial}</Table.Cell>
-                <Table.Cell>{q[i]}</Table.Cell>
-                </Table.Row>
-            )
-               
-            } 
-        })
-        this.setState({data:{...this.state.data,Part:Part,Quantity:Quantity}})
-        
-    } else {
-        orderitems= this.state.data.Part.map((part,i)=>{
+        if (part) {
+            Part.push(part)
+            Quantity.push(q[i])
             return(
-                <Table.Row>
-                <Table.Cell>{part}</Table.Cell>
-                <Table.Cell>{this.state.data.Quantity[i]}</Table.Cell>
-                </Table.Row>
+            <Table.Row>
+            <Table.Cell>{part}</Table.Cell>
+            <Table.Cell>{q[i]}</Table.Cell>
+            </Table.Row>
             )
-           }
             
-           ) 
-    }
-    
+        } 
+    })
+    this.setState({data:{...this.state.data,Part:Part,Quantity:Quantity}})
     
     swal({
         content:(
@@ -262,7 +214,7 @@ handleSubmit=(e)=>{
     
     if (this.state.step===2) {
         this.nextstep('next')
-        this.setState({billing:true})
+        this.setState({confirm:true})
     } 
     else {
         if (this.Validate()) {
@@ -275,10 +227,13 @@ handleSubmit=(e)=>{
     
     
 }
+getSum(total, num) {
+    return total + num;
+}
 Validate=()=>{
-     
-    if (this.state.data.Part.length===0) {
-        swal('',"You don't choose any item",'error')
+    
+    if (this.state.data.Part.length===0 || this.state.data.Quantity.reduce(this.getSum)===undefined) {
+        swal('',"You don't choose any item or quantity",'error')
         return false
     }
     else if (this.state.data.Address.City==='') {
@@ -290,7 +245,7 @@ Validate=()=>{
         return false
     }
     else return true
-  }
+}
 nextstep=(e)=>{
     if (e==='next') {
         this.setState({step:this.state.step+1})
@@ -302,7 +257,7 @@ nextstep=(e)=>{
     else if (e.target.name==='back')  {
         this.setState({step:this.state.step-1})
     }
-  }
+}
 billing=()=>{
     
     var citylist = this.state.citys.map(city=>{return{text:city.Name,value:city.Name}})
@@ -439,7 +394,7 @@ billing=()=>{
                   </Button>
                   </Form>
     )
-    }
+}
 itemlist=()=>{
         const {data,guest}=this.props
         var items
@@ -464,7 +419,7 @@ itemlist=()=>{
                             id={i}
                             name={item.ItemSerial}
                             label={item.ItemName}
-                            checked={this.state.p[i]}
+                            checked={this.state.p[i]?'checked':''}
                             onChange={this.handleChange}
         
                             >
@@ -479,7 +434,7 @@ itemlist=()=>{
                             pattern="[0-9]*"
                             min='1'
                             id={i}
-                            disabled={this.state.p[i]==='checked'?false:true}
+                            disabled={this.state.p[i]?false:true}
                             name='quantity'
                             value={this.state.q[i]}
                             onChange={this.handleChange}
@@ -506,9 +461,7 @@ itemlist=()=>{
             </>
             )
             
-        }
-
-
+}
 confirm=()=>{
     
     
@@ -526,7 +479,7 @@ confirm=()=>{
            <br/>
            <Button onClick={(e)=>{
                 e.preventDefault()
-                this.clone();
+                
                 this.orderdetails()}}
                 content='Order Details'
                 circular
@@ -558,7 +511,7 @@ confirm=()=>{
             </Container>
         </Form>
         <Button
-            disabled={this.props.match.params.id!=='0'?true:false}
+            // disabled={this.props.match.params.id!=='0'?true:false}
             onClick={(e)=>{this.nextstep(e) ;this.setState({submit:false})}}
             name='back'
             color='linkedin'
@@ -567,9 +520,8 @@ confirm=()=>{
     
     </>
         )
-    }
     
-      
+}  
     render() {
         
         const {auth,guest}=this.props
@@ -586,7 +538,7 @@ confirm=()=>{
                   <Step.Group size='mini' unstackable fluid>
                       <Step
                         active={this.state.step===1?true:false} 
-                        disabled={this.props.match.params.id!=='0'?true:false}
+                        // disabled={this.props.match.params.id!=='0'?true:false}
                         onClick={()=>{this.setState({step:1,submit:false})}}>
                       <Icon name='truck' />
                       <Step.Content>
@@ -595,7 +547,7 @@ confirm=()=>{
                       </Step>
                       <Step 
                         active={this.state.step===2?true:false} 
-                        disabled={this.props.match.params.id!=='0'?true:false}
+                        // disabled={this.props.match.params.id!=='0'?true:false}
                         onClick={()=>{this.setState({step:2,submit:false})}}>
                       <Icon name='payment' />
                       <Step.Content>
@@ -604,7 +556,7 @@ confirm=()=>{
                       </Step>
                       <Step 
                           active={this.state.step===3?true:false}
-                          disabled={this.state.billing?false:true}
+                          disabled={this.state.confirm?false:true}
                           onClick={()=>{this.setState({step:3})}}>
                       
                       <Icon name='info' />
