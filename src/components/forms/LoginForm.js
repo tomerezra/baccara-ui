@@ -45,8 +45,7 @@ class LoginForm extends Component {
       } 
       
     }
-    
-  
+
     handleInvalid=(e)=>{
       const {value,name}=e.target
       if (value==='') {

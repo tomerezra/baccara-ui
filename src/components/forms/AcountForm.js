@@ -15,10 +15,13 @@ class HomePageForm extends Component{
       this.props.history.push(value)
   
    }
-   componentDidMount=()=>{
-    this.props.getAddresses()
-    this.props.getItems()
-    this.props.getOrders()
+   componentDidMount(){
+      if (!this.props.auth.isEmpty) {
+        this.props.getAddresses()
+        this.props.getItems()
+        this.props.getOrders()
+      }
+    
    }
     render(){
       const {auth}=this.props

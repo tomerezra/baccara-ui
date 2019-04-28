@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Button, Form, Grid, Header,Segment,Message} from 'semantic-ui-react'
 import {createUser,updateUser, errorClear} from '../../store/actions/authAction'
-import {withRouter} from 'react-router-dom'
+import {withRouter,Redirect} from 'react-router-dom'
 import {connect} from 'react-redux'
 import Axios from 'axios'
 import firebase from 'firebase/app'
@@ -22,6 +22,9 @@ class SignUpForm extends Component {
         if (auth.uid) {
           
           this.setState({data:{...this.state.data,email:auth.email}})
+          if (auth.providerData[0].providerId!=='password') {
+              this.setState({provider:true})
+          }
         }
         
         
@@ -30,6 +33,7 @@ class SignUpForm extends Component {
       if(prevProps.auth.uid !== this.props.auth.uid){
         this.props.history.push('/acount')
       }
+      
    }
     handleChange=(e)=>{
         const {value,name}=e.target
@@ -72,6 +76,7 @@ class SignUpForm extends Component {
     const {auth,authError}=this.props
     
     var pagename=auth.uid?'Update':'Signup'
+
     return (
       <div style={{maxWidth: 450}}>
         
@@ -105,7 +110,7 @@ class SignUpForm extends Component {
                 onInvalid ={this.handleInvalid}
                 onInput={(e)=>{e.target.setCustomValidity('')}}
                 required
-                disabled={auth.providerData[0].providerId!=='password'?true:false}
+                disabled={this.state.provider}
                 fluid icon='lock'
                 iconPosition='left'
                 placeholder='Password'
@@ -125,7 +130,8 @@ class SignUpForm extends Component {
             {authError?<Message color='red'>{authError}</Message>:null}
             <Button 
               color='linkedin'
-              disabled={auth.providerData[0].providerId!=='password'?true:false} >
+              disabled={this.state.provider} 
+              >
                 {auth.uid? 'Update' : 'Sign Up'}
             </Button>
             

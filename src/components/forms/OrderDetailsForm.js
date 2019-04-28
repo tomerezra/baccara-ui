@@ -9,7 +9,7 @@ import {compose} from 'redux'
 import { connect } from 'react-redux'
 class OrderDetailsForm extends Component {
     state={
-        pagename:'Order Detiles',
+        pagename:'Order Details',
         
     }
     
@@ -71,7 +71,7 @@ class OrderDetailsForm extends Component {
                                                         <Table celled unstackable compact fixed size='small'>
                                                         <Table.Header>
                                                             <Table.HeaderCell>Description</Table.HeaderCell>
-                                                            <Table.HeaderCell>Detiles</Table.HeaderCell>
+                                                            <Table.HeaderCell>Details</Table.HeaderCell>
                                                         </Table.Header>
                                                         <Table.Body>
                                                             {viewaddress}

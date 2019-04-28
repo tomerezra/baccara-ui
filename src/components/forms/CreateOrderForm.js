@@ -76,12 +76,12 @@ handleChange=(e,data)=>{
         
         if (e.target.checked) {
             p[id]=name
-            // p[id]='checked'
+            
             this.setState({p})
         }
         else {
             p[id]=undefined
-            // p[id]=false
+            
             this.setState({p})
             
             
@@ -111,7 +111,7 @@ handleChange=(e,data)=>{
     }
     else {
         
-        this.setState({data:{...this.state.data,Address:{...this.state.data.Address,[name]:value}}})   
+        this.setState({data:{...this.state.data,Address:{...this.state.data.Address,[name]:value,ID:null}}})   
     }
     
     

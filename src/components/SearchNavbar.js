@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
 import {Search ,Button,Table,Icon} from 'semantic-ui-react';
-import {withRouter} from 'react-router-dom';
+import {withRouter,Redirect} from 'react-router-dom';
 import { connect } from 'react-redux'
 import swal from '@sweetalert/with-react'
 import {signOut} from '../store/actions/authAction'
@@ -35,13 +35,7 @@ class SearchNavbar extends React.Component {
     results: [],
     value: ""
   };
-  logOut=()=>{
-    
-    this.props.signOut();
-        
-    }
-    
-
+  
 componentWillMount() {
   this.resetComponent()
 }
@@ -218,7 +212,7 @@ handleSearchChange = (e, { value }) => {
             
             <div className={classes.grow} />
 
-            <Button content='Log Out' circular size='mini' onClick={this.logOut} style={{display:auth.uid?'':'none'}}></Button>
+            <Button content='Log Out' circular size='mini' onClick={()=>this.props.signOut()} style={{display:auth.uid?'':'none'}}></Button>
             
           </Toolbar>
         </AppBar>

@@ -226,6 +226,10 @@ getAllData=()=>{
             });
         })
         .then(()=>invalid.push({stage:i,value:invtmp}))
+        .catch(()=>{
+            swal('','something worng, try again','error');
+            this.startOver()
+        })
         .then(()=>{
             
             invtmp=[]
@@ -240,6 +244,10 @@ getAllData=()=>{
             tree.push({id:doc.data().id,parent:new RegExp(doc.data().parent,'i'),value:new RegExp(doc.data().value,'i')});
         });
 
+    })
+    .catch(()=>{
+        swal('','something worng, try again','error');
+        this.startOver()
     })
     this.setState({tree})
 
@@ -263,7 +271,7 @@ makeQuestions=()=>{
     var part = partdata[progress+1]
     var question = questions.filter(q=>q.QID===progress+1)
     question=question[0]
-    
+    console.log(this.state.data)
     var buttons
     if (!start) {
         buttons=categories.map(c=>
@@ -348,8 +356,9 @@ makeQuestions=()=>{
                 this.setState({start:true})
                 this.getAllData()
                 setTimeout(()=>{
+                    console.log(this.state.invalid)
                     this.makeQuestions()
-                },1000)
+                },4000)
                 }
   
     })
