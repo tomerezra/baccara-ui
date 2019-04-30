@@ -16,7 +16,6 @@ import ShippingPage from './pages/ShippingPage';
 import OrdersPage from './pages/OrdersPage';
 
 
-
 class App extends Component{
  
   
@@ -53,5 +52,4 @@ class App extends Component{
     
   }
 
-
-export default withRouter(App) ;
+export default withRouter(App)

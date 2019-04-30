@@ -6,11 +6,10 @@ import {createOrder,getItems,getAddresses} from '../../store/actions/dataActions
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
 import swal from '@sweetalert/with-react'
-import Axios from 'axios'
 export class CreateOrderForm extends Component {
   state={
         pagename:'Create New Order',
-        agree:false, 
+        agree:null, 
         p:[],
         q:[],
         data:{
@@ -33,22 +32,17 @@ export class CreateOrderForm extends Component {
   }
 componentDidMount(){
     const {auth}=this.props
-    Axios.get('http://proj.ruppin.ac.il/bgroup71/prod/api/City')
-      .then(res=>this.setState({citys:res.data}))
-      .catch(()=>{
-        swal('','something worng, try again','error');
-        this.props.history.goBack()}
-        )
+    
     if (this.props.match.params.id!=='0') {
         
         this.clone()
     }
-    if (!auth.isEmpty) {
+    // if (!auth.isEmpty) {
         
-        this.props.getItems()
-        this.props.getAddresses()
+    //     this.props.getItems()
+    //     this.props.getAddresses()
         
-    }
+    // }
     
 }
 componentDidUpdate(prevProps, prevState) {
@@ -67,11 +61,15 @@ clone=()=>{
     this.setState({step:3,confirm:true})   
     var tmp = this.props.data.orders.filter(order=>order.OrderId==this.props.match.params.id)
     this.setState({p:tmp[0].Part,q:tmp[0].Quantity,data:{...this.state.data,Address:tmp[0].Address}})
+    
 }
 handleChange=(e,data)=>{
-    const {value,name,id,type}=data
     
-    if (type==='checkbox') {
+    const {value,name,id,type}=data
+    if (name==='agree') {
+        this.setState({agree:e.target.checked})
+    }
+    else if (type==='checkbox') {
         var p=this.state.p.slice()
         
         if (e.target.checked) {
@@ -92,6 +90,7 @@ handleChange=(e,data)=>{
         var q=this.state.q.slice()
         q[id]=value
         this.setState({q})
+        
     }
     
     else if (data.name==='selectaddress') {
@@ -211,8 +210,10 @@ orderdetails=()=>{
 }
 handleSubmit=(e)=>{
     e.preventDefault()
-    
-    if (this.state.step===2) {
+    if (this.state.step===1) {
+        this.nextstep('next')
+    }
+    else if (this.state.step===2) {
         this.nextstep('next')
         this.setState({confirm:true})
     } 
@@ -229,8 +230,8 @@ handleSubmit=(e)=>{
 }
 Validate=()=>{
     
-    if (this.state.data.Part.length===0 || this.state.data.Quantity.reduce((a,b)=>a+b)===undefined) {
-        swal('',"You don't choose any item or quantity",'error')
+    if (this.state.data.Part.length===0) {
+        swal('',"You don't choose any item",'error')
         return false
     }
     else if (this.state.data.Address.City==='') {
@@ -257,7 +258,7 @@ nextstep=(e)=>{
 }
 billing=()=>{
     
-    var citylist = this.state.citys.map(city=>{return{text:city.Name,value:city.Name}})
+   
     // var tmp = this.props.data.addresses.filter(adr=>adr.userid===this.props.auth.uid)
     var tmp = this.props.data.addresses.map(adr=>{return{text:adr.FirstName+' '+ adr.LastName,value:adr.ID}})
     
@@ -308,7 +309,7 @@ billing=()=>{
                         search 
                         name='City'
                         placeholder='Select your City' 
-                        options={citylist} 
+                        options={this.props.data.citys} 
                         onChange={this.handleChange}
                         value={this.state.data.Address.City}
                         required
@@ -376,7 +377,7 @@ billing=()=>{
             </Grid>
             <br/>
             <Button
-                      
+                      disabled={this.props.match.params.id!=='0'?true:false}
                       onClick={(e)=>{e.preventDefault();this.nextstep(e)}}
                       name='back'
                       color='linkedin'
@@ -402,7 +403,7 @@ itemlist=()=>{
         }
            
         return(
-            <>
+            <Form onSubmit={this.handleSubmit}>
                 <Grid columns='2' verticalAlign='middle'>
                 {items.map((item,i)=>{
                     
@@ -418,7 +419,7 @@ itemlist=()=>{
                             label={item.ItemName}
                             checked={this.state.p[i]?'checked':''}
                             onChange={this.handleChange}
-        
+                            
                             >
                         </Form.Checkbox>
                         </Grid.Column>
@@ -435,7 +436,7 @@ itemlist=()=>{
                             name='quantity'
                             value={this.state.q[i]}
                             onChange={this.handleChange}
-                            
+                            required
                             >
                          
                         </Form.Input>  
@@ -447,15 +448,14 @@ itemlist=()=>{
                 <br/>
                 
             <Button
-                
-                onClick={this.nextstep}
+
                 name='next'
                 floated='right'
                 color='linkedin'
                 content='Next'>
             </Button>
             <br/>
-            </>
+            </Form>
             )
             
 }
@@ -491,8 +491,8 @@ confirm=()=>{
                 id="agree"
                 name="agree"
                 label="I agree to the Terms and Conditions"
-                value={this.state.agree}
-                onChange={()=>{this.setState({agree:!this.state.agree})}}
+                checked={this.state.agree}
+                onChange={this.handleChange}
                 required
                 >
             </Form.Checkbox>
@@ -535,7 +535,7 @@ confirm=()=>{
                   <Step.Group size='mini' unstackable fluid>
                       <Step
                         active={this.state.step===1?true:false} 
-                        // disabled={this.props.match.params.id!=='0'?true:false}
+                        disabled={this.props.match.params.id!=='0'?true:false}
                         onClick={()=>{this.setState({step:1,submit:false})}}>
                       <Icon name='truck' />
                       <Step.Content>

@@ -6,7 +6,7 @@ const initState={
         gitems:[],
         gorders:[],
         
-    
+        citys:[],
         items:[],
         orders:[],
         addresses:[],
@@ -20,6 +20,16 @@ const dataReducer=(state=initState,action)=>{
             state.gitems.push(action.item)
             return state               
             
+        case 'GET_ALL_DATA_ERROR':
+            console.log('get data error',action.err)
+            swal('','something worng, try again','error');    
+            return state
+        case 'GET_CITYS':
+                            
+            return {
+                ...state,
+                citys:action.citys,
+            }    
         case 'GET_ADDRESSES':
                             
             return {
@@ -72,41 +82,33 @@ const dataReducer=(state=initState,action)=>{
         case 'CREATE_ADDRESS_ERROR':
             console.log('create address error',action.err)
             swal('','something worng, try again','error');
-            return state;
+            return state
         case 'UPDATE_ADDRESS':
             swal("Success", "The address has been update", "success");
             return {
                 ...state,
                 success:state.success+1
-            };
+            }
         case 'UPDATE_ADDRESS_ERROR':
             console.log('update address error',action.err)
             swal('','something worng, try again','error');
-            return state;
+            return state
         case 'DELETE_ITEM':
             
             swal("Success", "The item has been deleted", "success")
-            return {
-                ...state,
-                items:action.items,
-                
-            };
+            return state
         case 'DELETE_ITEM_ERROR':
             console.log('delete item error',action.err)
             swal('','something worng, try again','error');
-            return state;
+            return state
         case 'DELETE_ADDRESS':
             
             swal("Success", "The address has been deleted", "success")
-            return {
-                ...state,
-                
-                addresses:action.addresses,
-            };
+            return state
         case 'DELETE_ADDRESS_ERROR':
             console.log('delete address error',action.err)
             swal('','something worng, try again','error');
-            return state;
+            return state
         default:
             return state
     }

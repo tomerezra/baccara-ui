@@ -4,8 +4,7 @@ import {Button,Grid,Header,Segment,Form} from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import {Redirect} from 'react-router-dom'
 import {createAddress,updateAddress} from '../../store/actions/dataActions'
-import Axios from 'axios';
-import swal from 'sweetalert';
+
 
 class NewShippingForm extends Component {
     state={
@@ -40,12 +39,7 @@ class NewShippingForm extends Component {
         })
         }
         
-      Axios.get('http://proj.ruppin.ac.il/bgroup71/prod/api/City')
-      .then(res=>this.setState({citys:res.data}))
-      .catch(()=>{
-        swal('','something worng, try again','error');
-        this.props.history.goBack()}
-        )
+      
     }
     componentDidUpdate(prevProps, prevState) {
       
@@ -83,7 +77,7 @@ handleInvalid=(e)=>{
     const {data}=this.state
     const {auth}=this.props
     if (auth.isEmpty) {return <Redirect to='/'/>}
-    var citylist = this.state.citys.map(city=>{return{text:city.Name,value:city.Name}})
+ 
     return(
     <div style={{maxWidth: 450}}>
                
@@ -141,7 +135,7 @@ handleInvalid=(e)=>{
             search
             name='City'
             placeholder='Select your City' 
-            options={citylist} 
+            options={this.props.data.citys} 
             onChange={this.handleChange}
             value={data.City}
             required

@@ -2,11 +2,10 @@ import React, { Component } from 'react'
 import { Button, Form, Grid, Header, Image, Message, Segment} from 'semantic-ui-react'
 import PropTypes from 'prop-types'
 import {withRouter} from "react-router-dom";
-import Axios from 'axios'
 import logo from '../../images/logo.png'
 import swal from '@sweetalert/with-react';
 import { connect } from 'react-redux'
-import {signIn,logasguest,errorClear} from '../../store/actions/authAction'
+import {signIn,logAsGuest,errorClear,logWithProvider} from '../../store/actions/authAction'
 import {Redirect} from 'react-router-dom'
 import firebase from 'firebase/app'
 
@@ -27,6 +26,7 @@ class LoginForm extends Component {
     }
     
     HandleChange=(e)=>{
+      console.log(this.state.data.guest)
         const {value,name,checked}=e.target
         name==="guest" ? this.setState({data:{...this.state.data,[name]:checked}}) :
         this.setState({data:{...this.state.data,[name]:value}})
@@ -35,7 +35,7 @@ class LoginForm extends Component {
     HandleSubmit=(e)=>{
       e.preventDefault()
       if (this.state.data.guest) {
-        this.props.logasguest()
+        this.props.logAsGuest()
         this.props.history.push('/builditem')
       } 
       else {
@@ -111,37 +111,31 @@ class LoginForm extends Component {
                 id="guest"
                 name="guest"
                 label="Contnue as Guest"
-                value={data.guest}
+                checked={data.guest}
                 onChange={this.HandleChange}>>
             </Form.Checkbox>
             
             <Button color='linkedin'>
               Login
             </Button>
-            <Button icon='google' style={{display:auth.uid?'none':''}} color='google plus' onClick={(e)=>{
-            e.preventDefault()
-            var provider = new firebase.auth.GoogleAuthProvider();
-            firebase.auth().signInWithPopup(provider).then(function(result) {
-              var user = result.user;
-              Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Customer','='+user.email)
-              swal("Welcome","","success")
-            }).catch(function(error) {
-              var errorMessage = error.message;
-              alert(errorMessage)
-            });
-          }}></Button>
-          <Button icon='facebook' style={{display:auth.uid?'none':''}} color='facebook' onClick={(e)=>{
-            e.preventDefault()
-            var provider = new firebase.auth.FacebookAuthProvider();
-            firebase.auth().signInWithPopup(provider).then(function(result) {
-              var user = result.user;
-              Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Customer','='+user.email)
-              swal("Welcome","","success")
-            }).catch(function(error) {
-              var errorMessage = error.message;
-              alert(errorMessage)
-            });
-          }}></Button>
+            <Button 
+            icon='google' 
+            style={{display:auth.uid?'none':''}} 
+            color='google plus' 
+            onClick={(e)=>{
+              e.preventDefault()
+              this.props.logWithProvider('google')
+            }}>
+          </Button>
+          <Button 
+            icon='facebook' 
+            style={{display:auth.uid?'none':''}} 
+            color='facebook' 
+            onClick={(e)=>{
+              e.preventDefault()
+              this.props.logWithProvider('facebook')
+            }}>
+          </Button>
             
             <br/>
             <p style={{cursor: 'pointer',color:'#1E90FF'}} onClick={()=>{
@@ -188,10 +182,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch)=> {
   return{
-    logasguest:()=>dispatch(logasguest()),
+    logAsGuest:()=>dispatch(logAsGuest()),
     signIn:(creds)=>dispatch(signIn(creds)),
     errorClear:()=>dispatch(errorClear()),
-    
+    logWithProvider:(prov)=>dispatch(logWithProvider(prov))
   }
   
 }

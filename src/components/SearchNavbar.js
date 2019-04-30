@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
 import {Search ,Button,Table,Icon} from 'semantic-ui-react';
-import {withRouter,Redirect} from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 import { connect } from 'react-redux'
 import swal from '@sweetalert/with-react'
 import {signOut} from '../store/actions/authAction'
@@ -170,15 +170,7 @@ handleSearchChange = (e, { value }) => {
   }, 300)
 }
   render() {
-    const {auth}=this.props
-    const { classes } = this.props;
-    // if (auth.isEmpty) {
-    //   if (!this.props.location.pathname==='/')
-    //   {
-    //     return <Redirect to='/'/>
-    //   }
-    // }
-
+    const {auth,classes}=this.props
     return (
       <div className={classes.root}>
       

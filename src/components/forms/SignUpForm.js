@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 import {Button, Form, Grid, Header,Segment,Message} from 'semantic-ui-react'
-import {createUser,updateUser, errorClear} from '../../store/actions/authAction'
-import {withRouter,Redirect} from 'react-router-dom'
+import {createUser,updateUser, errorClear,logWithProvider} from '../../store/actions/authAction'
+import {withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
-import Axios from 'axios'
-import firebase from 'firebase/app'
-import swal from 'sweetalert';
+import swal from 'sweetalert'
 class SignUpForm extends Component {
     state={
         data:{
@@ -37,7 +35,7 @@ class SignUpForm extends Component {
    }
     handleChange=(e)=>{
         const {value,name}=e.target
-        name==="agree" ? this.setState({agree:!this.state.agree}) :
+        name==="agree" ? this.setState({[name]:e.target.checked}) :
         this.setState({data:{...this.state.data,[name]:value}})
         
     }
@@ -136,29 +134,24 @@ class SignUpForm extends Component {
             </Button>
             
             
-          <Button icon='google' style={{display:auth.uid?'none':''}} color='google plus' onClick={(e)=>{
-            e.preventDefault()
-            var provider = new firebase.auth.GoogleAuthProvider();
-            firebase.auth().signInWithPopup(provider).then(function(result) {
-              var user = result.user;
-              Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Customer','='+user.email)
-              
-            }).catch(function(error) {
-              var errorMessage = error.message;
-              alert(errorMessage)
-            });
-          }}></Button>
-          <Button icon='facebook' style={{display:auth.uid?'none':''}} color='facebook' onClick={(e)=>{
-            e.preventDefault()
-            var provider = new firebase.auth.FacebookAuthProvider();
-            firebase.auth().signInWithPopup(provider).then(function(result) {
-              var user = result.user;
-              Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Customer','='+user.email)
-            }).catch(function(error) {
-              var errorMessage = error.message;
-              alert(errorMessage)
-            });
-          }}></Button>
+          <Button 
+            icon='google' 
+            style={{display:auth.uid?'none':''}} 
+            color='google plus' 
+            onClick={(e)=>{
+              e.preventDefault()
+              this.props.logWithProvider('google')
+            }}>
+          </Button>
+          <Button 
+            icon='facebook' 
+            style={{display:auth.uid?'none':''}} 
+            color='facebook' 
+            onClick={(e)=>{
+              e.preventDefault()
+              this.props.logWithProvider('facebook')
+            }}>
+          </Button>
           <Button color='grey' onClick={(e)=>{e.preventDefault(); this.props.history.goBack()}}>
               Cancel
             </Button>
@@ -178,7 +171,7 @@ const mapStateToProps = (state) => {
   return{
         authError:state.auth.authError,
         auth:state.firebase.auth,
-        profile:state.firebase.profile,
+        // profile:state.firebase.profile,
         signup:state.firebase.signup
     }
     
@@ -188,7 +181,8 @@ const mapDispatchToProps = (dispatch) =>{
   return{
       createUser:(user)=>dispatch(createUser(user)),
       updateUser:(data)=>dispatch(updateUser(data)),
-      errorClear:()=>dispatch(errorClear())
+      errorClear:()=>dispatch(errorClear()),
+      logWithProvider:(prov)=>dispatch(logWithProvider(prov))
   }
 }
 

@@ -1,6 +1,7 @@
 import Axios from 'axios'
+import { getAddresses, getItems, getOrders, getCitys } from './dataActions';
 
-export const logasguest =()=>{
+export const logAsGuest =()=>{
     return(dispatch, getState)=>{
         dispatch({type:'GUEST'})
     }
@@ -17,7 +18,12 @@ export const signIn = (credentials)=>{
             credentials.email,
             credentials.password
         )
-        
+        .then(()=>{
+            dispatch(getAddresses())
+            dispatch(getItems())
+            dispatch(getOrders())
+            dispatch(getCitys())
+        })
         .then(()=>{
                        
             dispatch({type:'LOGIN_SUCCESS'})
@@ -45,19 +51,10 @@ export const signOut = ()=>{
 }
 export const updateUser = (data)=>{
     return (dispatch, getState,{firebase})=>{
-        console.log(data)
-        var user = firebase.auth().currentUser
-        // user.updateEmail(data.email)
         
-        // .then(()=>{
-        //     dispatch({type:'UPDATE_EMAIL_SUCCESS'})
-        // })
-        // .catch((err)=>{
-        //     dispatch({type:'UPDATE_EMAIL_ERROR',err})
-        // })
-        // .then(()=>{
-            user.updatePassword(data.password)
-        // })
+        var user = firebase.auth().currentUser
+        user.updatePassword(data.password)
+        
         .then(()=>{
             dispatch({type:'UPDATE_PASS_SUCCESS'})
         })
@@ -70,8 +67,7 @@ export const updateUser = (data)=>{
 
 export const createUser = (user)=>{
     return (dispatch, getState, {firebase})=>{
-        
-        // const firestore=firebase.firestore()
+
         firebase.auth().createUserWithEmailAndPassword(
             user.email,
             user.password
@@ -79,21 +75,54 @@ export const createUser = (user)=>{
         .then(()=>{
             
             Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Customer','='+user.email)
-            // return firestore.collection('addresses').add({
-            //     userid:resp.user.uid,
-            //     country:user.country,
-            //     city:user.city,
-            //     address:user.address,
-            //     phone:user.phone,
-            //     company:user.company
-
-            // })
+         
+        })
+        .then(()=>{
+            dispatch(getAddresses())
+            dispatch(getItems())
+            dispatch(getOrders())
+            dispatch(getCitys())
         })
         .then(()=>{
             dispatch({type: 'CREATE_USER'})
             
         }).catch((err)=>{
             dispatch({type: 'CREATE_USER_ERROR',err})
+            
+        })
+        
+        
+    }
+}
+export const logWithProvider = (prov)=>{
+    return (dispatch,getState, {firebase})=>{
+        var provider
+        if (prov==='google') {
+            provider =  new firebase.auth.GoogleAuthProvider();
+        } 
+        else if(prov==='facebook') {
+            provider = new firebase.auth.FacebookAuthProvider();
+        }
+        firebase.auth().signInWithPopup(provider)
+        
+        .then((result) =>{
+            if (result.additionalUserInfo.isNewUser) {
+                Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Customer','='+result.user.email)
+            }
+            
+                
+        })
+        .then(()=>{
+            dispatch(getAddresses())
+            dispatch(getItems())
+            dispatch(getOrders())
+            dispatch(getCitys())
+        })
+        .then(()=>{
+            dispatch({type: 'LOGIN_SUCCESS'})
+            
+        }).catch((err)=>{
+            dispatch({type: 'LOGIN_ERROR',err})
             
         })
         

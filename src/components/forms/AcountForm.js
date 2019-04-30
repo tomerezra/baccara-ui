@@ -4,7 +4,7 @@ import {withRouter} from 'react-router-dom'
 import {Button,Grid,Header,Icon,Segment,Card} from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import {Redirect} from 'react-router-dom'
-import {getAddresses,getItems,getOrders} from '../../store/actions/dataActions'
+
 
 class HomePageForm extends Component{
    state={
@@ -15,14 +15,7 @@ class HomePageForm extends Component{
       this.props.history.push(value)
   
    }
-   componentDidMount(){
-      if (!this.props.auth.isEmpty) {
-        this.props.getAddresses()
-        this.props.getItems()
-        this.props.getOrders()
-      }
-    
-   }
+   
     render(){
       const {auth}=this.props
       if (auth.isEmpty) {return <Redirect to='/'/>}
@@ -101,11 +94,4 @@ const mapStateToProps = (state) => {
   
 }
 
-const mapDispatchToProps =(dispatch)=> {
-  return{
-      getAddresses:()=>dispatch(getAddresses()),
-      getItems:()=>dispatch(getItems()),
-      getOrders:()=>dispatch(getOrders()),
-  } 
-}
-export default withRouter(connect(mapStateToProps,mapDispatchToProps)(HomePageForm))
+export default withRouter(connect(mapStateToProps)(HomePageForm))
