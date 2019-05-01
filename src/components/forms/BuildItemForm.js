@@ -358,7 +358,7 @@ makeQuestions=()=>{
                 setTimeout(()=>{
                     console.log(this.state.invalid)
                     this.makeQuestions()
-                },4000)
+                },1500)
                 }
   
     })

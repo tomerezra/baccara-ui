@@ -429,7 +429,9 @@ itemlist=()=>{
                             placeholder='Quantity'
                             size='mini'
                             type='tel'
-                            pattern="[0-9]*"
+                            pattern="[1-9][0-9]*"
+                            onInvalid ={this.handleInvalid}
+                            onInput={(e)=>{e.target.setCustomValidity('')}}
                             min='1'
                             id={i}
                             disabled={this.state.p[i]?false:true}

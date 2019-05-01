@@ -1,11 +1,15 @@
 import Axios from 'axios'
 import { getAddresses, getItems, getOrders, getCitys } from './dataActions';
 
+
 export const logAsGuest =()=>{
     return(dispatch, getState)=>{
+        dispatch(getCitys())
         dispatch({type:'GUEST'})
     }
 }
+
+
 export const errorClear =()=>{
     return(dispatch, getState)=>{
         dispatch({type:'ERRORCLEAR'})
