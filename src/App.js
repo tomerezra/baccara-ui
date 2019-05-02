@@ -11,7 +11,7 @@ import NewShippingPage from './pages/NewShippingPage';
 
 import Footer from './components/Footer';
 import SearchNavbar from "./components/SearchNavbar"
-import HistoryPage from './pages/HistoryPage';
+import ItemsPage from './pages/ItemsPage';
 import ShippingPage from './pages/ShippingPage';
 import OrdersPage from './pages/OrdersPage';
 
@@ -35,7 +35,7 @@ class App extends Component{
             <Route path='/orderdetails/:id' exact component={OrderDetailsPage}/> 
             <Route path='/builditem' exact component={BuildItemPage}/>
             <Route path='/orders' exact component={OrdersPage}/>
-            <Route path='/items' exact component={HistoryPage}/>
+            <Route path='/items' exact component={ItemsPage}/>
             <Route path='/shipping' exact component={ShippingPage}/>
             <Route path='/signup' exact component={SignUpPage}/>
             <Route path='/acount' exact component={AcountPage}/>

@@ -4,14 +4,12 @@ import LoginForm from "../components/forms/LoginForm";
 
 
 class LoginPage extends Component {
-    submit=(data)=>{
-       console.log(data)
-    }
+    
     render() {
     return (
       
 
-        <LoginForm submit={this.submit}/>
+        <LoginForm/>
       
     )
   }

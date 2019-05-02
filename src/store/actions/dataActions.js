@@ -133,7 +133,7 @@ export const createOrder = (order)=>{
         //     status:'Send to sales man'
         // })
         
-        Axios.post('http://127.0.0.1:8080/api/Order',JSON.stringify(order),{headers: { "Content-Type": "application/json" }})
+        Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Order',JSON.stringify(order),{headers: { "Content-Type": "application/json" }})
         .then(()=>{
             dispatch({type: 'CREATE_ORDER',order})
         })

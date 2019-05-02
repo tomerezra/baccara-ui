@@ -26,7 +26,7 @@ class LoginForm extends Component {
     }
     
     HandleChange=(e)=>{
-      console.log(this.state.data.guest)
+      
         const {value,name,checked}=e.target
         name==="guest" ? this.setState({data:{...this.state.data,[name]:checked}}) :
         this.setState({data:{...this.state.data,[name]:value}})

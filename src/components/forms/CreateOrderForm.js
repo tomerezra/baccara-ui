@@ -58,7 +58,7 @@ componentDidUpdate(prevProps, prevState) {
     
 }
 clone=()=>{
-    this.setState({step:3,confirm:true})   
+    this.setState({step:3,confirm:true,billing:true})   
     var tmp = this.props.data.orders.filter(order=>order.OrderId==this.props.match.params.id)
     this.setState({p:tmp[0].Part,q:tmp[0].Quantity,data:{...this.state.data,Address:tmp[0].Address}})
     
@@ -88,7 +88,7 @@ handleChange=(e,data)=>{
     }
     else if (name==='quantity') {
         var q=this.state.q.slice()
-        q[id]=value
+        q[id]=Math.round(value)
         this.setState({q})
         
     }
@@ -211,7 +211,12 @@ orderdetails=()=>{
 handleSubmit=(e)=>{
     e.preventDefault()
     if (this.state.step===1) {
-        this.nextstep('next')
+        if (this.state.p.filter(p=>p!=undefined).length>0) {
+            this.nextstep('next')
+            this.setState({billing:true})
+        }
+        else swal('','You need to choose at least one item','warning')
+        
     }
     else if (this.state.step===2) {
         this.nextstep('next')
@@ -230,16 +235,16 @@ handleSubmit=(e)=>{
 }
 Validate=()=>{
     
-    if (this.state.data.Part.length===0) {
-        swal('',"You don't choose any item",'error')
+    if (this.state.data.Part.length===0 || !this.state.data.Quantity.reduce((a,b)=>a+b)>0) {
+        swal('',"You don't choose any item or quantity",'warning')
         return false
     }
     else if (this.state.data.Address.City==='') {
-        swal('','You must to choose city','error')
+        swal('','You must to choose city','warning')
         return false
     }
     else if (!this.state.agree) {
-        swal('','You must to agree the terms','error')
+        swal('','You must to agree the terms','warning')
         return false
     }
     else return true
@@ -504,7 +509,7 @@ confirm=()=>{
             </Button>
             <Button color='grey' onClick={(e)=>{
                 e.preventDefault()
-                this.props.history.goBack()}}>
+                this.props.history.push('/acount')}}>
             Cancel
             </Button>
             </Container>
@@ -546,7 +551,7 @@ confirm=()=>{
                       </Step>
                       <Step 
                         active={this.state.step===2?true:false} 
-                        // disabled={this.props.match.params.id!=='0'?true:false}
+                        disabled={this.state.billing?false:true}
                         onClick={()=>{this.setState({step:2,submit:false})}}>
                       <Icon name='payment' />
                       <Step.Content>

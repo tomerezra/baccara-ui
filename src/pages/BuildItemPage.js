@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 
 import {withRouter} from 'react-router-dom'
-import BuildItemFormTest from '../components/forms/BuildItemForm';
+import BuildItemForm from '../components/forms/BuildItemForm';
 class BuildItemPage extends Component {
   render() {
     return (
       
-       // <BuildItemForm/>
-        <BuildItemFormTest/>
+       <BuildItemForm/>
+        
       
     )
   }

@@ -468,7 +468,7 @@ buttonChange=()=>{
                 <Button 
                     color='grey'
                     size='medium'
-                    onClick={()=>{this.props.history.goBack()}}
+                    onClick={()=>{this.props.history.push('/acount')}}
                     content='Cancel'
                     >
                 </Button>
