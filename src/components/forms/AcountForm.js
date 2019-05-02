@@ -10,6 +10,8 @@ class HomePageForm extends Component{
    state={
        pagename:'Acount'
    }
+   
+   
    handleClick=(value)=>{
   
       this.props.history.push(value)

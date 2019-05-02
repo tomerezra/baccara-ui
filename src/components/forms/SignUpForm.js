@@ -32,7 +32,7 @@ class SignUpForm extends Component {
         this.props.history.push('/acount')
       }
       
-   }
+    }
     handleChange=(e)=>{
         const {value,name}=e.target
         name==="agree" ? this.setState({[name]:e.target.checked}) :
@@ -57,16 +57,20 @@ class SignUpForm extends Component {
           
         }
        
-   }
-   handleInvalid=(e)=>{
+    }
+    handleInvalid=(e)=>{
     const {value,name}=e.target
     if (value==='') {
-      e.target.setCustomValidity(name+' is required')
-    } else {
-      e.target.setCustomValidity('Wrong pattern')
+      e.target.setCustomValidity(name.toLowerCase()+' is required')
+    }
+    else if (name==='email') {
+      e.target.setCustomValidity('should be like xxx@xxx.xxx')
+    }
+    else if (name==='password') {
+      e.target.setCustomValidity('password must contains: at least 6 characters and have at least one upper-case, one lower-case and one number')
     }
     
-  }
+    }
    
   
   render() {
@@ -104,7 +108,7 @@ class SignUpForm extends Component {
                 type='password'
                 id="password"
                 name="password"
-                // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
+                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
                 onInvalid ={this.handleInvalid}
                 onInput={(e)=>{e.target.setCustomValidity('')}}
                 required

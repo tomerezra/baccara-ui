@@ -49,9 +49,13 @@ class LoginForm extends Component {
     handleInvalid=(e)=>{
       const {value,name}=e.target
       if (value==='') {
-        e.target.setCustomValidity(name+' is required')
-      } else {
-        e.target.setCustomValidity('worng pattern')
+        e.target.setCustomValidity(name.toLowerCase()+' is required')
+      }
+      else if (name==='email') {
+        e.target.setCustomValidity('should be like xxx@xxx.xxx')
+      }
+      else if (name==='password') {
+        e.target.setCustomValidity('password must contains: at least 6 characters and have at least one upper-case, one lower-case and one number')
       }
       
     }
@@ -99,7 +103,7 @@ class LoginForm extends Component {
                     fluid icon='lock'
                     iconPosition='left'
                     placeholder='Password'
-                    // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
+                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
                     onInvalid ={this.handleInvalid}
                     onInput={(e)=>{e.target.setCustomValidity('')}}
                     required

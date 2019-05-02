@@ -25,15 +25,15 @@ class NewShippingForm extends Component {
       
       const {id} = this.props.match.params
         if (id!=='0') {
-          const tmp=this.props.data.addresses.filter(a=>id==a.ID)
+          const tmp=this.props.data.addresses.find(a=>id==a.ID)
           this.setState({
           data:{...this.state.data,
-          FirstName:tmp[0].FirstName,
-          LastName:tmp[0].LastName,
-          PhoneNumber:tmp[0].PhoneNumber,
-          CompanyName:tmp[0].CompanyName,
-          Adress:tmp[0].Adress,
-          City:tmp[0].City
+          FirstName:tmp.FirstName,
+          LastName:tmp.LastName,
+          PhoneNumber:tmp.PhoneNumber,
+          CompanyName:tmp.CompanyName,
+          Adress:tmp.Adress,
+          City:tmp.City
           },
           pagename:'Update Address'
         })
@@ -67,10 +67,12 @@ class NewShippingForm extends Component {
 handleInvalid=(e)=>{
   const {value,name}=e.target
   if (value==='') {
-    e.target.setCustomValidity(name+' is required')
-  } else {
-    e.target.setCustomValidity('wrong pattern')
+    e.target.setCustomValidity(name.toLowerCase()+' is required')
+  } 
+  else if (name==='PhoneNumber') {
+      e.target.setCustomValidity('Please enter 10 digits')
   }
+  else e.target.setCustomValidity('Please enter at least 2 characters')
   
 }
    render(){
@@ -119,7 +121,7 @@ handleInvalid=(e)=>{
                 type="text"
                 id="CompanyName"
                 name="CompanyName"
-                pattern="[a-zA-Z0-9]{2,}"
+                pattern="[a-zA-Z0-9_-.]{2,}"
                 onInvalid ={this.handleInvalid}
                 onInput={(e)=>{e.target.setCustomValidity('')}}
                 required
@@ -146,7 +148,7 @@ handleInvalid=(e)=>{
                 type="text"
                 id="Adress"
                 name="Adress"
-                pattern="[a-zA-Z]{2,}"
+                pattern="[a-zA-Z0-9]{2,}"
                 onInvalid ={this.handleInvalid}
                 onInput={(e)=>{e.target.setCustomValidity('')}}
                 required

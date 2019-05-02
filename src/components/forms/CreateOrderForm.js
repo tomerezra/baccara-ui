@@ -6,6 +6,14 @@ import {createOrder,getItems,getAddresses} from '../../store/actions/dataActions
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
 import swal from '@sweetalert/with-react'
+import posed,{ PoseGroup } from 'react-pose'
+const StageContainer = posed.div({
+    enter: { opacity: 1, delay: 120},
+    exit: { opacity: 0 }
+});
+
+
+
 export class CreateOrderForm extends Component {
   state={
         pagename:'Create New Order',
@@ -27,11 +35,13 @@ export class CreateOrderForm extends Component {
             },       
         },
         step:1,
-        citys:[]
+        citys:[],
+        isOpen:false
 
   }
+
 componentDidMount(){
-    const {auth}=this.props
+    // const {auth}=this.props
     
     if (this.props.match.params.id!=='0') {
         
@@ -59,8 +69,8 @@ componentDidUpdate(prevProps, prevState) {
 }
 clone=()=>{
     this.setState({step:3,confirm:true,billing:true})   
-    var tmp = this.props.data.orders.filter(order=>order.OrderId==this.props.match.params.id)
-    this.setState({p:tmp[0].Part,q:tmp[0].Quantity,data:{...this.state.data,Address:tmp[0].Address}})
+    var tmp = this.props.data.orders.find(order=>order.OrderId==this.props.match.params.id)
+    this.setState({p:tmp.Part,q:tmp.Quantity,data:{...this.state.data,Address:tmp.Address}})
     
 }
 handleChange=(e,data)=>{
@@ -94,17 +104,17 @@ handleChange=(e,data)=>{
     }
     
     else if (data.name==='selectaddress') {
-        var tmp = this.props.data.addresses.filter(adr=>adr.ID===data.value)
+        var tmp = this.props.data.addresses.find(adr=>adr.ID===data.value)
         
           this.setState({data:{...this.state.data,Address:{...this.state.data.Address,
-            FirstName:tmp[0].FirstName,
-            LastName:tmp[0].LastName,
-            PhoneNumber:tmp[0].PhoneNumber,
-            CompanyName:tmp[0].CompanyName,
-            Adress:tmp[0].Adress,
-            City:tmp[0].City,
-            Email:tmp[0].Email,
-            ID:tmp[0].ID
+            FirstName:tmp.FirstName,
+            LastName:tmp.LastName,
+            PhoneNumber:tmp.PhoneNumber,
+            CompanyName:tmp.CompanyName,
+            Adress:tmp.Adress,
+            City:tmp.City,
+            Email:tmp.Email,
+            ID:tmp.ID
         }}})
         
     }
@@ -119,10 +129,18 @@ handleChange=(e,data)=>{
 handleInvalid=(e)=>{
     const {value,name}=e.target
     if (value==='') {
-      e.target.setCustomValidity(name+' is required')
-    } else {
-      e.target.setCustomValidity('Worng pattern')
+      e.target.setCustomValidity(name.toLowerCase()+' is required')
+    } 
+    else if (name==='quantity') {
+        e.target.setCustomValidity('must to be 1 or more')
     }
+    else if (name==='Email') {
+        e.target.setCustomValidity('should be like xxx@xxx.xxx')
+    }
+    else if (name==='PhoneNumber') {
+        e.target.setCustomValidity('Please enter 10 digits')
+    }
+    else e.target.setCustomValidity('Please enter at least 2 characters')
     
 }
 orderdetails=()=>{
@@ -211,7 +229,7 @@ orderdetails=()=>{
 handleSubmit=(e)=>{
     e.preventDefault()
     if (this.state.step===1) {
-        if (this.state.p.filter(p=>p!=undefined).length>0) {
+        if (this.state.p.filter(p=>p!==undefined).length>0) {
             this.nextstep('next')
             this.setState({billing:true})
         }
@@ -219,8 +237,13 @@ handleSubmit=(e)=>{
         
     }
     else if (this.state.step===2) {
-        this.nextstep('next')
-        this.setState({confirm:true})
+        if (this.state.data.Address.City==='') {
+            swal('','You must to choose city','warning')
+        } else {
+            this.nextstep('next')
+            this.setState({confirm:true})
+        }
+        
     } 
     else {
         if (this.Validate()) {
@@ -262,7 +285,7 @@ nextstep=(e)=>{
     }
 }
 billing=()=>{
-    
+   
    
     // var tmp = this.props.data.addresses.filter(adr=>adr.userid===this.props.auth.uid)
     var tmp = this.props.data.addresses.map(adr=>{return{text:adr.FirstName+' '+ adr.LastName,value:adr.ID}})
@@ -324,7 +347,7 @@ billing=()=>{
                             type="text"
                             id="Adress"
                             name="Adress"
-                            pattern="[a-zA-Z]{2,}"
+                            pattern="[a-zA-Z0-9]{2,}"
                             onInvalid ={this.handleInvalid}
                             onInput={(e)=>{e.target.setCustomValidity('')}}
                             required
@@ -352,7 +375,7 @@ billing=()=>{
                             type="text"
                             id="CompanyName"
                             name="CompanyName"
-                            pattern="[a-zA-Z]{2,}"
+                            pattern="[a-zA-Z0-9_-.]{2,}"
                             onInvalid ={this.handleInvalid}
                             onInput={(e)=>{e.target.setCustomValidity('')}}
                             required
@@ -399,6 +422,7 @@ billing=()=>{
     )
 }
 itemlist=()=>{
+    
         const {data,guest}=this.props
         var items
         if (guest) {
@@ -409,13 +433,15 @@ itemlist=()=>{
            
         return(
             <Form onSubmit={this.handleSubmit}>
+                
                 <Grid columns='2' verticalAlign='middle'>
+                
                 {items.map((item,i)=>{
                     
                     return(
                        
                        <Grid.Row>
-                           
+                         
                         <Grid.Column>
                         <Form.Checkbox
                             
@@ -428,6 +454,7 @@ itemlist=()=>{
                             >
                         </Form.Checkbox>
                         </Grid.Column>
+                       
                         <Grid.Column>
                         <Form.Input
                             
@@ -448,10 +475,14 @@ itemlist=()=>{
                          
                         </Form.Input>  
                         </Grid.Column>
+                        
                     </Grid.Row>
+                    
                     )
                 })}
+                
                 </Grid>
+                
                 <br/>
                 
             <Button
@@ -569,14 +600,19 @@ confirm=()=>{
                       </Step.Content>
                       </Step>
                   </Step.Group>
-                  <Segment>
                   
-                  {this.state.step===1?this.itemlist():null}
-                  {this.state.step===2?this.billing():null}
-                  {this.state.step===3?this.confirm():null}
+                  <Segment>
+                   <PoseGroup>   
+                    <StageContainer key={this.state.step.toString()}>
+                        <div key='1'>{this.state.step===1?this.itemlist():null}</div>
+                        <div key='2'>{this.state.step===2?this.billing():null}</div>
+                        <div key='3'>{this.state.step===3?this.confirm():null}</div>
+                    </StageContainer>
+                  </PoseGroup>
                   <br/>
                   
                   </Segment>
+                  
               </div>
               )
         } 

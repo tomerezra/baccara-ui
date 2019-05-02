@@ -11,7 +11,6 @@ import Axios from 'axios';
 import firebase from 'firebase/app'
 import TableComponent from '../TableComponent';
 
-
 class BuildItemForm extends Component {
   state={
       data:{},
@@ -155,20 +154,20 @@ handleClick=(e)=>{
 }
 isInvalid=(id,value)=>{
     
-    var stage = this.state.invalid.filter(s=>s.stage==id)
+    var stage = this.state.invalid.find(s=>s.stage==id)
     
-    var val = stage[0].value.filter(x=>Object.getOwnPropertyNames(x)==value)
+    var val = stage.value.find(x=>Object.getOwnPropertyNames(x)==value)
     
     if (id===1) {
         
     } else {
         
-    for (const name in val[0][value]) {
+    for (const name in val[value]) {
         
-        if (val[0][value][name]=='') {
+        if (val[value][name]=='') {
             
         }
-        else if (RegExp(val[0][value][name]).test(this.state.data[name])) {
+        else if (RegExp(val[value][name]).test(this.state.data[name])) {
             
             return true
         }
@@ -189,11 +188,11 @@ isStandard=(id,value)=>{
     }
     else {
         var tmp = this.state.tree.filter(p=>p.id==id)
-        var tmp2 = tmp.filter(p=>p.parent.test(this.state.value))
+        var tmp2 = tmp.find(p=>p.parent.test(this.state.value))
       if(tmp2.length===0){
         return 'yellow'
       }
-        else if (tmp2[0].value.test(value)) {  
+        else if (tmp2.value.test(value)) {  
             return 'green'
         }
         else return 'yellow'
@@ -269,9 +268,8 @@ makeQuestions=()=>{
     const {partdata,questions,progress,categories,start} =this.state
     this.setState({cancel:false})
     var part = partdata[progress+1]
-    var question = questions.filter(q=>q.QID===progress+1)
-    question=question[0]
-    console.log(this.state.data)
+    var question = questions.find(q=>q.QID===progress+1)
+    
     var buttons
     if (!start) {
         buttons=categories.map(c=>
@@ -284,8 +282,8 @@ makeQuestions=()=>{
                 value={c.Type} 
                 color='green'
                 onClick={(event,data)=>{
-                    var Type =categories.filter(t=>t.Type===data.value)
-                    this.setState({Type:Type[0]})
+                    var Type =categories.find(t=>t.Type===data.value)
+                    this.setState({Type})
                                                                 
                     swal.close()
        
@@ -356,7 +354,6 @@ makeQuestions=()=>{
                 this.setState({start:true})
                 this.getAllData()
                 setTimeout(()=>{
-                    console.log(this.state.invalid)
                     this.makeQuestions()
                 },1500)
                 }
@@ -472,14 +469,21 @@ buttonChange=()=>{
                     content='Cancel'
                     >
                 </Button>
+                
             </Segment>
+            
             <Table celled unstackable compact fixed striped style={{display:this.state.start?'':'none'}}>
+            
                 <Table.Body>
+                
                     {this.state.questions.map(stage=>{
                         return <TableComponent stage={stage} data={this.state.data} negative={this.state.negative}/>
                     })}
+                
                 </Table.Body>
+                
             </Table>
+            
         </div>
     )
   }
