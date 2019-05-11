@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
+import React from 'react'
 import {Table} from 'semantic-ui-react'
-export class TableComponent extends Component {
-  render() {
-      const {stage,data,negative}=this.props
+function TableComponent (props) {
+  
+      const {stage,data,negative}=props
       var name = stage.Name.toLowerCase()
     return (
       
@@ -14,7 +14,7 @@ export class TableComponent extends Component {
       
     )
   }
-}
+
 
 
 export default TableComponent

@@ -80,7 +80,7 @@ class SignUpForm extends Component {
     var pagename=auth.uid?'Update':'Signup'
 
     return (
-      <div style={{maxWidth: 450}}>
+      <>
         
         <Header textAlign='center'>{pagename}</Header>
         <Segment>
@@ -165,7 +165,7 @@ class SignUpForm extends Component {
     </Grid>
 
     </Segment>
-  </div>
+  </>
       
     )
   }

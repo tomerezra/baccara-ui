@@ -1,13 +1,9 @@
-import React, { Component } from 'react'
+import React from 'react'
 import AcountForm from '../components/forms/AcountForm';
-import {withRouter} from 'react-router-dom'
-class AcountPage extends Component {
-  render() {
-    return (
-      
-        <AcountForm/>
-      
-    )
+// import {withRouter} from 'react-router-dom'
+
+function AcountPage (){
+    return <AcountForm/>
   }
-}
-export default withRouter(AcountPage)
+
+export default AcountPage

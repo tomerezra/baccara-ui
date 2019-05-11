@@ -17,7 +17,7 @@ const styles = {
     borderWidth:0,
     borderStyle:'solid',
     zIndex:10,
-    color:'red'
+    
     
     
   },

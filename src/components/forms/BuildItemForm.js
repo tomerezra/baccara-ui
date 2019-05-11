@@ -426,12 +426,12 @@ buttonChange=()=>{
     
     if (!auth.uid) {
         if (!guest) {
-            return <Redirect to='/'/>
+            return <Redirect to='/login'/>
         } 
     }
     return (
             
-        <div style={{width:'100%',maxWidth: 450}} >
+        <>
             <Header textAlign='center'>{this.state.pagename}</Header>
             <Segment style={{display:this.state.progress>0?'block':'none'}} compact>
               <Progress
@@ -484,7 +484,7 @@ buttonChange=()=>{
                 
             </Table>
             
-        </div>
+        </>
     )
   }
 }

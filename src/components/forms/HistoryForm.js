@@ -7,22 +7,19 @@ import CardComponent from '../CardComponent';
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
 import posed from 'react-pose'
-const ListContainer = posed.div({
+const CardContainer = posed.div({
   enter: { staggerChildren: 50 },
   exit: { staggerChildren: 20, staggerDirection: -1 }
 });
 
-const Item = posed.p({
+const Card = posed.p({
   enter: { y: 0, opacity: 1 },
   exit: { y: 50, opacity: 0 }
 });
 
 
 class HistoryForm extends Component{
-   state={
-       pagename:'',
-
-   }
+   state={}
    componentDidMount(){
             
         const name= this.props.pagename
@@ -49,7 +46,7 @@ class HistoryForm extends Component{
         if (orders.length>0) {
           
           return(
-            orders.map(order => <Item><CardComponent order={order}/></Item>)
+            orders.map(order => <Card><CardComponent order={order}/></Card>)
           )  
         } else {
           return(<div style={{textAlign:'center'}}>You don't have orders</div>)
@@ -60,7 +57,7 @@ class HistoryForm extends Component{
         
         if (items.length>0) {
           return(
-            items.map(item => <Item><CardComponent item={item} delete={this.props.deleteItem}/></Item>)
+            items.map(item => <Card><CardComponent item={item} delete={this.props.deleteItem}/></Card>)
           )  
         } else {
           return(<div style={{textAlign:'center'}}>You don't have items</div>)
@@ -72,7 +69,7 @@ class HistoryForm extends Component{
         
         if (addresses.length>0) {
           return(
-            addresses.map(address => <Item><CardComponent address={address} delete={this.props.deleteAddress}/></Item>)
+            addresses.map(address => <Card><CardComponent address={address} delete={this.props.deleteAddress}/></Card>)
           )  
         } else {
           return(<div style={{textAlign:'center'}}>You don't have addresses</div>)
@@ -85,25 +82,25 @@ class HistoryForm extends Component{
   render(){
     const {auth}=this.props
     
-    if (auth.isEmpty) {return <Redirect to='/'/>}
+    if (auth.isEmpty) {return <Redirect to='/login'/>}
     
       return(
-        <div style={{maxWidth: 450}}>
+        <>
             
             <Header textAlign='center'>{this.state.pagename}</Header>
               <Segment textAlign='center' >
                   <Grid verticalAlign='top' columns={1} centered>
                   <Grid.Row>
                       <Grid.Column>
-                        <ListContainer>
+                        <CardContainer>
                           {this.cards()}  
-                        </ListContainer>
+                        </CardContainer>
                         
                       </Grid.Column>
                   </Grid.Row>
               </Grid>
           </Segment>
-        </div>
+        </>
     )
     
     

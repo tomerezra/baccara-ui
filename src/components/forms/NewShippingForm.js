@@ -78,10 +78,10 @@ handleInvalid=(e)=>{
    render(){
     const {data}=this.state
     const {auth}=this.props
-    if (auth.isEmpty) {return <Redirect to='/'/>}
+    if (auth.isEmpty) {return <Redirect to='/login'/>}
  
     return(
-    <div style={{maxWidth: 450}}>
+    <>
                
     <Segment>
     <Grid textAlign='center'>
@@ -187,7 +187,7 @@ handleInvalid=(e)=>{
       </Grid.Column>
     </Grid>
     </Segment>
-           </div>
+           </>
        )
     }
 }

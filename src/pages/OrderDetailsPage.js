@@ -1,13 +1,9 @@
-import React, { Component } from 'react'
+import React from 'react'
 import OrderDetailsForm from '../components/forms/OrderDetailsForm';
-import {withRouter} from 'react-router-dom'
-class OrderDetailsPage extends Component {
-  render() {
-    return (
-      
-        <OrderDetailsForm/>
-      
-    )
+// import {withRouter} from 'react-router-dom'
+
+function OrderDetailsPage () {
+    return <OrderDetailsForm/>
   }
-}
-export default withRouter(OrderDetailsPage)
+
+export default OrderDetailsPage

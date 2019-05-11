@@ -1,21 +1,15 @@
-import React, { Component } from 'react'
+import React from 'react'
 import {Card, Button} from 'semantic-ui-react'
 import {withRouter} from 'react-router-dom'
 
-export class CardComponent extends Component {
-  state={
-    data:this.props.order
-  }
-  
-  
-  whichCard=()=>{
+function CardComponent (props) {
     
-    if (this.props.location.pathname==='/orders') {
+    if (props.location.pathname==='/orders') {
       
-      const {OrderId,Status,OrderDate}=this.props.order
+      const {OrderId,Status,OrderDate}=props.order
       return(
         <Card
-              onClick={()=>{this.props.history.push('/orderdetails/' + OrderId)}}
+              onClick={()=>{props.history.push('/orderdetails/' + OrderId)}}
               centered 
               fluid>
               <Card.Content>
@@ -27,8 +21,8 @@ export class CardComponent extends Component {
           </Card>
       )
       
-    } else if(this.props.location.pathname==='/items'){
-      const {ItemName,ItemSerial,IsStandard,Type} = this.props.item
+    } else if(props.location.pathname==='/items'){
+      const {ItemName,ItemSerial,IsStandard,Type} = props.item
       return(
           <Card
               centered 
@@ -37,7 +31,7 @@ export class CardComponent extends Component {
                 <Card.Header>{ItemName}</Card.Header>
                 <Card.Meta>Type : {Type}
                   <Button
-                      onClick={(e)=>{e.stopPropagation(); this.props.delete(this.props.item)}}
+                      onClick={(e)=>{e.stopPropagation(); props.delete(props.item)}}
                       floated='right'
                       content='Delete'
                       color='youtube'
@@ -51,21 +45,21 @@ export class CardComponent extends Component {
       )
       
     }
-    else if(this.props.location.pathname==='/shipping'){
-      const {FirstName,LastName,Adress,City,ID,PhoneNumber}=this.props.address
+    else if(props.location.pathname==='/shipping'){
+      const {FirstName,LastName,Adress,City,ID,PhoneNumber}=props.address
       
       
       
       return(
           <Card
-              onClick={()=>this.props.history.push('/newaddress/'+ID)}
+              onClick={()=>props.history.push('/newaddress/'+ID)}
               centered 
               fluid>
               <Card.Content>
                 <Card.Header>{FirstName} {LastName}</Card.Header>
                 <Card.Meta>City : {City}
                 <Button
-                    onClick={(e)=>{e.stopPropagation(); this.props.delete(this.props.address)}}
+                    onClick={(e)=>{e.stopPropagation(); props.delete(props.address)}}
                     floated='right'
                     content='Delete'
                     color='youtube'
@@ -82,15 +76,5 @@ export class CardComponent extends Component {
       
     }
   }
-    render() {
-      
-    return (
-        
-          this.whichCard()
-        
-    )
-  }
-}
-
 
 export default withRouter(CardComponent)

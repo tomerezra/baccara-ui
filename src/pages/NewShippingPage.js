@@ -1,14 +1,8 @@
-import React, { Component } from 'react'
+import React from 'react'
 import NewShippingForm from '../components/forms/NewShippingForm';
-import {withRouter} from 'react-router-dom'
-export class NewShippingPage extends Component {
-  render() {
-    return (
-      
-        <NewShippingForm/>
-      
-    )
-  }
+// import {withRouter} from 'react-router-dom'
+function NewShippingPage () {
+    return <NewShippingForm/>
 }
 
-export default withRouter(NewShippingPage)
+export default NewShippingPage

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {Route, Switch ,withRouter} from "react-router-dom";
 
 import LoginPage from "./pages/LoginPage";
@@ -14,21 +14,23 @@ import SearchNavbar from "./components/SearchNavbar"
 import ItemsPage from './pages/ItemsPage';
 import ShippingPage from './pages/ShippingPage';
 import OrdersPage from './pages/OrdersPage';
-
+import WelcomePage from './pages/WelcomePage';
+import '../src/styles.css'
 const RouteContainer = posed.div({
-  enter: { opacity: 1, delay: 120, beforeChildren: true },
+  
+  enter: { opacity: 1, delay: 100, beforeChildren: true },
   exit: { opacity: 0 }
 });
 
-const App=()=> (
+function App(){
 
-   
+   return(
       <>
         
         <SearchNavbar/>
         <Route
           render={({ location }) => (
-            <div style={{paddingBottom:'15%',paddingTop:'20%'}}>
+            <div className='appcontainer'>
         
               <PoseGroup>
                   <RouteContainer key={location.pathname}>
@@ -43,7 +45,8 @@ const App=()=> (
                       <Route path='/shipping' exact component={ShippingPage} key='shipping'/>
                       <Route path='/signup' exact component={SignUpPage} key='signup'/>
                       <Route path='/acount' exact component={AcountPage} key='acount'/>
-                      <Route path='/' exact component={LoginPage} key='login'/>
+                      <Route path='/login' exact component={LoginPage} key='login'/>
+                      <Route path='/' exact component={WelcomePage} key='login'/>
                       
                       
                     </Switch>
@@ -54,8 +57,8 @@ const App=()=> (
         />
         <Footer/>
       </>
-
-)
+   )
+  }
     
   
 

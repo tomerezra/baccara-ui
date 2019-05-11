@@ -20,9 +20,9 @@ class HomePageForm extends Component{
    
     render(){
       const {auth}=this.props
-      if (auth.isEmpty) {return <Redirect to='/'/>}
+      if (auth.isEmpty) {return <Redirect to='/login'/>}
        return(
-           <div style={{maxWidth: 450}}>
+           <>
             
             
             <Header textAlign='center'>{this.state.pagename}</Header>
@@ -82,7 +82,7 @@ class HomePageForm extends Component{
                 </Button.Group>
             </Segment>
     
-    </div>
+    </>
        )
    }
   

@@ -132,10 +132,10 @@ class OrderDetailsForm extends Component {
     render() {
     const {auth}=this.props
        
-    if (auth.isEmpty) {return <Redirect to='/'/>}
+    if (auth.isEmpty) {return <Redirect to='/login'/>}
             
     return (
-      <div style={{maxWidth: 450}}>
+      <>
         
         <Header textAlign='center'>{this.state.pagename}</Header>
         <Segment size='mini' textAlign='center' >
@@ -149,7 +149,7 @@ class OrderDetailsForm extends Component {
                   </Button>
                   
               </Segment>
-      </div>
+      </>
     )
   }
 

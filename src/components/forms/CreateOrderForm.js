@@ -563,11 +563,11 @@ confirm=()=>{
         
         if (auth.isEmpty) {
             if (!guest) {
-                return <Redirect to='/'/>
+                return <Redirect to='/login'/>
             } 
         }
             return (
-                <div style={{ maxWidth: 450 }}>
+                <>
                  
                   <Header textAlign='center'>{this.state.pagename}</Header>
                   <Step.Group size='mini' unstackable fluid>
@@ -613,7 +613,7 @@ confirm=()=>{
                   
                   </Segment>
                   
-              </div>
+              </>
               )
         } 
     

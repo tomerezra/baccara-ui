@@ -3,6 +3,7 @@ import { Button, Form, Grid, Header, Image, Message, Segment} from 'semantic-ui-
 import PropTypes from 'prop-types'
 import {withRouter} from "react-router-dom";
 import logo from '../../images/logo.png'
+import logo3 from '../../images/logo3.jpg'
 import swal from '@sweetalert/with-react';
 import { connect } from 'react-redux'
 import {signIn,logAsGuest,errorClear,logWithProvider} from '../../store/actions/authAction'
@@ -17,7 +18,7 @@ class LoginForm extends Component {
             password:"",
             guest:false
         },
-        loading:true,
+        
         pagename:'Log In To Your Account',
         
     }
@@ -65,9 +66,9 @@ class LoginForm extends Component {
     const {auth} = this.props
     if (!auth.isEmpty) {return <Redirect to='/acount'/>}
     return (
-      <div style={{maxWidth: 450,marginTop:'-20%'}}>
+      <div style={{marginTop:'-20%'}}>
         
-        <Image src={logo} size='large' rounded>
+        <Image  src={logo3} rounded>
         </Image>
         <Header textAlign='center'>{this.state.pagename}</Header>
         <Segment >
@@ -142,7 +143,7 @@ class LoginForm extends Component {
           </Button>
             
             <br/>
-            <p style={{cursor: 'pointer',color:'#1E90FF'}} onClick={()=>{
+            <p className='textclick' onClick={()=>{
                 swal("Enter Your Email Address", {
                     content: "input",
                 })
@@ -160,7 +161,7 @@ class LoginForm extends Component {
           
         </Form>
         <Message>
-          New to us? <span style={{cursor: 'pointer',color:'#1E90FF'}} onClick={()=>{this.props.history.push('/signup')}}>Sign Up</span>
+          New to us? <span className='textclick' onClick={()=>{this.props.history.push('/signup')}}>Sign Up</span>
         </Message>
       </Grid.Column>
     </Grid>

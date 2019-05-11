@@ -1,14 +1,9 @@
-import React, { Component } from 'react'
+import React from 'react'
 import HistoryForm from '../components/forms/HistoryForm';
 
-export class ItemsPage extends Component {
-  render() {
-    return (
-      
-        <HistoryForm pagename='items'/>
-      
-    )
+function ItemsPage (){
+    return <HistoryForm pagename='items'/>
   }
-}
+
 
 export default ItemsPage

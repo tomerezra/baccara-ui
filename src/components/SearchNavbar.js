@@ -176,7 +176,7 @@ handleSearchChange = (e, { value }) => {
     return (
       <div className={classes.root}>
       
-        <AppBar className={classes.appbar} style={{display:this.props.location.pathname==='/'?'none':''}}>
+        <AppBar className={classes.appbar} style={{display:this.props.location.pathname==='/'?'none':this.props.location.pathname==='/login'?'none':''}}>
           <Toolbar>
             <Icon
             name='arrow circle left'
