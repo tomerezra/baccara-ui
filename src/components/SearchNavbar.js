@@ -191,7 +191,7 @@ handleSearchChange = (e, { value }) => {
 
             <div className={classes.grow} />
             <Search 
-                className={classes.search}
+                
                 placeholder='Search...' 
                 style={{display:auth.uid?'':'none'}}
                 category
@@ -206,7 +206,7 @@ handleSearchChange = (e, { value }) => {
             
             <div className={classes.grow} />
 
-            <Button content='Log Out' circular size='mini' onClick={()=>this.props.signOut()} style={{display:auth.uid?'':'none'}}></Button>
+            <Button compact content='Log Out' circular size='mini' onClick={()=>this.props.signOut()} style={{display:auth.uid?'':'none'}}></Button>
             
           </Toolbar>
         </AppBar>

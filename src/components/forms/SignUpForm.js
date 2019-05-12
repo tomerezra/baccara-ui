@@ -67,7 +67,7 @@ class SignUpForm extends Component {
       e.target.setCustomValidity('should be like xxx@xxx.xxx')
     }
     else if (name==='password') {
-      e.target.setCustomValidity('password must contains: at least 6 characters and have at least one upper-case, one lower-case and one number')
+      e.target.setCustomValidity('password must contains at least 6 characters')
     }
     
     }
@@ -108,7 +108,7 @@ class SignUpForm extends Component {
                 type='password'
                 id="password"
                 name="password"
-                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
+                pattern="[a-zA-Z0-9]{6,}"
                 onInvalid ={this.handleInvalid}
                 onInput={(e)=>{e.target.setCustomValidity('')}}
                 required

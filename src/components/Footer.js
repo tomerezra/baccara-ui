@@ -67,14 +67,15 @@ handleClickAdd=()=>{
         <BottomNavigationAction label="Orders" value="/orders" icon={<Icon name='clipboard list' size='large'/>}/>
         <BottomNavigationAction label="Items" value="/items" icon={<Icon name='barcode' size='large' />} />
         <BottomNavigationAction label="Shipping" value="/shipping" icon={<Icon name='shipping' size='large'/>} />
-        <BottomNavigationAction label="Acount" value="/acount" icon={<Icon name='user' size='large'/>} />
+        <BottomNavigationAction label="Acount" value="/acount" icon={<Icon name='home' size='large'/>} />
         
         
         <Button 
                 circular 
                 size='large'
                 icon='add'
-                style={{bottom:'5%',left:'45%',position:'fixed',display:this.addButton()}}
+                
+                style={{bottom:'35px',position:'fixed',display:this.addButton()}}
                 onClick={this.handleClickAdd}
                 >
             </Button>

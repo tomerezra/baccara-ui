@@ -16,6 +16,7 @@ class OrderDetailsForm extends Component {
     reload=()=>{
         const {id} = this.props.match.params
         
+        // eslint-disable-next-line eqeqeq
         const data=this.props.data.orders.find(order=>id==order.OrderId)
         
         

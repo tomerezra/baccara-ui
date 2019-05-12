@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button, Form, Grid, Header, Image, Message, Segment} from 'semantic-ui-react'
 import PropTypes from 'prop-types'
 import {withRouter} from "react-router-dom";
-import logo from '../../images/logo.png'
+// import logo from '../../images/logo.png'
 import logo3 from '../../images/logo3.jpg'
 import swal from '@sweetalert/with-react';
 import { connect } from 'react-redux'
@@ -56,7 +56,7 @@ class LoginForm extends Component {
         e.target.setCustomValidity('should be like xxx@xxx.xxx')
       }
       else if (name==='password') {
-        e.target.setCustomValidity('password must contains: at least 6 characters and have at least one upper-case, one lower-case and one number')
+        e.target.setCustomValidity('password must contains at least 6 characters')
       }
       
     }
@@ -104,7 +104,7 @@ class LoginForm extends Component {
                     fluid icon='lock'
                     iconPosition='left'
                     placeholder='Password'
-                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
+                    pattern="[a-zA-Z0-9]{6,}"
                     onInvalid ={this.handleInvalid}
                     onInput={(e)=>{e.target.setCustomValidity('')}}
                     required

@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import React, { Component } from 'react'
 import { Table,Select,Button,Step,Icon, Form, Grid, Header,Segment,Container, Divider, Label } from 'semantic-ui-react'
 import {withRouter,Redirect} from 'react-router-dom'
@@ -151,6 +152,7 @@ orderdetails=()=>{
     var orderitems
     var Part=[]
     var Quantity=[]
+    // eslint-disable-next-line array-callback-return
     orderitems=p.map((part,i)=>{
             
         if (part) {
@@ -408,14 +410,14 @@ billing=()=>{
                       disabled={this.props.match.params.id!=='0'?true:false}
                       onClick={(e)=>{e.preventDefault();this.nextstep(e)}}
                       name='back'
-                      color='linkedin'
+                      color='blue'
                       content='Back'>
                   </Button>
                   <Button
                     
                       name='next'
                       floated='right'
-                      color='linkedin'
+                      color='blue'
                       content='Next'>
                   </Button>
                   </Form>
@@ -489,7 +491,7 @@ itemlist=()=>{
 
                 name='next'
                 floated='right'
-                color='linkedin'
+                color='blue'
                 content='Next'>
             </Button>
             <br/>
@@ -518,7 +520,7 @@ confirm=()=>{
                 this.orderdetails()}}
                 content='Order Details'
                 circular
-                color='linkedin'
+                color='blue'
                 >
                 
                 </Button>
@@ -549,7 +551,7 @@ confirm=()=>{
             // disabled={this.props.match.params.id!=='0'?true:false}
             onClick={(e)=>{this.nextstep(e) ;this.setState({submit:false})}}
             name='back'
-            color='linkedin'
+            color='blue'
             content='Back'>
         </Button>
     
@@ -570,23 +572,23 @@ confirm=()=>{
                 <>
                  
                   <Header textAlign='center'>{this.state.pagename}</Header>
-                  <Step.Group size='mini' unstackable fluid>
-                      <Step
+                  <Step.Group size='tiny' unstackable fluid>
+                      <Step completed={this.state.billing?true:false}
                         active={this.state.step===1?true:false} 
                         disabled={this.props.match.params.id!=='0'?true:false}
                         onClick={()=>{this.setState({step:1,submit:false})}}>
-                      <Icon name='truck' />
+                      <Icon name='barcode' />
                       <Step.Content>
-                          <Step.Title>Items</Step.Title>
+                          <Step.Description>Items</Step.Description>
                       </Step.Content>
                       </Step>
-                      <Step 
+                      <Step completed={this.state.confirm?true:false}
                         active={this.state.step===2?true:false} 
                         disabled={this.state.billing?false:true}
                         onClick={()=>{this.setState({step:2,submit:false})}}>
-                      <Icon name='payment' />
+                      <Icon name='truck' />
                       <Step.Content>
-                          <Step.Title>Billing</Step.Title>
+                          <Step.Description>Shipping</Step.Description>
                       </Step.Content>
                       </Step>
                       <Step 
@@ -596,7 +598,7 @@ confirm=()=>{
                       
                       <Icon name='info' />
                       <Step.Content>
-                          <Step.Title>Confirm</Step.Title>
+                          <Step.Description>Confirm</Step.Description>
                       </Step.Content>
                       </Step>
                   </Step.Group>

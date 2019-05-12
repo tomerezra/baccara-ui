@@ -25,6 +25,7 @@ class NewShippingForm extends Component {
       
       const {id} = this.props.match.params
         if (id!=='0') {
+          // eslint-disable-next-line eqeqeq
           const tmp=this.props.data.addresses.find(a=>id==a.ID)
           this.setState({
           data:{...this.state.data,

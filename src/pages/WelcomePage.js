@@ -1,15 +1,16 @@
 import React from 'react'
 import SplitText from 'react-pose-text'
 const charPoses = {
-  exit: { opacity: 0, y: 20 },
+  exit: { y: 50, opacity: 0 },
   enter: {
-    y:0,
+    y: 0,
     opacity: 1,
     transition: ({ charInWordIndex }) => ({
       type: 'spring',
-      delay: charInWordIndex * 30,      
-      stiffness: 500 + charInWordIndex * 150,      
-      damping: 10 - charInWordIndex * 1    })
+      delay: charInWordIndex * 30,
+      stiffness: 500 + charInWordIndex * 150,
+      damping: 10 - charInWordIndex * 1
+    })
   }
 };
 
@@ -21,7 +22,7 @@ function WelcomePage(props) {
   return (
     <div className='welcome' >
      <SplitText initialPose="exit" pose="enter" charPoses={charPoses}>
-        Welcome
+        Welcome :-)
       </SplitText>
     </div>
   )

@@ -63,23 +63,23 @@ class HomePageForm extends Component{
                 
               </Grid>
               <br/>
-              <Button.Group>
+              
                 <Button
                   onClick={()=>{this.props.history.push('/createorder/0')}}
-                  color='linkedin'
+                  color='blue'
                   size='medium'
                   content='Create New Order'
                   >
                 </Button>
-                <Button.Or></Button.Or>
+                
                 <Button
                   onClick={()=>{this.props.history.push('/builditem')}}
-                  color='linkedin'
+                  color='blue'
                   size='medium'
                   content='Build New Item'
                   >
                 </Button>
-                </Button.Group>
+                
             </Segment>
     
     </>

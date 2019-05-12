@@ -18,7 +18,7 @@ import WelcomePage from './pages/WelcomePage';
 import '../src/styles.css'
 const RouteContainer = posed.div({
   
-  enter: { opacity: 1, delay: 100, beforeChildren: true },
+  enter: { opacity: 1, delay: 100},
   exit: { opacity: 0 }
 });
 

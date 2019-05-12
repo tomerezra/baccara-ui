@@ -1,3 +1,4 @@
+
 import React, { Component } from 'react'
 import {Button,Progress, Grid, Header, Segment, Table} from 'semantic-ui-react'
 import { connect } from 'react-redux'
@@ -154,8 +155,10 @@ handleClick=(e)=>{
 }
 isInvalid=(id,value)=>{
     
+    // eslint-disable-next-line eqeqeq
     var stage = this.state.invalid.find(s=>s.stage==id)
     
+    // eslint-disable-next-line eqeqeq
     var val = stage.value.find(x=>Object.getOwnPropertyNames(x)==value)
     
     if (id===1) {
@@ -164,7 +167,7 @@ isInvalid=(id,value)=>{
         
     for (const name in val[value]) {
         
-        if (val[value][name]=='') {
+        if (val[value][name]==='') {
             
         }
         else if (RegExp(val[value][name]).test(this.state.data[name])) {
@@ -187,6 +190,7 @@ isStandard=(id,value)=>{
         return 'green'
     }
     else {
+        // eslint-disable-next-line eqeqeq
         var tmp = this.state.tree.filter(p=>p.id==id)
         var tmp2 = tmp.find(p=>p.parent.test(this.state.value))
       if(tmp2.length===0){
@@ -214,21 +218,25 @@ isStandard=(id,value)=>{
 getAllData=()=>{
     const{Type}=this.state
     
-    var db =firebase.firestore()
+    const db =firebase.firestore()
     var tree=[]
     var invalid=[]
-    var invtmp=[]
+    
     for (let i = 1; i <= Type.Stages; i++) {
+       
+        let invtmp=[]
         db.collection(Type.Type+'invalid'+i.toString()).get().then(function (querySnapshot) {
             querySnapshot.forEach(function (doc) {    
                 invtmp.push({[doc.id]:doc.data()}); 
             });
         })
+        
         .then(()=>invalid.push({stage:i,value:invtmp}))
         .catch(()=>{
             swal('','something worng, try again','error');
             this.startOver()
         })
+        
         .then(()=>{
             
             invtmp=[]
