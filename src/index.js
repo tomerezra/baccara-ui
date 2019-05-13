@@ -13,7 +13,7 @@ import { createFirestoreInstance} from 'redux-firestore' // <- needed if using f
 import thunk from 'redux-thunk'
 import rootReducer from '../src/store/reducers/rootReducer'
 import App from "./App"
-import { BrowserRouter as Router } from "react-router-dom";
+import { HashRouter as Router } from "react-router-dom";
 import fbConfig from '../src/config/fbConfig'
 
 // react-redux-firebase config

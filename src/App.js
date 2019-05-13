@@ -31,7 +31,7 @@ function App(){
         <div className='appcontainer'>
           <Route render={({location})=>(
             <PoseGroup>
-                  <RouteContainer key={location.key}>
+                  <RouteContainer key={location.pathname}>
                     <Switch location={location}>
                       <Route path='/createorder/:id' exact component={CreateOrderPage}/>
                       <Route path='/newaddress/:id' exact component={NewShippingPage}/>  
