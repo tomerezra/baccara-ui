@@ -26,15 +26,15 @@ class HistoryForm extends Component{
         
         if (name==='orders') {
             this.setState({pagename:'My Orders'})
-            this.props.getOrders()
+            // this.props.getOrders()
         }
         else if (name==='items') {
             this.setState({pagename:'My Items'})
-            this.props.getItems()
+            // this.props.getItems()
         }
         else if (name==='shipping') {
           this.setState({pagename:'My Addresses'})
-          this.props.getAddresses()
+          // this.props.getAddresses()
         }
     }
 

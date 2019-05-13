@@ -7,11 +7,6 @@ import {createOrder,getItems,getAddresses} from '../../store/actions/dataActions
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
 import swal from '@sweetalert/with-react'
-import posed,{ PoseGroup } from 'react-pose'
-const StageContainer = posed.div({
-    enter: { opacity: 1, delay: 120},
-    exit: { opacity: 0 }
-});
 
 
 
@@ -43,6 +38,7 @@ export class CreateOrderForm extends Component {
 
 componentDidMount(){
     // const {auth}=this.props
+   
     
     if (this.props.match.params.id!=='0') {
         
@@ -75,7 +71,7 @@ clone=()=>{
     
 }
 handleChange=(e,data)=>{
-    
+    console.log(e,data,this.state)
     const {value,name,id,type}=data
     if (name==='agree') {
         this.setState({agree:e.target.checked})
@@ -604,13 +600,12 @@ confirm=()=>{
                   </Step.Group>
                   
                   <Segment>
-                   <PoseGroup>   
-                    <StageContainer key={this.state.step.toString()}>
-                        <div key='1'>{this.state.step===1?this.itemlist():null}</div>
-                        <div key='2'>{this.state.step===2?this.billing():null}</div>
-                        <div key='3'>{this.state.step===3?this.confirm():null}</div>
-                    </StageContainer>
-                  </PoseGroup>
+                      
+                  
+                        {this.state.step===1?this.itemlist():null}
+                        {this.state.step===2?this.billing():null}
+                        {this.state.step===3?this.confirm():null}
+                  
                   <br/>
                   
                   </Segment>
