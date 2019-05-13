@@ -1,6 +1,6 @@
 /* eslint-disable eqeqeq */
 import React, { Component } from 'react'
-import { Table,Select,Button,Step,Icon, Form, Grid, Header,Segment,Container, Divider, Label } from 'semantic-ui-react'
+import { Table,Select,Button,Step,Icon, Form, Grid, Header,Segment,Container, Divider, Label, StepDescription, StepContent } from 'semantic-ui-react'
 import {withRouter,Redirect} from 'react-router-dom'
 import { connect } from 'react-redux'
 import {createOrder,getItems,getAddresses} from '../../store/actions/dataActions'
@@ -71,7 +71,7 @@ clone=()=>{
     
 }
 handleChange=(e,data)=>{
-    console.log(e,data,this.state)
+    
     const {value,name,id,type}=data
     if (name==='agree') {
         this.setState({agree:e.target.checked})
@@ -401,7 +401,7 @@ billing=()=>{
                     
                 </Grid.Column>
             </Grid>
-            <br/>
+            <Divider></Divider>
             <Button
                       disabled={this.props.match.params.id!=='0'?true:false}
                       onClick={(e)=>{e.preventDefault();this.nextstep(e)}}
@@ -481,7 +481,7 @@ itemlist=()=>{
                 
                 </Grid>
                 
-                <br/>
+             <Divider></Divider>  
                 
             <Button
 
@@ -532,7 +532,8 @@ confirm=()=>{
                 required
                 >
             </Form.Checkbox>
-            <br/>
+            
+            
             <Button color='green' disabled={!this.state.submit}>
             Submit
             </Button>
@@ -543,6 +544,7 @@ confirm=()=>{
             </Button>
             </Container>
         </Form>
+        <Divider></Divider>
         <Button
             // disabled={this.props.match.params.id!=='0'?true:false}
             onClick={(e)=>{this.nextstep(e) ;this.setState({submit:false})}}
@@ -568,24 +570,21 @@ confirm=()=>{
                 <>
                  
                   <Header textAlign='center'>{this.state.pagename}</Header>
-                  <Step.Group size='tiny' unstackable fluid>
-                      <Step completed={this.state.billing?true:false}
+                  <Step.Group size='tiny' unstackable fluid widths={3}>
+                      <Step
+                        completed={this.state.billing?true:false}
                         active={this.state.step===1?true:false} 
                         disabled={this.props.match.params.id!=='0'?true:false}
                         onClick={()=>{this.setState({step:1,submit:false})}}>
                       <Icon name='barcode' />
-                      <Step.Content>
-                          <Step.Description>Items</Step.Description>
-                      </Step.Content>
+                      <StepContent>Items</StepContent>
                       </Step>
                       <Step completed={this.state.confirm?true:false}
                         active={this.state.step===2?true:false} 
                         disabled={this.state.billing?false:true}
                         onClick={()=>{this.setState({step:2,submit:false})}}>
                       <Icon name='truck' />
-                      <Step.Content>
-                          <Step.Description>Shipping</Step.Description>
-                      </Step.Content>
+                      <StepContent>Shipping</StepContent>
                       </Step>
                       <Step 
                           active={this.state.step===3?true:false}
@@ -593,9 +592,7 @@ confirm=()=>{
                           onClick={()=>{this.setState({step:3})}}>
                       
                       <Icon name='info' />
-                      <Step.Content>
-                          <Step.Description>Confirm</Step.Description>
-                      </Step.Content>
+                      <StepContent>Confirm</StepContent>
                       </Step>
                   </Step.Group>
                   

@@ -5,7 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { withStyles } from '@material-ui/core/styles';
 import { firestoreConnect } from 'react-redux-firebase';
 import {compose} from 'redux'
-import {Search ,Button,Table,Icon} from 'semantic-ui-react';
+import {Search ,Button,Table,Icon, Divider} from 'semantic-ui-react';
 import {withRouter} from 'react-router-dom';
 import { connect } from 'react-redux'
 import swal from '@sweetalert/with-react'
@@ -54,7 +54,7 @@ resetComponent = () => this.setState({ isLoading: false, results: [], value: '' 
 handleResultSelect = (e,{result}) => {
   const tmp = []
   var header
-  console.log(result)
+  
   for (const key in result.obj) {
         if (key==='Address'||key==='Quantity') {
           
@@ -188,7 +188,7 @@ handleSearchChange = (e, { value }) => {
               else this.props.history.goBack()}}>
 
             </Icon>
-
+            
             <div className={classes.grow} />
             <Search 
                 

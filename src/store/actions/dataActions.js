@@ -170,6 +170,10 @@ export const updateAddress = (address,id)=>{
         
         Axios.put('http://proj.ruppin.ac.il/bgroup71/prod/api/Address?id='+id,JSON.stringify(address),{headers: { "Content-Type": "application/json" }})
         .then(()=>{
+            dispatch(getAddresses())
+            
+        })
+        .then(()=>{
             dispatch({type: 'UPDATE_ADDRESS',address})
             
         })

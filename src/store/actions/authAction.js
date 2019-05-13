@@ -8,7 +8,16 @@ export const logAsGuest =()=>{
         dispatch({type:'GUEST'})
     }
 }
-
+export const Loading =()=>{
+    return(dispatch, getState)=>{
+        if (getState().auth.loading) {
+            dispatch({type:'LOADING_FALSE'})
+        } else {
+            dispatch({type:'LOADING_TRUE'})
+        } 
+        
+    }
+}
 
 export const errorClear =()=>{
     return(dispatch, getState)=>{
@@ -23,6 +32,7 @@ export const signIn = (credentials)=>{
             credentials.password
         )
         .then(()=>{
+            
             dispatch(getAddresses())
             dispatch(getItems())
             dispatch(getOrders())
@@ -45,6 +55,7 @@ export const signOut = ()=>{
         
         firebase.auth().signOut()
         .then(()=>{
+            
             dispatch({type:'SIGNOUT_SUCCESS'})
         })
         .catch((err)=>{
@@ -110,6 +121,7 @@ export const logWithProvider = (prov)=>{
         firebase.auth().signInWithPopup(provider)
         
         .then((result) =>{
+            
             if (result.additionalUserInfo.isNewUser) {
                 Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Customer','='+result.user.email)
             }
@@ -123,6 +135,7 @@ export const logWithProvider = (prov)=>{
             dispatch(getCitys())
         })
         .then(()=>{
+            dispatch(Loading())
             dispatch({type: 'LOGIN_SUCCESS'})
             
         }).catch((err)=>{

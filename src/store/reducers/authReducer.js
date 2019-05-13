@@ -4,7 +4,7 @@ import swal from '@sweetalert/with-react';
 const initState = {
     guest:false,
     authError:null,
-    
+    loading:false
     
   }
   
@@ -17,6 +17,16 @@ const initState = {
         return {
             ...state,
             authError:null
+      }
+      case 'LOADING_TRUE':
+        return {
+          ...state,
+          loading:true
+      }
+      case 'LOADING_FALSE':
+            return {
+              ...state,
+              loading:false
       }
       case 'GUEST':
         console.log('log in guest')  

@@ -67,7 +67,8 @@ class HomePageForm extends Component{
                 <Button
                   onClick={()=>{this.props.history.push('/createorder/0')}}
                   color='blue'
-                  size='medium'
+                  compact
+                  size='small'
                   content='Create New Order'
                   >
                 </Button>
@@ -75,7 +76,8 @@ class HomePageForm extends Component{
                 <Button
                   onClick={()=>{this.props.history.push('/builditem')}}
                   color='blue'
-                  size='medium'
+                  compact
+                  size='small'
                   content='Build New Item'
                   >
                 </Button>
