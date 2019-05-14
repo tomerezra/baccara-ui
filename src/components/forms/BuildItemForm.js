@@ -52,7 +52,7 @@ componentDidMount(){
     // Parts.map(part=>{
         
     //     var options = part.options.map(x=>x.value)
-    //     options.forEach(opt => {
+        // options.forEach((opt,i) => {
     //         db.collection('Ainvalid'+part.id).doc(opt).set({
     //             module:"",  
     //             body:"",

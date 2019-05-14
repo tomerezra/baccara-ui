@@ -88,6 +88,10 @@ export const createItem = (item)=>{
         //     createdAt:new Date()
         // })
         .then(()=>{
+            dispatch(getItems())
+            
+        })
+        .then(()=>{
             dispatch({type: 'CREATE_ITEM',item})
             
         })
@@ -135,6 +139,10 @@ export const createOrder = (order)=>{
         
         Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Order',JSON.stringify(order),{headers: { "Content-Type": "application/json" }})
         .then(()=>{
+            dispatch(getOrders())
+            
+        })
+        .then(()=>{
             dispatch({type: 'CREATE_ORDER',order})
         })
         .catch((err)=>{
@@ -154,6 +162,10 @@ export const createAddress = (address)=>{
         //     createdAt:new Date()
         // })
         Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Address',JSON.stringify(address),{headers: { "Content-Type": "application/json" }})
+        .then(()=>{
+            dispatch(getAddresses())
+            
+        })
         .then(()=>{
             dispatch({type: 'CREATE_ADDRESS',address})
             

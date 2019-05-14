@@ -77,7 +77,7 @@ class SignUpForm extends Component {
     const {data}=this.state
     const {auth,authError}=this.props
     
-    var pagename=auth.uid?'Update':'Signup'
+    var pagename=auth.uid?'Password Update':'Signup'
 
     return (
       <>
