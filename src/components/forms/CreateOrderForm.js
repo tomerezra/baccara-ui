@@ -1,6 +1,6 @@
 /* eslint-disable eqeqeq */
 import React, { Component } from 'react'
-import { Table,Select,Button,Step,Icon, Form, Grid, Header,Segment,Container, Divider, Label, StepDescription, StepContent } from 'semantic-ui-react'
+import { Table,Select,Button,Step,Icon, Form, Grid, Header,Segment,Container, Divider, Label, StepContent } from 'semantic-ui-react'
 import {withRouter,Redirect} from 'react-router-dom'
 import { connect } from 'react-redux'
 import {createOrder,getItems,getAddresses} from '../../store/actions/dataActions'
@@ -27,7 +27,7 @@ export class CreateOrderForm extends Component {
                 CompanyName:'',
                 Adress:'',
                 City:'',
-                Email:'',
+                Email:this.props.auth.email,
             },       
         },
         step:1,
@@ -110,7 +110,6 @@ handleChange=(e,data)=>{
             CompanyName:tmp.CompanyName,
             Adress:tmp.Adress,
             City:tmp.City,
-            Email:tmp.Email,
             ID:tmp.ID
         }}})
         
@@ -155,7 +154,7 @@ orderdetails=()=>{
             Part.push(part)
             Quantity.push(q[i])
             return(
-            <Table.Row>
+            <Table.Row key={i}>
             <Table.Cell>{part}</Table.Cell>
             <Table.Cell>{q[i]}</Table.Cell>
             </Table.Row>
@@ -387,6 +386,7 @@ billing=()=>{
                             type="email"
                             id="Email"
                             name="Email"
+                            disabled={!this.props.auth.isEmpty}
                             pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}"
                             onInvalid ={this.handleInvalid}
                             onInput={(e)=>{e.target.setCustomValidity('')}}

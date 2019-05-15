@@ -81,7 +81,7 @@ class HistoryForm extends Component{
     
   render(){
     const {auth}=this.props
-    
+    console.log(this.props.location.pathname)
     if (auth.isEmpty) {return <Redirect to='/login'/>}
     
       return(

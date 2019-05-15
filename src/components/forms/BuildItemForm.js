@@ -432,7 +432,7 @@ buttonChange=()=>{
     
     const {auth,guest}=this.props
     
-    if (!auth.uid) {
+    if (auth.isEmpty) {
         if (!guest) {
             return <Redirect to='/login'/>
         } 
@@ -455,14 +455,16 @@ buttonChange=()=>{
             </Segment>
             <Segment textAlign='center'>
                 <Button 
-                    color='youtube'
+                    
                     name={this.buttonChange()}
                     onClick={this.handleClick}
                     content={this.buttonChange()}  
                     >
                 </Button>
                 <Button 
-                    color='green'
+                    style={{display:this.props.guest?'':'none'}}
+                    
+                    color='blue'
                     size='medium'
                     name='order'
                     onClick={this.handleClick}
@@ -473,7 +475,7 @@ buttonChange=()=>{
                 <Button 
                     color='grey'
                     size='medium'
-                    onClick={()=>{this.props.history.push('/acount')}}
+                    onClick={()=>{this.props.guest?this.props.history.push('/login'):this.props.history.push('/acount')}}
                     content='Cancel'
                     >
                 </Button>
