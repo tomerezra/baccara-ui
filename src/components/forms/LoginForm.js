@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import {Dimmer,Loader, Button, Form, Grid, Header, Image, Message, Segment} from 'semantic-ui-react'
-import PropTypes from 'prop-types'
+import {Dimmer,Loader, Button, Form, Header, Image, Message, Segment} from 'semantic-ui-react'
+// import PropTypes from 'prop-types'
 import {withRouter,Link} from "react-router-dom";
 // import logo from '../../images/logo.png'
 import logo3 from '../../images/logo3.jpg'
@@ -79,9 +79,8 @@ class LoginForm extends Component {
           <Image  src={logo3} rounded>
           </Image>
           <Header textAlign='center'>{this.state.pagename}</Header>
-          <Segment >
-          <Grid textAlign='center' >
-            <Grid.Column >
+          <Segment textAlign='center'>
+          
           
                <Form onSubmit={this.HandleSubmit}>
                  
@@ -120,12 +119,14 @@ class LoginForm extends Component {
                       onChange={this.HandleChange}>
               </Form.Input>
               {this.props.authError?<Message color='red'>{this.props.authError}</Message>:null}
+              
               <Form.Checkbox
+                  type="checkbox"
                   id="guest"
                   name="guest"
                   label="Contnue as Guest"
                   checked={data.guest}
-                  onChange={this.HandleChange}>>
+                  onChange={this.HandleChange}>
               </Form.Checkbox>
               
               <Button color='linkedin'>
@@ -173,8 +174,7 @@ class LoginForm extends Component {
           <Message>
             New to us? <Link to='/signup'>Sign Up</Link>
           </Message>
-        </Grid.Column>
-      </Grid>
+       
       </Segment>
     </div>
        
@@ -183,9 +183,9 @@ class LoginForm extends Component {
     
   }
 }
-LoginForm.propTypes={
-    submit:PropTypes.func.isRequired
-}
+// LoginForm.propTypes={
+//     submit:PropTypes.func.isRequired
+// }
 
 const mapStateToProps = (state) => {
   

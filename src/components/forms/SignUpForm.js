@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Button, Form, Grid, Header,Segment,Message} from 'semantic-ui-react'
+import {Button, Form, Header,Segment,Message} from 'semantic-ui-react'
 import {createUser,updateUser, errorClear,logWithProvider} from '../../store/actions/authAction'
 import {withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
@@ -83,10 +83,7 @@ class SignUpForm extends Component {
       <>
         
         <Header textAlign='center'>{pagename}</Header>
-        <Segment>
-    <Grid textAlign='center' >
-      <Grid.Column>
-       
+        <Segment textAlign='center'>
         <Form onSubmit={this.handleSubmit}>
          
             <Form.Input 
@@ -127,7 +124,7 @@ class SignUpForm extends Component {
                 required
                 label="I agree to the Terms and Conditions"
                 checked={this.state.agree}
-                onChange={this.handleChange}>>
+                onChange={this.handleChange}>
             </Form.Checkbox>
             {authError?<Message color='red'>{authError}</Message>:null}
             <Button 
@@ -160,10 +157,6 @@ class SignUpForm extends Component {
               Cancel
             </Button>
         </Form>
-        
-      </Grid.Column>
-    </Grid>
-
     </Segment>
   </>
       

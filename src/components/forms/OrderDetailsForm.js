@@ -45,7 +45,7 @@ class OrderDetailsForm extends Component {
         </>
                 
         const viewitems = data.Part.map((item,i)=>{return(
-            <Table.Row>
+            <Table.Row key={i}>
             <Table.Cell>{item}</Table.Cell>
             <Table.Cell>{data.Quantity[i]}</Table.Cell>
             </Table.Row>

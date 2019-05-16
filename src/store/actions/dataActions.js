@@ -43,7 +43,7 @@ export const getOrders = ()=>{
         const userid =firebase.auth().currentUser.email
         
         Axios.get('http://proj.ruppin.ac.il/bgroup71/prod/api/Order?email='+userid)
-          .then(res=>orders=res.data)
+          .then(res=>orders=res.data.sort((a,b)=>b.OrderId-a.OrderId))
         .then(()=>{
             dispatch({type: 'GET_ORDERS',orders})
             
@@ -139,7 +139,10 @@ export const createOrder = (order)=>{
         
         Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Order',JSON.stringify(order),{headers: { "Content-Type": "application/json" }})
         .then(()=>{
+           if (!getState().auth.guest) {
             dispatch(getOrders())
+           }
+           
             
         })
         .then(()=>{

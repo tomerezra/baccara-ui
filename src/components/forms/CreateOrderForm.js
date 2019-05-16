@@ -10,46 +10,48 @@ import swal from '@sweetalert/with-react'
 
 
 
-export class CreateOrderForm extends Component {
-  state={
-        pagename:'Create New Order',
-        agree:null, 
-        p:[],
-        q:[],
-        data:{
-            Part:[],
-            Quantity:[],
-            Address:{
-                ID:null,
-                FirstName:'',
-                LastName:'',
-                PhoneNumber:'',
-                CompanyName:'',
-                Adress:'',
-                City:'',
-                Email:this.props.auth.email,
-            },       
-        },
-        step:1,
-        citys:[],
-        isOpen:false
 
-  }
+export class CreateOrderForm extends Component {
+   state = { 
+            pagename:'Create New Order',
+            agree:null, 
+            p:[],
+            q:[],
+            data:{
+                Part:[],
+                Quantity:[],
+                Address:{
+                    ID:null,
+                    FirstName:'',
+                    LastName:'',
+                    PhoneNumber:'',
+                    CompanyName:'',
+                    Adress:'',
+                    City:'',
+                    Email:'',
+                },       
+            },
+            step:1,
+            citys:[],
+            isOpen:false
+            
+        };
+        
+      
+   
 
 componentDidMount(){
-    // const {auth}=this.props
+    const {auth}=this.props
    
     
     if (this.props.match.params.id!=='0') {
         
         this.clone()
     }
-    // if (!auth.isEmpty) {
+    if (!auth.isEmpty) {
+        this.setState({data:{...this.state.data,Address:{...this.state.data.Address,Email:this.props.auth.email}}})
         
-    //     this.props.getItems()
-    //     this.props.getAddresses()
-        
-    // }
+    }
     
 }
 componentDidUpdate(prevProps, prevState) {
@@ -67,7 +69,9 @@ componentDidUpdate(prevProps, prevState) {
 clone=()=>{
     this.setState({step:3,confirm:true,billing:true})   
     var tmp = this.props.data.orders.find(order=>order.OrderId==this.props.match.params.id)
-    this.setState({p:tmp.Part,q:tmp.Quantity,data:{...this.state.data,Address:tmp.Address}})
+    this.setState({p:tmp.Part,q:tmp.Quantity},()=>{
+        this.setState({data:{...this.state.data,Address:tmp.Address}})
+    })
     
 }
 handleChange=(e,data)=>{
@@ -298,8 +302,7 @@ billing=()=>{
             disabled={this.props.guest}
             />
         <Divider></Divider>
-        <Grid textAlign='center'>
-                <Grid.Column>
+        
 
                     <Form.Input 
                             type="text"
@@ -372,7 +375,7 @@ billing=()=>{
                             type="text"
                             id="CompanyName"
                             name="CompanyName"
-                            pattern="[a-zA-Z0-9_-.]{2,}"
+                            pattern="[a-zA-Z0-9_.-]{2,}"
                             onInvalid ={this.handleInvalid}
                             onInput={(e)=>{e.target.setCustomValidity('')}}
                             required
@@ -397,10 +400,7 @@ billing=()=>{
                             value={this.state.data.Address.Email}
                             onChange={this.handleChange}>
                         </Form.Input>
-                        
-                    
-                </Grid.Column>
-            </Grid>
+
             <Divider></Divider>
             <Button
                       disabled={this.props.match.params.id!=='0'?true:false}
@@ -438,7 +438,7 @@ itemlist=()=>{
                     
                     return(
                        
-                       <Grid.Row>
+                       <Grid.Row key={i}>
                          
                         <Grid.Column>
                         <Form.Checkbox
@@ -446,7 +446,7 @@ itemlist=()=>{
                             id={i}
                             name={item.ItemSerial}
                             label={item.ItemName}
-                            checked={this.state.p[i]?'checked':''}
+                            checked={this.state.p[i]?true:false}
                             onChange={this.handleChange}
                             
                             >
@@ -462,7 +462,6 @@ itemlist=()=>{
                             pattern="[1-9][0-9]*"
                             onInvalid ={this.handleInvalid}
                             onInput={(e)=>{e.target.setCustomValidity('')}}
-                            min='1'
                             id={i}
                             disabled={this.state.p[i]?false:true}
                             name='quantity'
@@ -490,6 +489,7 @@ itemlist=()=>{
                 color='blue'
                 content='Next'>
             </Button>
+            <br/>
             <br/>
             </Form>
             )
@@ -602,8 +602,7 @@ confirm=()=>{
                         {this.state.step===1?this.itemlist():null}
                         {this.state.step===2?this.billing():null}
                         {this.state.step===3?this.confirm():null}
-                  
-                  <br/>
+               
                   
                   </Segment>
                   

@@ -10,12 +10,13 @@ import CreateOrderPage from './pages/CreateOrderPage';
 import NewShippingPage from './pages/NewShippingPage';
 import posed, { PoseGroup } from 'react-pose';
 import Footer from './components/Footer';
-import SearchNavbar from "./components/SearchNavbar"
+// import SearchNavbar from "./components/SearchNavbar"
 import ItemsPage from './pages/ItemsPage';
 import ShippingPage from './pages/ShippingPage';
 import OrdersPage from './pages/OrdersPage';
 import WelcomePage from './pages/WelcomePage';
 import '../src/styles.css'
+import TopBar from './components/TopBar';
 const RouteContainer = posed.div({
   
   enter: { opacity: 1, delay: 100},
@@ -27,7 +28,7 @@ function App(){
    return(
       <>
         
-        <SearchNavbar/>
+        <TopBar/>
         <div className='appcontainer'>
           <Route render={({location})=>(
             <PoseGroup>

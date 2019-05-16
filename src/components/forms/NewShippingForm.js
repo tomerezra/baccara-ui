@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {withRouter} from 'react-router-dom'
-import {Button,Grid,Header,Segment,Form} from 'semantic-ui-react'
+import {Button,Header,Segment,Form} from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import {Redirect} from 'react-router-dom'
 import {createAddress,updateAddress} from '../../store/actions/dataActions'
@@ -83,13 +83,12 @@ handleInvalid=(e)=>{
  
     return(
     <>
-               
-    <Segment>
-    <Grid textAlign='center'>
-      <Grid.Column>
+    <Header textAlign='center'>{this.state.pagename}</Header>          
+    <Segment textAlign='center'>
+
        
         <Form onSubmit={this.handleSubmit}>
-        <Header textAlign='center'>{this.state.pagename}</Header>
+        
           <Form.Input 
                 type="text"
                 id="FirstName"
@@ -122,7 +121,7 @@ handleInvalid=(e)=>{
                 type="text"
                 id="CompanyName"
                 name="CompanyName"
-                pattern="[a-zA-Z0-9_-.]{2,}"
+                pattern="[a-zA-Z0-9_.-]{2,}"
                 onInvalid ={this.handleInvalid}
                 onInput={(e)=>{e.target.setCustomValidity('')}}
                 required
@@ -185,8 +184,7 @@ handleInvalid=(e)=>{
                 onClick={(e)=>{e.preventDefault(); this.props.history.push('/acount')}}>
             </Button>
         </Form>
-      </Grid.Column>
-    </Grid>
+
     </Segment>
            </>
        )

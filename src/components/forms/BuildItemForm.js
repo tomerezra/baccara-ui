@@ -12,6 +12,7 @@ import Axios from 'axios';
 import firebase from 'firebase/app'
 import TableComponent from '../TableComponent';
 
+
 class BuildItemForm extends Component {
   state={
       data:{},
@@ -87,23 +88,29 @@ componentDidUpdate(prevProps, prevState) {
   }
 handleSubmit=(e)=>{
     e.preventDefault()
+    var itemdetails=[]
+     // change the database of items
+    for (const key in this.state.data) {
+        itemdetails.push( {name:key,value:this.state.data[key]})
+    } 
+   
     swal({
         title:this.state.add.ItemSerial,
         text:'Give name to the item',    
         content:'input'
     })
-    .then((value)=>{
+    // .then((value)=>{
         
-        this.setState({add:{...this.state.add,ItemName:value,Type:this.state.Type.Type}})
-        if (this.props.guest) {
-           this.props.createitemguest(this.state.add) 
-        }
-        else this.props.createItem(this.state.add)
-        this.setState({orderbutton:false})
-        this.startOver()
+    //     this.setState({add:{...this.state.add,ItemName:value,Type:this.state.Type.Type}})
+    //     if (this.props.guest) {
+    //        this.props.createitemguest(this.state.add) 
+    //     }
+    //     else this.props.createItem(this.state.add)
+    //     this.setState({orderbutton:false})
+    //     this.startOver()
         
         
-    })
+    // })
 
 }
 startOver=()=>{
@@ -215,38 +222,43 @@ isStandard=(id,value)=>{
         return 'yellow'
     } 
 }
-getAllData=()=>{
+getAllData=async ()=>{
     const{Type}=this.state
     
     const db =firebase.firestore()
     var tree=[]
     var invalid=[]
-    
+    await Axios.get('http://proj.ruppin.ac.il/bgroup71/prod/api/Question?type='+Type.Type)
+    .then(res=>this.setState({questions:res.data}))
+    .catch(()=>{
+        swal('','something worng, try again','error');
+        this.startOver()
+    })
+
     for (let i = 1; i <= Type.Stages; i++) {
        
         let invtmp=[]
-        db.collection(Type.Type+'invalid'+i.toString()).get().then(function (querySnapshot) {
+     await db.collection(Type.Type+'invalid'+i.toString()).get().then(function (querySnapshot) {
             querySnapshot.forEach(function (doc) {    
                 invtmp.push({[doc.id]:doc.data()}); 
             });
         })
         
         .then(()=>invalid.push({stage:i,value:invtmp}))
-        .catch(()=>{
-            swal('','something worng, try again','error');
-            this.startOver()
-        })
-        
         .then(()=>{
             
             invtmp=[]
+        })
+        .catch(()=>{
+            swal('','something worng, try again','error');
+            this.startOver()
         })
         
     }
     
     this.setState({invalid})
    
-    db.collection(Type.Type+"tmp").orderBy('id', 'asc').get().then(function (querySnapshot) {
+    await db.collection(Type.Type+"tmp").orderBy('id', 'asc').get().then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {    
             tree.push({id:doc.data().id,parent:new RegExp(doc.data().parent,'i'),value:new RegExp(doc.data().value,'i')});
         });
@@ -258,19 +270,15 @@ getAllData=()=>{
     })
     this.setState({tree})
 
-    Axios.get('http://proj.ruppin.ac.il/bgroup71/prod/api/AllItem?type='+Type.Type+'&stages='+Type.Stages)
+    await Axios.get('http://proj.ruppin.ac.il/bgroup71/prod/api/AllItem?type='+Type.Type+'&stages='+Type.Stages)
     .then(res=>this.setState({partdata:res.data}))
     .catch(()=>{
         swal('','something worng, try again','error');
         this.startOver()
     })
       
-    Axios.get('http://proj.ruppin.ac.il/bgroup71/prod/api/Question?type='+Type.Type)
-    .then(res=>this.setState({questions:res.data}))
-    .catch(()=>{
-        swal('','something worng, try again','error');
-        this.startOver()
-    })
+    
+    this.makeQuestions()
 }
 makeQuestions=()=>{
     const {partdata,questions,progress,categories,start} =this.state
@@ -280,8 +288,8 @@ makeQuestions=()=>{
     
     var buttons
     if (!start) {
-        buttons=categories.map(c=>
-            <Grid.Column
+        buttons=categories.map((c,i)=>
+            <Grid.Column key={i}
             style={{width:'30%'}}>
             <Button 
                 size='mini'
@@ -301,8 +309,8 @@ makeQuestions=()=>{
             
             )
     } else {
-        buttons =part.map(opt=>
-            <Grid.Column
+        buttons =part.map((opt,i)=>
+            <Grid.Column key={i}
             style={{width:'30%'}}>
             <Button 
                 size='mini'
@@ -354,19 +362,19 @@ makeQuestions=()=>{
             closeOnClickOutside: false,
 
         })
-        .then(()=>{ 
+        .then(async ()=>{ 
             if (this.state.cancel) {
                 
             }
             else {
                 this.setState({start:true})
-                this.getAllData()
-                setTimeout(()=>{
-                    this.makeQuestions()
-                },1500)
+                
+                    this.getAllData()
+                
                 }
   
     })
+    
     } else {
         swal({
         
@@ -486,8 +494,8 @@ buttonChange=()=>{
             
                 <Table.Body>
                 
-                    {this.state.questions.map(stage=>{
-                        return <TableComponent stage={stage} data={this.state.data} negative={this.state.negative}/>
+                    {this.state.questions.map((stage,i)=>{
+                        return <TableComponent key={i} stage={stage} data={this.state.data} negative={this.state.negative}/>
                     })}
                 
                 </Table.Body>

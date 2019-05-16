@@ -50,7 +50,7 @@ export const signIn = (credentials)=>{
         
     }
 }
-export const signOut = ()=>{
+export const signout = ()=>{
     return (dispatch, getState,{firebase})=>{
         
         firebase.auth().signOut()
@@ -139,6 +139,7 @@ export const logWithProvider = (prov)=>{
             dispatch({type: 'LOGIN_SUCCESS'})
             
         }).catch((err)=>{
+            dispatch(Loading())
             dispatch({type: 'LOGIN_ERROR',err})
             
         })

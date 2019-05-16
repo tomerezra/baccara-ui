@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {withRouter,Redirect} from 'react-router-dom'
-import {Grid,Header,Segment} from 'semantic-ui-react'
+import {Header,Segment} from 'semantic-ui-react'
 import {createAddress,createItem,createOrder,deleteAddress,deleteItem,getAddresses,getItems,getOrders} from '../../store/actions/dataActions'
 import { connect } from 'react-redux'
 import CardComponent from '../CardComponent';
@@ -12,7 +12,7 @@ const CardContainer = posed.div({
   exit: { staggerChildren: 20, staggerDirection: -1 }
 });
 
-const Card = posed.p({
+const Card = posed.div({
   enter: { y: 0, opacity: 1 },
   exit: { y: 50, opacity: 0 }
 });
@@ -46,7 +46,7 @@ class HistoryForm extends Component{
         if (orders.length>0) {
           
           return(
-            orders.map(order => <Card><CardComponent order={order}/></Card>)
+            orders.map((order,i) => <Card key={i}><CardComponent order={order}/></Card>)
           )  
         } else {
           return(<div style={{textAlign:'center'}}>You don't have orders</div>)
@@ -57,7 +57,7 @@ class HistoryForm extends Component{
         
         if (items.length>0) {
           return(
-            items.map(item => <Card><CardComponent item={item} delete={this.props.deleteItem}/></Card>)
+            items.map((item,i) => <Card key={i}><CardComponent item={item} delete={this.props.deleteItem}/></Card>)
           )  
         } else {
           return(<div style={{textAlign:'center'}}>You don't have items</div>)
@@ -69,7 +69,7 @@ class HistoryForm extends Component{
         
         if (addresses.length>0) {
           return(
-            addresses.map(address => <Card><CardComponent address={address} delete={this.props.deleteAddress}/></Card>)
+            addresses.map((address,i) => <Card key={i}><CardComponent address={address} delete={this.props.deleteAddress}/></Card>)
           )  
         } else {
           return(<div style={{textAlign:'center'}}>You don't have addresses</div>)
@@ -81,24 +81,17 @@ class HistoryForm extends Component{
     
   render(){
     const {auth}=this.props
-    console.log(this.props.location.pathname)
+    
     if (auth.isEmpty) {return <Redirect to='/login'/>}
     
       return(
         <>
             
-            <Header textAlign='center'>{this.state.pagename}</Header>
-              <Segment textAlign='center' >
-                  <Grid verticalAlign='top' columns={1} centered>
-                  <Grid.Row>
-                      <Grid.Column>
-                        <CardContainer>
-                          {this.cards()}  
-                        </CardContainer>
-                        
-                      </Grid.Column>
-                  </Grid.Row>
-              </Grid>
+          <Header textAlign='center'>{this.state.pagename}</Header>
+          <Segment >
+            <CardContainer>
+              {this.cards()}  
+            </CardContainer>
           </Segment>
         </>
     )

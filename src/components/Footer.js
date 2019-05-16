@@ -1,27 +1,27 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+// import PropTypes from 'prop-types';
+// import { withStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import {Icon,Button} from 'semantic-ui-react';
 import {withRouter} from 'react-router-dom'
 import { connect } from 'react-redux'
 
-const styles = {
-  root: {
-    width:'100%',
-    position:'fixed',
-    bottom:0,
-    borderTopColor:'grey',
-    borderTopWidth:2,
-    borderWidth:0,
-    borderStyle:'solid',
-    zIndex:10,
+// const styles = {
+//   root: {
+//     width:'100%',
+//     position:'fixed',
+//     bottom:0,
+//     borderTopColor:'grey',
+//     borderTopWidth:2,
+//     borderWidth:0,
+//     borderStyle:'solid',
+//     zIndex:10,
     
     
     
-  },
-};
+//   },
+// };
 
 class Footer extends React.Component {
   state = {
@@ -59,34 +59,31 @@ handleClickAdd=()=>{
   
 
   render() {
-    const { classes } = this.props;
+    // const { classes } = this.props;
     
     
     return (
-      <BottomNavigation value={this.props.location.pathname} onChange={this.handleChange} className={classes.root} style={{display:this.props.auth.uid?'':'none'}}>
+      <BottomNavigation value={this.props.location.pathname} onChange={this.handleChange} className='footer' style={{display:this.props.auth.uid?'':'none'}}>
         <BottomNavigationAction label="Orders" value="/orders" icon={<Icon name='clipboard list' size='large'/>}/>
         <BottomNavigationAction label="Items" value="/items" icon={<Icon name='barcode' size='large' />} />
         <BottomNavigationAction label="Shipping" value="/shipping" icon={<Icon name='shipping' size='large'/>} />
         <BottomNavigationAction label="Acount" value="/acount" icon={<Icon name='home' size='large'/>} />
-        
-        
         <Button 
                 circular 
                 size='large'
                 icon='add'
-                
                 style={{bottom:'35px',position:'fixed',display:this.addButton()}}
                 onClick={this.handleClickAdd}
                 >
-            </Button>
+        </Button>
       </BottomNavigation>
     );
   }
 }
 
-Footer.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
+// Footer.propTypes = {
+//   classes: PropTypes.object.isRequired,
+// };
 const mapStateToProps = (state) => {
     return{
         
@@ -94,9 +91,7 @@ const mapStateToProps = (state) => {
     }
     
   }
- 
-  const mapDispatchToProps =(dispatch)=> ({
-    
-  })
+
   
-export default withRouter(withStyles(styles)(connect(mapStateToProps,mapDispatchToProps)(Footer)))
+export default withRouter((connect(mapStateToProps)(Footer)))
+// export default withRouter(withStyles(styles)(connect(mapStateToProps)(Footer)))
