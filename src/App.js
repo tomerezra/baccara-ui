@@ -17,6 +17,7 @@ import OrdersPage from './pages/OrdersPage';
 import WelcomePage from './pages/WelcomePage';
 import '../src/styles.css'
 import TopBar from './components/TopBar';
+import ItemDetailsPage from './pages/ItemDetailsPage';
 const RouteContainer = posed.div({
   
   enter: { opacity: 1, delay: 100},
@@ -44,6 +45,7 @@ function App(){
                       <Route path='/signup' exact component={SignUpPage}/>
                       <Route path='/acount' exact component={AcountPage}/>
                       <Route path='/login' exact component={LoginPage}/>
+                      <Route path='/itemdetails/:id' exact component={ItemDetailsPage}/>
                       <Route path='/' exact component={WelcomePage}/>
                     </Switch>
                   </RouteContainer>

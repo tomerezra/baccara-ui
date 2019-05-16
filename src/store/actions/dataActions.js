@@ -76,9 +76,9 @@ export const getItems = ()=>{
     }
 }
 
-export const createItem = (item)=>{
+export const createItem = (item,data)=>{
     return (dispatch, getState,{firebase})=>{
-        // const firestore = firebase.firestore()
+        const firestore = firebase.firestore()
         
         Axios.post('http://proj.ruppin.ac.il/bgroup71/prod/api/Items',JSON.stringify(item),{headers: { "Content-Type": "application/json" }})
         // const userid = getState().firebase.auth.uid
@@ -87,7 +87,9 @@ export const createItem = (item)=>{
         //     userid,
         //     createdAt:new Date()
         // })
-        .then(()=>{
+        .then((res)=>{
+            
+            firestore.collection('items').doc(res.data.toString()).set({data})
             dispatch(getItems())
             
         })

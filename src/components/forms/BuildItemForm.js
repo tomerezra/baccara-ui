@@ -5,8 +5,6 @@ import { connect } from 'react-redux'
 import {createItem,createitemguest} from '../../store/actions/dataActions'
 import swal from '@sweetalert/with-react'
 import {withRouter,Redirect} from 'react-router-dom'
-import { firestoreConnect } from 'react-redux-firebase';
-import {compose} from 'redux'
 // import Parts from '../../data/parts'
 import Axios from 'axios';
 import firebase from 'firebase/app'
@@ -89,28 +87,29 @@ componentDidUpdate(prevProps, prevState) {
 handleSubmit=(e)=>{
     e.preventDefault()
     var itemdetails=[]
+    var i=1
      // change the database of items
     for (const key in this.state.data) {
-        itemdetails.push( {name:key,value:this.state.data[key]})
+        itemdetails.push({stage:i.toString(),name:key,value:this.state.data[key]})
+        i++
     } 
-   
     swal({
         title:this.state.add.ItemSerial,
         text:'Give name to the item',    
         content:'input'
     })
-    // .then((value)=>{
+    .then((value)=>{
         
-    //     this.setState({add:{...this.state.add,ItemName:value,Type:this.state.Type.Type}})
-    //     if (this.props.guest) {
-    //        this.props.createitemguest(this.state.add) 
-    //     }
-    //     else this.props.createItem(this.state.add)
-    //     this.setState({orderbutton:false})
-    //     this.startOver()
+        this.setState({add:{...this.state.add,ItemName:value,Type:this.state.Type.Type}})
+        if (this.props.guest) {
+           this.props.createitemguest(this.state.add) 
+        }
+        else this.props.createItem(this.state.add,itemdetails)
+        this.setState({orderbutton:false})
+        this.startOver()
         
         
-    // })
+    })
 
 }
 startOver=()=>{
@@ -519,12 +518,9 @@ const mapStateToProps = (state) => {
   }
 const mapDispatchToProps = (dispatch) =>{
     return{
-        createItem:(item)=>dispatch(createItem(item)),
+        createItem:(item,data)=>dispatch(createItem(item,data)),
         
         createitemguest:(item)=>dispatch(createitemguest(item))
     }
   }
-export default withRouter(compose(
-    connect(mapStateToProps,mapDispatchToProps),
-    firestoreConnect([{collection:'standard'}])
-  )(BuildItemForm))
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(BuildItemForm))

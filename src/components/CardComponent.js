@@ -22,9 +22,10 @@ function CardComponent (props) {
       )
       
     } else if(props.location.pathname==='/items'){
-      const {ItemName,ItemSerial,IsStandard,Type} = props.item
+      const {ItemName,ItemSerial,IsStandard,Type,ItemID} = props.item
       return(
           <Card
+              onClick={()=>props.history.push('/itemdetails/'+ItemID)}
               centered 
               fluid>
               <Card.Content>
