@@ -12,7 +12,7 @@ const CardContainer = posed.div({
   exit: { staggerChildren: 20, staggerDirection: -1 }
 });
 
-const Card = posed.div({
+const Card = posed.p({
   enter: { y: 0, opacity: 1 },
   exit: { y: 50, opacity: 0 }
 });

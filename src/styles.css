@@ -43,7 +43,10 @@
   }
   .search{
     padding:11px 0px 11px 0px;
-
+    
+  }
+  .search>.ui.icon.input>input {
+    box-shadow: 2px 2px 4px #000000;
   }
   .logout{
     
@@ -81,17 +84,17 @@
   }
   .a{
     float: left;
-    width: 10%;
+    width: 15%;
     height: 100%;
   }
   .b{
     float: right;
-    width: 30%;
+    width: 25%;
     height: 100%;
    
   }
   .c{
-    width: 60%;
+    width: 65%;
     height: 100%;
     
   }
@@ -100,12 +103,10 @@
     width:100%;
     position:fixed;
     bottom:0;
-    border-top-color:grey;
-    border-top-width:2;
+    border:2px solid grey;
     border-bottom-width:0;
     border-left-width: 0;
     border-right-width: 0;
-    border-style:solid;
     z-index:10;
   }
  
