@@ -31,7 +31,7 @@ firebase.initializeApp(fbConfig)
 firebase.firestore() // <- needed if using firestore
 // firebase.functions() // <- needed if using httpsCallable
 
-
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
 
 // Create store with reducers and initial state
 
