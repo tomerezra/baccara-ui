@@ -33,8 +33,8 @@ export class CreateOrderForm extends Component {
             },
             step:1,
             citys:[],
-            isOpen:false
-            
+            isOpen:false,
+            clone:false
         };
         
       
@@ -67,7 +67,7 @@ componentDidUpdate(prevProps, prevState) {
     
 }
 clone=()=>{
-    this.setState({step:3,confirm:true,billing:true})   
+    this.setState({step:3,confirm:true,billing:true,clone:true})   
     var tmp = this.props.data.orders.find(order=>order.OrderId==this.props.match.params.id)
     this.setState({p:tmp.Part,q:tmp.Quantity},()=>{
         this.setState({data:{...this.state.data,Address:tmp.Address}})
@@ -425,7 +425,13 @@ itemlist=()=>{
         var items
         if (guest) {
             items = data.gitems
-        } else { 
+        } 
+        else if (this.state.clone) {
+            items = this.state.p.map(p=>{
+                return {ItemSerial:p,ItemName:p}
+            })
+        }
+        else { 
             items = data.items
         }
            
@@ -448,7 +454,7 @@ itemlist=()=>{
                             label={item.ItemName}
                             checked={this.state.p[i]?true:false}
                             onChange={this.handleChange}
-                            
+                            disabled={this.state.clone}
                             >
                         </Form.Checkbox>
                         </Grid.Column>
@@ -574,7 +580,7 @@ confirm=()=>{
                       <Step
                         completed={this.state.billing?true:false}
                         active={this.state.step===1?true:false} 
-                        disabled={this.props.match.params.id!=='0'?true:false}
+                        
                         onClick={()=>{this.setState({step:1,submit:false})}}>
                       <Icon name='barcode' />
                       <StepContent>Items</StepContent>
